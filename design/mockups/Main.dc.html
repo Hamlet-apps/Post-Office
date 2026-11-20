@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Post Office — Dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+<style>
+body{margin:0;background:#F3F0EB;font-family:Inter,system-ui,sans-serif;color:#1B1F2A;-webkit-font-smoothing:antialiased}
+a{color:#085E66}a:hover{color:#064A51}
+.po-num{font-variant-numeric:tabular-nums}
+.po-rail{flex:0 0 92px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.po-railnav{display:flex;flex-direction:column;gap:6px;align-items:center}
+.po-navitem{transition:background-color 200ms ease,transform 140ms ease}
+.po-navitem:hover{background:rgba(255,255,255,0.14)}
+.po-navitem:active{transform:scale(0.97)}
+.po-btn{transition:background-color 200ms ease,box-shadow 200ms ease,transform 140ms ease;cursor:pointer}
+.po-btn:active{transform:scale(0.97)}
+.po-primary:hover{background:#FFC39E !important}
+.po-row{transition:background-color 200ms ease}
+.po-row:hover{background:#F8F6F2}
+.po-drag{cursor:grab}
+.po-drag:active{cursor:grabbing}
+.po-rowlink::after{content:"";position:absolute;inset:0}
+.po-block{cursor:pointer;transition:background-color 160ms ease}
+.po-block:hover{background:#F5FAFA !important}
+input::placeholder,textarea::placeholder{color:#666C7A}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #0B7A85;outline-offset:2px}
+.po-rail a:focus-visible,.po-rail button:focus-visible{outline-color:#FFFFFF}
+@keyframes poPulse{0%{box-shadow:0 0 0 0 rgba(31,138,84,.45)}70%{box-shadow:0 0 0 8px rgba(31,138,84,0)}100%{box-shadow:0 0 0 0 rgba(31,138,84,0)}}
+.po-live{animation:poPulse 1.6s ease-out infinite}
+@media (max-width:760px){
+.po-rail{flex:1 1 100%;flex-direction:row;justify-content:space-between;padding:10px 12px !important}
+.po-railnav{flex-direction:row;overflow-x:auto}
+.po-railfoot{display:none !important}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+
+<div style="min-height: 100vh; box-sizing: border-box; padding: 16px; display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; background: #F3F0EB">
+
+  <!-- Rail -->
+  <nav class="po-rail" aria-label="Post Office" style="background: #0B7A85; border-radius: 26px; padding: 18px 0; box-shadow: 0 1px 2px rgba(27,31,42,.08), 0 10px 30px rgba(11,122,133,.28); box-sizing: border-box"><a href="Main.dc.html" aria-label="Post Office home" style="display: block; width: 48px; height: 48px; margin-bottom: 14px; border-radius: 15px; box-shadow: 0 0 0 2px rgba(255,255,255,.35)"><svg viewBox="0 0 64 64" width="48" height="48" role="img" aria-label="Post Office" style="flex: 0 0 auto"><rect width="64" height="64" rx="17" fill="#0B7A85"></rect><rect x="10" y="16" width="44" height="31" rx="5" fill="#FFD2B5"></rect><path d="M12.5 19.5L32 34L51.5 19.5" fill="none" stroke="#0B7A85" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><circle cx="32" cy="34" r="7.5" fill="#0B7A85"></circle><path d="M32 30.2l1.2 2.5 2.7.4-2 1.9.5 2.7-2.4-1.3-2.4 1.3.5-2.7-2-1.9 2.7-.4z" fill="#FFD2B5"></path></svg></a><div class="po-railnav" style=""><a href="Main.dc.html" class="po-navitem" aria-current="page" style="width: 64px; height: 62px; border-radius: 18px; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex: 0 0 auto; background: rgba(255,255,255,.22)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><rect x="3.5" y="3.5" width="7" height="8" rx="2"></rect><rect x="13.5" y="3.5" width="7" height="5" rx="2"></rect><rect x="13.5" y="11.5" width="7" height="9" rx="2"></rect><rect x="3.5" y="14.5" width="7" height="6" rx="2"></rect></svg><span style="font-size: 11px; font-weight: 600">Dashboard</span></a><a href="Campaigns.dc.html" class="po-navitem" style="width: 64px; height: 62px; border-radius: 18px; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex: 0 0 auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><path d="M4 10v4h3l6 4.5v-13L7 10H4z"></path><path d="M16.5 9a4 4 0 0 1 0 6"></path><path d="M19 6.5a7.5 7.5 0 0 1 0 11"></path></svg><span style="font-size: 11px; font-weight: 600">Campaigns</span></a><a href="Templates.dc.html" class="po-navitem" style="width: 64px; height: 62px; border-radius: 18px; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex: 0 0 auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><rect x="4" y="3.5" width="16" height="17" rx="2.5"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg><span style="font-size: 11px; font-weight: 600">Templates</span></a><a href="People.dc.html" class="po-navitem" style="width: 64px; height: 62px; border-radius: 18px; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex: 0 0 auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><circle cx="9" cy="8" r="3.2"></circle><path d="M3 20a6 6 0 0 1 12 0"></path><path d="M16 4.6a3.2 3.2 0 0 1 0 6.3"></path><path d="M21 20a5.5 5.5 0 0 0-3.6-5.2"></path></svg><span style="font-size: 11px; font-weight: 600">People</span></a><a href="Outbox.dc.html" class="po-navitem" style="width: 64px; height: 62px; border-radius: 18px; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex: 0 0 auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><path d="M4 13.5l2.2-8h11.6l2.2 8v5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z"></path><path d="M4 13.5h4.5l1.5 2.5h4l1.5-2.5H20"></path></svg><span style="font-size: 11px; font-weight: 600">Outbox</span></a><a href="Channels.dc.html" class="po-navitem" style="width: 64px; height: 62px; border-radius: 18px; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex: 0 0 auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><circle cx="12" cy="12" r="2"></circle><path d="M8.2 8.2a5.4 5.4 0 0 0 0 7.6M15.8 8.2a5.4 5.4 0 0 1 0 7.6M5.4 5.4a9.3 9.3 0 0 0 0 13.2M18.6 5.4a9.3 9.3 0 0 1 0 13.2"></path></svg><span style="font-size: 11px; font-weight: 600">Channels</span></a><a href="BotCommands.dc.html" class="po-navitem" style="width: 64px; height: 62px; border-radius: 18px; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex: 0 0 auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><path d="M8.5 7L4 12l4.5 5M15.5 7L20 12l-4.5 5"></path></svg><span style="font-size: 11px; font-weight: 600">Commands</span></a></div><div class="po-railfoot" style="margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 6px"><a href="Settings.dc.html" class="po-navitem" style="width: 64px; height: 62px; border-radius: 18px; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; flex: 0 0 auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><path d="M4 7h9M17 7h3M4 12h3M11 12h9M4 17h11M19 17h1"></path><circle cx="15" cy="7" r="2"></circle><circle cx="9" cy="12" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg><span style="font-size: 11px; font-weight: 600">Settings</span></a><div role="img" aria-label="Signed in as Andrew" style="width: 40px; height: 40px; border-radius: 999px; background: #FFFFFF; color: #0B7A85; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; margin-top: 6px">A</div></div></nav>
+
+  <!-- Content -->
+  <main style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px; max-width: 1320px">
+
+    <!-- Header -->
+    <header style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 10px 6px 4px">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #5B6170">Maple Grove Community Centre</span>
+        <h1 style="margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 40px; line-height: 1.05; font-weight: 700; letter-spacing: -0.02em">Good evening, Andrew</h1>
+        <span style="font-size: 15px; color: #5B6170">One campaign is scheduled and the outbox is clear.</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px">
+        <label for="po-search" style="position: relative; display: flex; align-items: center">
+          <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B6170" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 16px"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4-4"></path></svg>
+          <input id="po-search" type="search" placeholder="Search campaigns and people" style="height: 48px; width: 280px; max-width: 100%; box-sizing: border-box; border: 0; border-radius: 16px; background: #FFFFFF; padding: 0 16px 0 44px; font: inherit; font-size: 15px; color: #1B1F2A; box-shadow: 0 1px 2px rgba(27,31,42,.06), 0 6px 18px rgba(27,31,42,.05)">
+        </label>
+        <button type="button" class="po-btn" style="height: 48px; padding: 0 18px; border: 0; border-radius: 16px; background: #FFFFFF; color: #1B1F2A; font: inherit; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 2px rgba(27,31,42,.06), 0 6px 18px rgba(27,31,42,.05)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z"></path><path d="M10 13l4.5-4.5"></path></svg>
+          Quick message
+        </button>
+        <a href="CampaignEditor.dc.html" class="po-btn po-primary" style="height: 48px; padding: 0 20px; border: 0; border-radius: 16px; background: #FFD2B5; color: #16171D; font: inherit; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 20px rgba(240,160,110,.38); text-decoration: none; box-sizing: border-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          New campaign
+        </a>
+      </div>
+    </header>
+
+    <!-- Stat cards -->
+    <section aria-label="Last 30 days" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px">
+      <div style="background: #FFFFFF; border-radius: 22px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 2px rgba(27,31,42,.06), 0 8px 24px rgba(27,31,42,.06)">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <span style="font-size: 14px; font-weight: 600; color: #5B6170">Subscribers</span>
+          <span style="width: 34px; height: 34px; border-radius: 11px; background: #DDF0F1; color: #0B7A85; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"></circle><path d="M3 20a6 6 0 0 1 12 0"></path><path d="M16 4.6a3.2 3.2 0 0 1 0 6.3M21 20a5.5 5.5 0 0 0-3.6-5.2"></path></svg></span>
+        </div>
+        <span class="po-num" style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1">2,418</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #1A6B44; background: #E3F3EA; border-radius: 999px; padding: 4px 10px">▲ 64 this month</span>
+          <svg width="86" height="28" viewBox="0 0 86 28" aria-hidden="true"><polyline points="2,24 14,22 26,21 38,18 50,17 62,12 74,10 84,5" fill="none" stroke="#0B7A85" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+        </div>
+      </div>
+      <div style="background: #FFFFFF; border-radius: 22px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 2px rgba(27,31,42,.06), 0 8px 24px rgba(27,31,42,.06)">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <span style="font-size: 14px; font-weight: 600; color: #5B6170">Messages sent</span>
+          <span style="width: 34px; height: 34px; border-radius: 11px; background: #FFEADB; color: #94461A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z"></path><path d="M10 13l4.5-4.5"></path></svg></span>
+        </div>
+        <span class="po-num" style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1">9,312</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+          <span style="font-size: 13px; font-weight: 500; color: #5B6170">Email, Telegram and push</span>
+          <svg width="86" height="28" viewBox="0 0 86 28" aria-hidden="true"><polyline points="2,20 14,8 26,19 38,21 50,6 62,18 74,9 84,16" fill="none" stroke="#EE8A5A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+        </div>
+      </div>
+      <div style="background: #FFFFFF; border-radius: 22px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 2px rgba(27,31,42,.06), 0 8px 24px rgba(27,31,42,.06)">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <span style="font-size: 14px; font-weight: 600; color: #5B6170">Open rate</span>
+          <span style="width: 34px; height: 34px; border-radius: 11px; background: #DDF0F1; color: #0B7A85; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-6 9 6v9a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19z"></path><path d="M3 10l9 6 9-6"></path></svg></span>
+        </div>
+        <span class="po-num" style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1">48.2%</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #1A6B44; background: #E3F3EA; border-radius: 999px; padding: 4px 10px">▲ 3.1 pts</span>
+          <svg width="86" height="28" viewBox="0 0 86 28" aria-hidden="true"><polyline points="2,18 14,20 26,16 38,17 50,13 62,14 74,9 84,8" fill="none" stroke="#0B7A85" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+        </div>
+      </div>
+      <div style="background: #FFFFFF; border-radius: 22px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 2px rgba(27,31,42,.06), 0 8px 24px rgba(27,31,42,.06)">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <span style="font-size: 14px; font-weight: 600; color: #5B6170">Click rate</span>
+          <span style="width: 34px; height: 34px; border-radius: 11px; background: #FFEADB; color: #94461A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v9l2.5-2 2 4.5 2-1-2-4.4H17z"></path><path d="M4 4.5l1.5 1.5M3.5 9H5.5M5 13.5L6.5 12"></path></svg></span>
+        </div>
+        <span class="po-num" style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 40px; font-weight: 700; letter-spacing: -0.02em; line-height: 1">6.1%</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+          <span style="font-size: 13px; font-weight: 600; color: #94461A; background: #FFEADB; border-radius: 999px; padding: 4px 10px">▼ 0.4 pts</span>
+          <svg width="86" height="28" viewBox="0 0 86 28" aria-hidden="true"><polyline points="2,10 14,12 26,9 38,14 50,13 62,15 74,14 84,17" fill="none" stroke="#EE8A5A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Engagement + other buildings -->
+    <div style="display: flex; flex-wrap: wrap; gap: 16px">
+
+      <section aria-labelledby="po-eng" style="flex: 2 1 560px; min-width: 0; background: #FFFFFF; border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 18px; box-shadow: 0 1px 2px rgba(27,31,42,.06), 0 8px 24px rgba(27,31,42,.06)">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 14px">
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <h2 id="po-eng" style="margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.01em">Engagement</h2>
+            <span style="font-size: 14px; color: #5B6170">Opens, link clicks and new subscribers</span>
+          </div>
+          <div role="group" aria-label="Date range" style="display: flex; gap: 4px; background: #F3F0EB; border-radius: 999px; padding: 4px">
+            <sc-for list="{{ ranges }}" as="r" hint-placeholder-count="3">
+              <button type="button" class="po-btn" aria-pressed="{{ r.pressed }}" onClick="{{ r.pick }}" style="{{ r.style }}">{{ r.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <!-- Opens -->
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="width: 10px; height: 10px; border-radius: 3px; background: #0B7A85; align-self: center"></span>
+            <span style="font-size: 14px; font-weight: 600">Opens</span>
+            <span class="po-num" style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 22px; font-weight: 700">{{ openTotal }}</span>
+          </div>
+          <div style="display: flex; gap: 10px">
+            <div class="po-num" aria-hidden="true" style="width: 40px; height: 190px; display: flex; flex-direction: column; justify-content: space-between; font-size: 12px; color: #5B6170; text-align: right">
+              <span>{{ oAx0 }}</span><span>{{ oAx1 }}</span><span>{{ oAx2 }}</span><span>0</span>
+            </div>
+            <div style="position: relative; flex: 1 1 auto; min-width: 0; height: 190px">
+              <svg viewBox="0 0 760 190" preserveAspectRatio="none" width="100%" height="190" role="img" aria-label="{{ openAria }}" style="display: block; overflow: visible">
+                <line x1="0" y1="1" x2="760" y2="1" stroke="#ECE8E1" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+                <line x1="0" y1="64" x2="760" y2="64" stroke="#ECE8E1" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+                <line x1="0" y1="127" x2="760" y2="127" stroke="#ECE8E1" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+                <line x1="0" y1="189" x2="760" y2="189" stroke="#D9D4CB" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+                <path d="{{ openArea }}" fill="#0B7A85" fill-opacity="0.12"></path>
+                <path d="{{ openLine }}" fill="none" stroke="#0B7A85" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+              </svg>
+              <div style="{{ peakDotStyle }}"></div>
+              <div class="po-peak" style="{{ peakStyle }}">
+                <span style="font-size: 12px; color: #C4E3E6; font-weight: 500">{{ peakLabel }}</span>
+                <span class="po-num" style="font-size: 14px; font-weight: 700">{{ peakValue }} opens</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clicks -->
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="width: 10px; height: 10px; border-radius: 3px; background: #EE8A5A; align-self: center"></span>
+            <span style="font-size: 14px; font-weight: 600">Link clicks</span>
+            <span class="po-num" style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 22px; font-weight: 700">{{ clickTotal }}</span>
+          </div>
+          <div style="display: flex; gap: 10px">
+            <div class="po-num" aria-hidden="true" style="width: 40px; height: 110px; display: flex; flex-direction: column; justify-content: space-between; font-size: 12px; color: #5B6170; text-align: right">
+              <span>{{ cAx0 }}</span><span>{{ cAx1 }}</span><span>0</span>
+            </div>
+            <div style="flex: 1 1 auto; min-width: 0">
+              <svg viewBox="0 0 760 110" preserveAspectRatio="none" width="100%" height="110" role="img" aria-label="{{ clickAria }}" style="display: block; overflow: visible">
+                <line x1="0" y1="1" x2="760" y2="1" stroke="#ECE8E1" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+                <line x1="0" y1="55" x2="760" y2="55" stroke="#ECE8E1" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+                <line x1="0" y1="109" x2="760" y2="109" stroke="#D9D4CB" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+                <sc-for list="{{ clickBars }}" as="b" hint-placeholder-count="30">
+                  <rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" rx="3" fill="#EE8A5A" fill-opacity="{{ b.op }}"></rect>
+                </sc-for>
+              </svg>
+              <div class="po-num" aria-hidden="true" style="display: flex; justify-content: space-between; font-size: 12px; color: #5B6170; margin-top: 10px">
+                <sc-for list="{{ xLabels }}" as="x" hint-placeholder-count="5"><span>{{ x }}</span></sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; align-items: baseline; gap: 10px">
+            <span style="width: 10px; height: 10px; border-radius: 3px; background: #4FA7B0; align-self: center"></span>
+            <span style="font-size: 14px; font-weight: 600">New subscribers</span>
+            <span class="po-num" style="font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 22px; font-weight: 700">{{ subTotal }}</span>
+          </div>
+          <div style="display: flex; gap: 10px">
+            <div class="po-num" aria-hidden="true" style="width: 40px; height: 90px; display: flex; flex-direction: column; justify-content: space-between; font-size: 12px; color: #5B6170; text-align: right">
+              <span>{{ sAx0 }}</span><span>0</span>
+            </div>
+            <div style="flex: 1 1 auto; min-width: 0">
+              <svg viewBox="0 0 760 90" preserveAspectRatio="none" width="100%" height="90" role="img" aria-label="{{ subAria }}" style="display: block; overflow: visible">
+                <line x1="0" y1="1" x2="760" y2="1" stroke="#ECE8E1" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+                <line x1="0" y1="89" x2="760" y2="89" stroke="#D9D4CB" stroke-width="1" vector-effect="non-scaling-stroke"></line>
+                <sc-for list="{{ subBars }}" as="b" hint-placeholder-count="30">
+                  <rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" rx="3" fill="#4FA7B0"></rect>
+                </sc-for>
+              </svg>
+              <div class="po-num" aria-hidden="true" style="display: flex; justify-content: space-between; font-size: 12px; color: #5B6170; margin-top: 10px">
+                <sc-for list="{{ xLabels }}" as="x" hint-placeholder-count="5"><span>{{ x }}</span></sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Other buildings -->
+      <section aria-labelledby="po-bld" style="flex: 1 1 300px; min-width: 0; background: #1B1F2A; color: #FFFFFF; border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 1px 2px rgba(27,31,42,.10), 0 14px 34px rgba(27,31,42,.18)">
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <h2 id="po-bld" style="margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.01em">From the village today</h2>
+          <span style="font-size: 14px; color: #B7BCC8">Messages other buildings sent through Post Office</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.07); border-radius: 16px; padding: 12px 14px">
+          <span class="po-live" style="width: 10px; height: 10px; border-radius: 999px; background: #3BBF7A; flex: 0 0 auto"></span>
+          <span style="font-size: 14px; font-weight: 600">Outbox clear</span>
+          <span style="font-size: 13px; color: #B7BCC8; margin-left: auto">Last send 2 min ago</span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 4px">
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0">
+            <svg viewBox="0 0 64 64" width="40" height="40" role="img" aria-label="Town Hall" style="flex: 0 0 auto"><rect width="64" height="64" rx="17" fill="#2b3a67"></rect><path d="M10.5 27L32 11.5L53.5 27Z" fill="#f6e9d2" stroke="#f6e9d2" stroke-width="3" stroke-linejoin="round"></path><rect x="15" y="27" width="34" height="25" rx="2.5" fill="#f6e9d2"></rect><circle cx="32" cy="27.5" r="7.2" fill="#2b3a67"></circle><path d="M32 23.6V27.5L34.8 29.4" fill="none" stroke="#f6e9d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M27.5 52V43.5A4.5 4.5 0 0 1 36.5 43.5V52Z" fill="#2b3a67"></path></svg>
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+              <span style="font-size: 15px; font-weight: 600">Shift reminders</span>
+              <span style="font-size: 13px; color: #B7BCC8">Town Hall · Email and Telegram</span>
+            </div>
+            <span class="po-num" style="margin-left: auto; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 22px; font-weight: 700">142</span>
+          </div>
+          <div style="height: 1px; background: rgba(255,255,255,.08)"></div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0">
+            <svg viewBox="0 0 64 64" width="40" height="40" role="img" aria-label="Pavilion" style="flex: 0 0 auto"><rect width="64" height="64" rx="17" fill="#1f4a3a"></rect><circle cx="32" cy="19.5" r="3.2" fill="#f4a93b"></circle><path d="M12 42.5A20 18.5 0 0 1 52 42.5Z" fill="#f4a93b"></path><path d="M19.5 37.5A13.5 12 0 0 1 26.5 29" fill="none" stroke="#1f4a3a" stroke-width="2.6" stroke-linecap="round"></path><path d="M9 47.5H55" stroke="#f4a93b" stroke-width="4.5" stroke-linecap="round"></path></svg>
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+              <span style="font-size: 15px; font-weight: 600">Order updates</span>
+              <span style="font-size: 13px; color: #B7BCC8">Pavilion · Email and Telegram</span>
+            </div>
+            <span class="po-num" style="margin-left: auto; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 22px; font-weight: 700">86</span>
+          </div>
+          <div style="height: 1px; background: rgba(255,255,255,.08)"></div>
+          <div style="display: flex; align-items: center; gap: 12px; padding: 10px 0">
+            <span style="width: 40px; height: 40px; border-radius: 11px; background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"></path><path d="M10 20.5a2 2 0 0 0 4 0"></path></svg></span>
+            <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+              <span style="font-size: 15px; font-weight: 600">Task digests</span>
+              <span style="font-size: 13px; color: #B7BCC8">Bell Tower · Email</span>
+            </div>
+            <span class="po-num" style="margin-left: auto; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 22px; font-weight: 700">23</span>
+          </div>
+        </div>
+
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,.07); border-radius: 18px; padding: 14px 16px">
+          <div style="display: flex; justify-content: space-between; font-size: 13px">
+            <span style="color: #B7BCC8">Delivered today</span>
+            <span class="po-num" style="font-weight: 700">251 of 253</span>
+          </div>
+          <div style="height: 8px; border-radius: 999px; background: rgba(255,255,255,.12); overflow: hidden">
+            <div style="width: 99.2%; height: 100%; border-radius: 999px; background: #3BBF7A"></div>
+          </div>
+          <a href="Outbox.dc.html" style="font-size: 13px; color: #FFD2B5; font-weight: 600">2 Telegram messages failed. View in Outbox</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Campaigns + audience -->
+    <div style="display: flex; flex-wrap: wrap; gap: 16px">
+
+      <section aria-labelledby="po-camp" style="flex: 2 1 560px; min-width: 0; background: #FFFFFF; border-radius: 26px; padding: 24px 24px 12px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 2px rgba(27,31,42,.06), 0 8px 24px rgba(27,31,42,.06)">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+          <h2 id="po-camp" style="margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.01em">Recent campaigns</h2>
+          <a href="Campaigns.dc.html" style="font-size: 14px; font-weight: 600">All campaigns</a>
+        </div>
+        <div style="overflow-x: auto">
+          <table style="width: 100%; min-width: 640px; border-collapse: collapse; font-size: 14px">
+            <thead>
+              <tr style="text-align: left; color: #5B6170; font-size: 12px; text-transform: uppercase; letter-spacing: .06em">
+                <th scope="col" style="font-weight: 600; padding: 10px 8px">Campaign</th>
+                <th scope="col" style="font-weight: 600; padding: 10px 8px">Status</th>
+                <th scope="col" style="font-weight: 600; padding: 10px 8px">Languages</th>
+                <th scope="col" style="font-weight: 600; padding: 10px 8px; text-align: right">Sent to</th>
+                <th scope="col" style="font-weight: 600; padding: 10px 8px; text-align: right">Opened</th>
+                <th scope="col" style="font-weight: 600; padding: 10px 8px; text-align: right">Clicked</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ campaigns }}" as="c" hint-placeholder-count="5">
+                <tr class="po-row" style="border-top: 1px solid #F0ECE5">
+                  <td style="padding: 14px 8px">
+                    <div style="display: flex; align-items: center; gap: 12px">
+                      <span style="{{ c.chanStyle }}">
+                        <sc-if value="{{ c.isEmail }}" hint-placeholder-val="{{ true }}">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"></rect><path d="M3.5 7l8.5 6 8.5-6"></path></svg>
+                        </sc-if>
+                        <sc-if value="{{ c.isTelegram }}" hint-placeholder-val="{{ false }}">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z"></path><path d="M10 13l4.5-4.5"></path></svg>
+                        </sc-if>
+                      </span>
+                      <div style="display: flex; flex-direction: column; gap: 2px">
+                        <span style="font-weight: 600; font-size: 15px">{{ c.name }}</span>
+                        <span style="font-size: 13px; color: #5B6170">{{ c.when }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="padding: 14px 8px"><span style="{{ c.statusStyle }}">{{ c.status }}</span></td>
+                  <td style="padding: 14px 8px">
+                    <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center">
+                      <sc-for list="{{ c.langs }}" as="l" hint-placeholder-count="2">
+                        <span style="{{ l.style }}">{{ l.code }}</span>
+                      </sc-for>
+                      <sc-if value="{{ c.missing }}" hint-placeholder-val="{{ false }}">
+                        <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #94461A">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17.5v.01"></path></svg>
+                          {{ c.missing }}
+                        </span>
+                      </sc-if>
+                    </div>
+                  </td>
+                  <td class="po-num" style="padding: 14px 8px; text-align: right; font-weight: 500">{{ c.sent }}</td>
+                  <td class="po-num" style="padding: 14px 8px; text-align: right; font-weight: 600">{{ c.opened }}</td>
+                  <td class="po-num" style="padding: 14px 8px; text-align: right; font-weight: 600">{{ c.clicked }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="po-aud" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border-radius: 26px; padding: 24px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 1px 2px rgba(27,31,42,.06), 0 8px 24px rgba(27,31,42,.06)">
+        <h2 id="po-aud" style="margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-size: 24px; font-weight: 700; letter-spacing: -0.01em">Audience</h2>
+
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <span style="font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #5B6170">By language</span>
+          <div style="display: flex; height: 14px; border-radius: 999px; overflow: hidden; gap: 3px" aria-hidden="true">
+            <div style="width: 61%; background: #0B7A85"></div>
+            <div style="width: 27%; background: #EE8A5A"></div>
+            <div style="width: 12%; background: #FFD2B5"></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px">
+            <div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #0B7A85"></span><span>English</span><span class="po-num" style="margin-left: auto; font-weight: 600">1,475</span><span class="po-num" style="width: 40px; text-align: right; color: #5B6170">61%</span></div>
+            <div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #EE8A5A"></span><span lang="uk">Українська</span><span class="po-num" style="margin-left: auto; font-weight: 600">653</span><span class="po-num" style="width: 40px; text-align: right; color: #5B6170">27%</span></div>
+            <div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 10px; border-radius: 3px; background: #FFD2B5"></span><span lang="fr">Français</span><span class="po-num" style="margin-left: auto; font-weight: 600">290</span><span class="po-num" style="width: 40px; text-align: right; color: #5B6170">12%</span></div>
+          </div>
+        </div>
+
+        <div style="height: 1px; background: #F0ECE5"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px">
+          <span style="font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #5B6170">Reachable by channel</span>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; font-size: 14px"><span style="font-weight: 500">Email</span><span class="po-num" style="font-weight: 600">2,386</span></div>
+            <div style="height: 8px; border-radius: 999px; background: #F3F0EB; overflow: hidden"><div style="width: 98.7%; height: 100%; border-radius: 999px; background: #0B7A85"></div></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; font-size: 14px"><span style="font-weight: 500">Telegram</span><span class="po-num" style="font-weight: 600">1,034</span></div>
+            <div style="height: 8px; border-radius: 999px; background: #F3F0EB; overflow: hidden"><div style="width: 42.8%; height: 100%; border-radius: 999px; background: #0B7A85"></div></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div style="display: flex; justify-content: space-between; font-size: 14px"><span style="font-weight: 500">Push</span><span class="po-num" style="font-weight: 600">612</span></div>
+            <div style="height: 8px; border-radius: 999px; background: #F3F0EB; overflow: hidden"><div style="width: 25.3%; height: 100%; border-radius: 999px; background: #0B7A85"></div></div>
+          </div>
+        </div>
+
+        <a href="SignupForm.dc.html" class="po-btn" style="margin-top: auto; height: 48px; border-radius: 16px; background: #DDF0F1; color: #085E66; font-size: 15px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Share signup form
+        </a>
+      </section>
+    </div>
+
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { range: '30d' };
+  }
+  fmt(n) { return Math.round(n).toLocaleString('en-US'); }
+  niceMax(v, step) { return Math.ceil((v * 1.08) / step) * step; }
+  renderVals() {
+    var data = {
+      '7d': {
+        opens: [410, 1310, 968, 512, 433, 404, 391],
+        clicks: [41, 171, 118, 52, 42, 38, 36],
+        labels: ['Nov 13', 'Nov 14', 'Nov 15', 'Nov 16', 'Nov 17', 'Nov 18', 'Nov 19'],
+        peakNames: ['Nov 13', 'Winter coat drive', 'Nov 15', 'Nov 16', 'Nov 17', 'Nov 18', 'Nov 19'],
+        unit: 'day'
+      },
+      '30d': {
+        opens: [340, 322, 356, 1180, 812, 430, 365, 348, 331, 352, 370, 344, 362, 1460, 1104, 566, 420, 388, 371, 402, 385, 366, 379, 410, 1310, 968, 512, 433, 404, 391],
+        clicks: [31, 28, 35, 142, 96, 41, 33, 30, 29, 33, 36, 31, 34, 188, 131, 58, 40, 36, 33, 39, 35, 32, 34, 41, 171, 118, 52, 42, 38, 36],
+        labels: ['Oct 21', 'Oct 28', 'Nov 4', 'Nov 11', 'Nov 19'],
+        peakNames: { 3: 'Fall supper reminder', 13: 'Volunteer thank-you', 24: 'Winter coat drive' },
+        unit: 'day'
+      },
+      '90d': {
+        opens: [2310, 2480, 3960, 2620, 2550, 4210, 2700, 2890, 3420, 5120, 3960, 4480, 3300],
+        clicks: [210, 236, 402, 240, 229, 455, 251, 268, 330, 580, 402, 470, 318],
+        labels: ['Aug 24', 'Sep 14', 'Oct 5', 'Oct 26', 'Nov 16'],
+        peakNames: { 9: 'Week of Oct 26' },
+        unit: 'week'
+      }
+    };
+    var self = this;
+    var key = this.state.range;
+    var d = data[key];
+    var W = 760, H = 190, n = d.opens.length;
+    var oMax = this.niceMax(Math.max.apply(null, d.opens), key === '90d' ? 1500 : 300);
+    var pts = d.opens.map(function (v, i) {
+      return [n === 1 ? 0 : (i / (n - 1)) * W, H - 2 - (v / oMax) * (H - 8)];
+    });
+    var line = pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
+    var area = line + ' L' + W + ' ' + H + ' L0 ' + H + ' Z';
+
+    var peakI = 0;
+    d.opens.forEach(function (v, i) { if (v > d.opens[peakI]) peakI = i; });
+    var px = (pts[peakI][0] / W) * 100;
+    var py = (pts[peakI][1] / H) * 100;
+    var bx = Math.min(86, Math.max(14, px));
+    var peakName = (d.peakNames && d.peakNames[peakI]) || 'Peak';
+
+    var CH = 110;
+    var cMax = this.niceMax(Math.max.apply(null, d.clicks), key === '90d' ? 150 : 40);
+    var slot = W / n;
+    var bw = Math.max(6, slot * 0.62);
+    var bars = d.clicks.map(function (v, i) {
+      var h = Math.max(2, (v / cMax) * (CH - 6));
+      return { x: (i * slot + (slot - bw) / 2).toFixed(1), y: (CH - h).toFixed(1), w: bw.toFixed(1), h: h.toFixed(1), op: i === peakI ? 1 : 0.78 };
+    });
+
+    var SUBS = { '7d': [3, 7, 3, 1, 1, 0, 1], '30d': [1, 2, 1, 6, 4, 2, 1, 2, 1, 2, 3, 1, 2, 8, 5, 3, 2, 1, 2, 2, 1, 2, 1, 3, 7, 3, 1, 1, 0, 1], '90d': [9, 11, 14, 10, 12, 18, 13, 15, 17, 22, 16, 19, 12] };
+    var sv = SUBS[key], SHH = 90, sMax = Math.max(4, Math.ceil(Math.max.apply(null, sv) * 1.15));
+    var subBars = sv.map(function (v, i) {
+      var h = Math.max(1.5, (v / sMax) * (SHH - 6));
+      return { x: (i * slot + (slot - bw) / 2).toFixed(1), y: (SHH - h).toFixed(1), w: bw.toFixed(1), h: h.toFixed(1) };
+    });
+    var sum = function (a) { return a.reduce(function (s, v) { return s + v; }, 0); };
+    var ranges = [['7d', '7 days'], ['30d', '30 days'], ['90d', '90 days']].map(function (r) {
+      var on = r[0] === key;
+      return {
+        label: r[1],
+        pressed: on ? 'true' : 'false',
+        pick: function () { self.setState({ range: r[0] }); },
+        style: 'height: 40px; padding: 0 16px; border: 0; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 600; ' +
+          (on ? 'background: #FFFFFF; color: #1B1F2A; box-shadow: 0 1px 2px rgba(27,31,42,.10), 0 4px 10px rgba(27,31,42,.08);' : 'background: transparent; color: #5B6170;')
+      };
+    });
+
+    var lang = function (code, ok) {
+      return { code: code, style: ok
+        ? 'font-size: 12px; font-weight: 700; letter-spacing: .03em; padding: 4px 8px; border-radius: 8px; background: #DDF0F1; color: #085E66'
+        : 'font-size: 12px; font-weight: 700; letter-spacing: .03em; padding: 3px 7px; border-radius: 8px; border: 1.5px dashed #EE8A5A; color: #94461A; background: #FFFFFF' };
+    };
+    var pill = function (kind) {
+      var base = 'display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 999px; font-size: 13px; font-weight: 600; ';
+      if (kind === 'Sent') return base + 'background: #DDF0F1; color: #085E66';
+      if (kind === 'Scheduled') return base + 'background: #FFEADB; color: #94461A';
+      return base + 'background: #F3F0EB; color: #4A505E';
+    };
+    var chan = function (email) {
+      return 'width: 38px; height: 38px; border-radius: 12px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; ' +
+        (email ? 'background: #DDF0F1; color: #0B7A85' : 'background: #FFEADB; color: #94461A');
+    };
+    var campaigns = [
+      { name: 'December newsletter', when: 'Dec 1 at 9:00 AM', status: 'Scheduled', email: true, langs: [lang('EN', 1), lang('УКР', 1), lang('FR', 0)], missing: 'French not written yet', sent: '2,418', opened: '—', clicked: '—' },
+      { name: 'Winter coat drive', when: 'Nov 14', status: 'Sent', email: true, langs: [lang('EN', 1), lang('УКР', 1), lang('FR', 1)], missing: '', sent: '2,377', opened: '52.4%', clicked: '7.9%' },
+      { name: 'Volunteer thank-you', when: 'Nov 3', status: 'Sent', email: true, langs: [lang('EN', 1), lang('УКР', 1), lang('FR', 1)], missing: '', sent: '2,301', opened: '61.0%', clicked: '9.4%' },
+      { name: 'Fall supper reminder', when: 'Oct 24 · Telegram', status: 'Sent', email: false, langs: [lang('EN', 1), lang('УКР', 1)], missing: '', sent: '1,012', opened: '74.2%', clicked: '11.2%' },
+      { name: 'Spring fair save the date', when: 'Edited 2 days ago', status: 'Draft', email: true, langs: [lang('EN', 1)], missing: '2 languages to go', sent: '—', opened: '—', clicked: '—' }
+    ].map(function (c) {
+      return Object.assign({}, c, { statusStyle: pill(c.status), chanStyle: chan(c.email), isEmail: c.email, isTelegram: !c.email });
+    });
+
+    var oT = sum(d.opens), cT = sum(d.clicks);
+    return {
+      subBars: subBars, subTotal: this.fmt(sum(sv)), sAx0: String(sMax), subAria: this.fmt(sum(sv)) + ' new subscribers over the last ' + key.replace('d', ' days'),
+      ranges: ranges,
+      openLine: line,
+      openArea: area,
+      openTotal: this.fmt(oT),
+      clickTotal: this.fmt(cT),
+      oAx0: this.fmt(oMax), oAx1: this.fmt(oMax * 2 / 3), oAx2: this.fmt(oMax / 3),
+      cAx0: this.fmt(cMax), cAx1: this.fmt(cMax / 2),
+      openAria: this.fmt(oT) + ' opens over the last ' + key.replace('d', ' days') + ', peaking at ' + this.fmt(d.opens[peakI]) + ' for ' + peakName,
+      clickAria: this.fmt(cT) + ' link clicks over the last ' + key.replace('d', ' days'),
+      clickBars: bars,
+      xLabels: d.labels,
+      peakLabel: peakName,
+      peakValue: this.fmt(d.opens[peakI]),
+      peakStyle: 'position: absolute; left: ' + bx.toFixed(2) + '%; top: ' + py.toFixed(2) + '%; transform: translate(-50%, -135%); background: #1B1F2A; color: #FFFFFF; border-radius: 12px; padding: 7px 12px; display: flex; flex-direction: column; gap: 1px; white-space: nowrap; pointer-events: none; box-shadow: 0 8px 20px rgba(27,31,42,.25)',
+      peakDotStyle: 'position: absolute; left: ' + px.toFixed(2) + '%; top: ' + py.toFixed(2) + '%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 999px; background: #FFFFFF; border: 3px solid #0B7A85; box-sizing: border-box',
+      campaigns: campaigns
+    };
+  }
+}
+</script>
+</body>
+</html>

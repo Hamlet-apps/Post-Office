@@ -1,0 +1,51 @@
+{% load po i18n humanize %}
+<article class="po-card ch-card" aria-label="{{ s.from_name }}">
+  <div class="ch-card__head">
+    <div class="po-stack po-stack--xs po-grow">
+      <span class="po-h3">{{ s.from_name }}</span>
+      <span class="ch-card__sub">{{ s.from_email }}</span>
+    </div>
+    {% if s.state == "error" %}<span class="po-tag po-tag--danger">{% icon "warning" 14 %}{% trans "Not working" %}</span>
+    {% elif s.is_default and s.purpose == "newsletter" %}<span class="po-tag po-tag--teal">{% icon "check" 14 %}{% trans "Default" %}</span>
+    {% elif s.state == "ok" %}<span class="po-tag po-tag--ok">{% icon "check" 14 %}{% trans "Working" %}</span>
+    {% else %}<span class="po-tag">{% trans "Not tested" %}</span>{% endif %}
+  </div>
+  {% if s.state == "error" and s.last_error %}<div class="po-notice po-notice--danger">{% icon "warning" %}<span>{{ s.last_error }}</span></div>{% endif %}
+  <dl class="ch-facts">
+    <div><dt>{% trans "Connected with" %}</dt><dd>{% if s.kind == "gmail" %}{% trans "Gmail, app password" %}{% else %}{% trans "Other mail server" %}{% endif %}</dd></div>
+    {% if s.purpose == "app" %}
+    <div><dt>{% trans "Used by" %}</dt><dd>{% for b in buildings %}{{ b.name }}{% if not forloop.last %}, {% endif %}{% empty %}{% trans "No apps connected yet" %}{% endfor %}</dd></div>
+    {% endif %}
+    <div><dt>{% trans "Daily limit" %}</dt><dd>{% if s.daily_limit %}{% blocktrans with n=s.daily_limit|intcomma %}{{ n }} emails, the rest wait until tomorrow{% endblocktrans %}{% else %}{% trans "None" %}{% endif %}</dd></div>
+    <div><dt>{% trans "Sent today" %}</dt><dd class="po-num">{% if s.status.waiting %}{% blocktrans with sent=s.status.sent_today|intcomma waiting=s.status.waiting|intcomma %}{{ sent }} sent today, {{ waiting }} waiting until tomorrow{% endblocktrans %}{% else %}{{ s.status.sent_today|intcomma }}{% endif %}</dd></div>
+    {% if s.purpose == "newsletter" %}<div><dt>{% trans "Sent this month" %}</dt><dd class="po-num">{{ s.sent_month|intcomma }}</dd></div>{% endif %}
+  </dl>
+  <div class="ch-actions">
+    <form method="post" action="{% url 'channels:sender_test' s.public_id %}">{% csrf_token %}
+      <button class="po-btn po-btn--sm" title="{% blocktrans with address=user.email %}Sends a test email to {{ address }}{% endblocktrans %}">{% icon "send" 16 %}{% trans "Send a test" %}</button>
+    </form>
+    {% if s.purpose == "newsletter" and not s.is_default %}
+    <form method="post" action="{% url 'channels:sender_default' s.public_id %}">{% csrf_token %}
+      <button class="po-btn po-btn--sm">{% trans "Make default" %}</button>
+    </form>
+    {% endif %}
+  </div>
+  <details class="ch-details"{% if error_key == s.form_key %} open{% endif %}>
+    <summary class="po-btn po-btn--sm">{% icon "edit" 16 %}{% if s.purpose == "app" %}{% trans "Edit or change sender" %}{% else %}{% trans "Edit" %}{% endif %}</summary>
+    <div class="ch-details__body">
+      {% url 'channels:sender_edit' s.public_id as edit_url %}
+      {% if error_key == s.form_key %}
+        {% include "channels/_sender_form.html" with action=edit_url uid=s.public_id v=values is_new=False error=error purpose="" %}
+      {% else %}
+        {% include "channels/_sender_form.html" with action=edit_url uid=s.public_id v=s is_new=False error="" purpose="" %}
+      {% endif %}
+      {% if s.purpose == "newsletter" or not buildings %}
+      <form method="post" action="{% url 'channels:sender_delete' s.public_id %}" data-confirm="{% blocktrans with address=s.from_email %}Remove {{ address }}? Campaigns that use it will need another sender.{% endblocktrans %}">{% csrf_token %}
+        <button class="po-btn po-btn--sm po-btn--danger">{% icon "trash" 16 %}{% trans "Remove this sender" %}</button>
+      </form>
+      {% else %}
+      <span class="po-hint">{% trans "This sender cannot be removed while apps are connected. To use another mailbox, enter its details above and press Test and save." %}</span>
+      {% endif %}
+    </div>
+  </details>
+</article>

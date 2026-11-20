@@ -1,0 +1,68 @@
+/* Public pages (signup form, thank-you, confirmation, preferences) and the
+   lists-by-channels grid, which the staff Person page shares. */
+
+/* ---------- Page and card ---------- */
+.pub-page{min-height:100vh;padding:48px 16px;display:flex;flex-direction:column;align-items:center;gap:20px;background:var(--ground)}
+.pub-card{width:100%;max-width:680px;background:var(--surface);border-radius:28px;padding:36px;display:flex;flex-direction:column;gap:20px;box-shadow:var(--shadow)}
+.pub-card--narrow{max-width:480px}
+.pub-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.pub-org{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;min-width:0}
+.pub-org__mark{width:36px;height:36px;border-radius:12px;background:var(--ground-deep);display:inline-flex;align-items:center;justify-content:center;font-size:13px;flex:0 0 auto}
+.pub-h1{font-family:var(--font-display);font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.pub-lead{font-size:16px;color:var(--muted);line-height:1.5}
+.pub-foot{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.pub-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.pub-danger{border:0;background:none;padding:0;min-height:40px;font-size:15px;font-weight:600;color:var(--danger);text-decoration:underline;cursor:pointer}
+.pub-lang{display:flex}
+.pub-lang button{font:inherit;font-size:14px;font-weight:600}
+
+/* ---------- Signup form ---------- */
+.pub-form{display:flex;flex-direction:column;gap:16px}
+.pub-topics{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:4px}
+.pub-topics legend{padding:0;margin-bottom:6px;font-size:13px;font-weight:600;color:var(--muted)}
+.pub-tick{display:flex;align-items:flex-start;gap:12px;min-height:44px;padding:10px 12px;border-radius:14px;background:var(--ground);cursor:pointer;font-size:15px}
+.pub-tick input{width:22px;height:22px;accent-color:var(--teal);flex:0 0 auto;margin:0;cursor:pointer}
+.pub-tick__text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pub-tick__desc{font-size:13px;color:var(--muted)}
+.pub-tick--plain{background:transparent;padding:6px 0}
+.pub-consent{font-size:14px;color:var(--muted);line-height:1.45}
+/* The honeypot: a field people never see. Bots fill it in. */
+.pub-hp{position:absolute !important;left:-9999px !important;width:1px;height:1px;overflow:hidden}
+
+/* ---------- Lists by channels ---------- */
+.sg{display:flex;flex-direction:column;gap:12px;min-width:0}
+.sg__scroll{overflow-x:auto}
+.sg__inner{min-width:460px;display:flex;flex-direction:column}
+.sg__row{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line)}
+.sg__row--head{border-top:0;padding:0 0 4px}
+.sg__inner>.po-eyebrow{padding:10px 0 6px}
+.sg__inner>.po-eyebrow+.sg__row{border-top:0}
+.sg__name{display:flex;flex-direction:column;gap:2px;flex:1 1 200px;min-width:0}
+.sg__title{font-size:15px;font-weight:600}
+.sg__desc{font-size:13px;color:var(--muted)}
+.sg--large .sg__title{font-size:16px}
+.sg--large .sg__desc{font-size:14px}
+.sg__col{width:84px;flex:0 0 84px;display:flex;justify-content:center;align-items:center}
+.sg__col form{display:flex;margin:0}
+.sg__colhead{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center}
+.sg__gap{margin:8px 0 0}
+.sg__gap+.po-eyebrow{padding-top:14px}
+/* The button is 44 px for fingers; the box drawn inside it is 32 px. */
+.sg__tick{width:44px;height:44px;border:0;padding:0;background:transparent;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.sg__tick:hover .sg__box{border-color:var(--teal)}
+.sg__box{width:32px;height:32px;border-radius:10px;border:2px solid #8F897E;background:var(--surface);display:inline-flex;align-items:center;justify-content:center;color:transparent;transition:background-color 200ms ease}
+.sg__box.is-on{background:var(--teal);border-color:var(--teal);color:#fff}
+.sg__box.is-waiting{background:var(--peach-tint);border-color:var(--peach-chart);color:var(--peach-deep)}
+.sg__box--locked{border-style:dashed;background:var(--ground)}
+.sg__box--locked.is-on{background:var(--teal-tint);border-color:var(--teal);border-style:solid;color:var(--teal-deep)}
+.sg__none{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;color:var(--muted)}
+.sg__waiting{font-size:12px;color:var(--peach-deep);font-weight:600}
+.sg.htmx-request{opacity:.7}
+
+@media (max-width:760px){
+  .pub-page{padding:16px 10px}
+  .pub-card{padding:22px;border-radius:22px}
+  .pub-h1{font-size:28px}
+  .sg__col{width:68px;flex-basis:68px}
+  .sg__inner{min-width:380px}
+}

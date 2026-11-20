@@ -1,0 +1,66 @@
+{% load po i18n %}
+{% comment %}
+One form for adding and editing an email sender.
+action   where it posts        uid     prefix for field ids
+v        values to show (a sender, or what was just posted)
+purpose  "app" or "newsletter" (new senders only)    is_new  True for the add cards
+error    what went wrong, shown above the button
+{% endcomment %}
+<form method="post" action="{{ action }}" class="po-stack ch-form" x-data="{kind: '{{ v.kind|default:'gmail' }}'}">
+  {% csrf_token %}
+  {% if purpose %}<input type="hidden" name="purpose" value="{{ purpose }}">{% endif %}
+  <input type="hidden" name="kind" :value="kind" value="{{ v.kind|default:'gmail' }}">
+  <div class="po-seg po-seg--ground" role="group" aria-label="{% trans 'Kind of mailbox' %}">
+    <button type="button" @click="kind='gmail'" :aria-pressed="(kind==='gmail').toString()" aria-pressed="{% if v.kind|default:'gmail' == 'gmail' %}true{% else %}false{% endif %}">{% trans "Gmail" %}</button>
+    <button type="button" @click="kind='smtp'" :aria-pressed="(kind==='smtp').toString()" aria-pressed="{% if v.kind == 'smtp' %}true{% else %}false{% endif %}">{% trans "Other mail server" %}</button>
+  </div>
+  <div class="po-field">
+    <label for="{{ uid }}-name">{% trans "Name people see" %}</label>
+    <input class="po-input" id="{{ uid }}-name" name="from_name" type="text" value="{{ v.from_name|default:'' }}" placeholder="{% trans 'Maple Grove Youth' %}" required>
+  </div>
+  <div class="po-field">
+    <label for="{{ uid }}-addr">{% trans "Email address" %}</label>
+    <input class="po-input" id="{{ uid }}-addr" name="from_email" type="email" value="{{ v.from_email|default:'' }}" placeholder="youth@maplegrove.example" required autocomplete="off">
+  </div>
+  <div class="po-fieldrow" x-show="kind==='smtp'" {% if v.kind != 'smtp' %}x-cloak{% endif %}>
+    <div class="po-field">
+      <label for="{{ uid }}-host">{% trans "Mail server" %}</label>
+      <input class="po-input" id="{{ uid }}-host" name="host" type="text" value="{% if v.kind == 'smtp' %}{{ v.host|default:'' }}{% endif %}" placeholder="smtp.example.org" autocomplete="off">
+    </div>
+    <div class="po-field ch-narrow">
+      <label for="{{ uid }}-port">{% trans "Port" %}</label>
+      <input class="po-input" id="{{ uid }}-port" name="port" type="number" min="1" max="65535" value="{{ v.port|default:587 }}">
+    </div>
+    <div class="po-field">
+      <label for="{{ uid }}-tls">{% trans "Encryption" %}</label>
+      <select class="po-select" id="{{ uid }}-tls" name="tls_mode">
+        {% for value, label in tls_choices %}<option value="{{ value }}"{% if v.tls_mode|default:'starttls' == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="po-field">
+      <label for="{{ uid }}-user">{% trans "Username" %}</label>
+      <input class="po-input" id="{{ uid }}-user" name="username" type="text" value="{% if v.kind == 'smtp' %}{{ v.username|default:'' }}{% endif %}" placeholder="{% trans 'Usually the email address' %}" autocomplete="off">
+    </div>
+  </div>
+  <div class="po-field">
+    <label for="{{ uid }}-pass"><span x-show="kind==='gmail'">{% trans "App password" %}</span><span x-show="kind==='smtp'" x-cloak>{% trans "Password" %}</span></label>
+    <input class="po-input" id="{{ uid }}-pass" name="password" type="password" autocomplete="new-password"
+           placeholder="{% if is_new %}{% trans '16 letters from your Google account' %}{% else %}{{ v.masked_password|default:'' }}{% endif %}"{% if is_new %} required{% endif %}>
+    {% if not is_new %}<span class="po-hint">{% trans "Saved passwords are never shown. Leave this empty to keep the one you have." %}</span>{% endif %}
+  </div>
+  <div class="po-fieldrow">
+    <div class="po-field">
+      <label for="{{ uid }}-daily">{% trans "Daily limit (optional)" %}</label>
+      <input class="po-input" id="{{ uid }}-daily" name="daily_limit" type="number" min="1" value="{{ v.daily_limit|default:'' }}" placeholder="{% trans 'No limit' %}">
+    </div>
+    <div class="po-field ch-narrow">
+      <label for="{{ uid }}-rate">{% trans "Emails per second" %}</label>
+      <input class="po-input" id="{{ uid }}-rate" name="per_second" type="number" min="1" max="100" value="{{ v.per_second|default:5 }}">
+    </div>
+  </div>
+  <span class="po-hint">{% trans "Gmail stops at about 500 emails a day for a personal account and 2,000 for Google Workspace. Set a limit a little below that and the rest wait until tomorrow." %}</span>
+  {% if error %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ error }}</span></div>{% endif %}
+  <div class="po-flex">
+    <button class="po-btn po-btn--sm po-btn--teal">{% icon "check" 16 %}{% trans "Test and save" %}</button>
+  </div>
+</form>

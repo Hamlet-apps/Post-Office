@@ -1,0 +1,17 @@
+{% load i18n %}
+<div class="po-stack po-stack--sm">
+  <span class="bc-preview__label">{% blocktrans with text=sample_text %}What gets sent when Taras types "{{ text }}"{% endblocktrans %}</span>
+  <pre class="bc-pre">{{ preview }}</pre>
+</div>
+<hr class="po-divider">
+<div class="po-stack po-stack--sm">
+  <span class="bc-preview__label">{% trans "Example answer" %}</span>
+  <pre class="bc-pre">{{ example_answer }}</pre>
+</div>
+<span class="bc-preview__note">
+  {% if not sends_reply %}{% trans "Reply is set to no reply, so the person gets nothing back." %}
+  {% elif reply_path %}{% blocktrans with path=reply_path %}Post Office sends the "{{ path }}" field to the person.{% endblocktrans %}
+  {% else %}{% trans "Post Office sends the whole answer to the person." %}{% endif %}
+  {% if sends_reply %}{% trans "The text can use *bold*, _italic_ and [links](https://). An empty answer sends nothing." %}{% endif %}
+  {% trans "The address can also answer later, once, within 24 hours, by posting to the reply_url it was given." %}
+</span>

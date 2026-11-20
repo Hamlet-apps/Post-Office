@@ -1,0 +1,13 @@
+{% load po i18n %}
+{# App messages only: what kind of message this is and how it goes out. #}
+<section class="po-panel ed-about">
+  <span class="po-eyebrow">{% trans "About this message" %}</span>
+  <dl class="ed-about__list">
+    <div><dt>{% trans "Type" %}</dt><dd><span class="po-tag po-tag--teal">{% trans "Service message" %}</span></dd></div>
+    <div><dt>{% trans "Sent from" %}</dt><dd class="ed-wrapany">{% if app_sender %}{{ app_sender.from_email }}{% else %}{% trans "No app sender set up yet" %}{% endif %}</dd></div>
+    <div><dt>{% trans "Goes out by" %}</dt><dd>{{ goes_out }}</dd></div>
+  </dl>
+  <div class="po-notice po-notice--info">{% icon "info" %}
+    <span>{% trans "Service messages still arrive when someone has unsubscribed from your newsletters. They are not sent as push notifications." %}</span>
+  </div>
+</section>

@@ -1,0 +1,5 @@
+{% load po i18n humanize %}
+{% for warning in summary.warnings %}
+<div class="po-notice">{% icon "warning" %}<span>{{ warning }}</span></div>
+{% endfor %}
+<span class="po-small po-muted">{% if summary.total %}{% blocktrans count n=summary.total with total=summary.total|intcomma %}{{ total }} person{% plural %}{{ total }} people{% endblocktrans %} · {{ summary.type_label }}{% else %}{% trans "Nobody chosen yet" %}{% endif %}</span>

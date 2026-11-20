@@ -1,0 +1,56 @@
+# Post Office: one image for web, worker and beat, plus PostgreSQL and Redis.
+#   cp .env.example .env    (then set SECRET_KEY, ENCRYPTION_KEY and PUBLIC_URL)
+#   docker compose up -d
+x-app: &app
+  build: .
+  image: post-office
+  restart: unless-stopped
+  env_file: .env
+  environment:
+    DATABASE_URL: postgres://postoffice:postoffice@db:5432/postoffice
+    REDIS_URL: redis://redis:6379/0
+    MEDIA_ROOT: /data/media
+  volumes:
+    - media:/data/media
+  depends_on:
+    db:
+      condition: service_healthy
+    redis:
+      condition: service_started
+
+services:
+  web:
+    <<: *app
+    ports:
+      - "8000:8000"
+
+  worker:
+    <<: *app
+    command: celery -A postoffice worker --loglevel=info --concurrency=4
+
+  beat:
+    <<: *app
+    command: celery -A postoffice beat --loglevel=info
+
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postoffice
+      POSTGRES_PASSWORD: postoffice
+      POSTGRES_DB: postoffice
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postoffice"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  media:

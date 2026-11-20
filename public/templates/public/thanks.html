@@ -1,0 +1,26 @@
+{% extends "public/base.html" %}
+{% load po i18n %}
+{% block page_title %}{% trans "Thank you" %} · {{ org.name }}{% endblock %}
+{% block card_class %}pub-card--narrow{% endblock %}
+{% block card %}
+<div class="pub-org"><span class="pub-org__mark" aria-hidden="true">{{ org_initials }}</span>{{ org.name }}</div>
+<div class="po-stack po-stack--sm">
+  <h1 class="pub-h1">{% trans "Thank you" %}</h1>
+  {% if confirm %}
+  <span class="pub-lead">{% trans "Check your inbox. We sent you an email with one last step." %}</span>
+  <span class="po-small po-muted">{% trans "Nothing after a few minutes? Look in your spam folder, or fill in the form again." %}</span>
+  {% else %}
+  <span class="pub-lead">{% trans "You are signed up." %}</span>
+  <span class="po-small po-muted">{% trans "If you were already with us, we sent you an email with a link to your choices instead." %}</span>
+  {% endif %}
+</div>
+{% if telegram_url %}
+<hr class="po-divider">
+<div class="po-stack po-stack--sm">
+  <span class="po-h3">{% trans "One more step for Telegram" %}</span>
+  <span class="po-muted">{% trans "Open our bot in Telegram and press Start. That connects it to you." %}</span>
+  <a class="po-btn po-btn--teal po-btn--block" href="{{ telegram_url }}" rel="noopener">{% icon "telegram" %}{% trans "Open Telegram" %}</a>
+</div>
+{% endif %}
+{% endblock %}
+{% block below %}{% endblock %}

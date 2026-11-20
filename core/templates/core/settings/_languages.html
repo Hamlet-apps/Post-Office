@@ -1,0 +1,78 @@
+{% load po i18n humanize %}
+<section class="po-panel st-section" id="st-lang" aria-labelledby="st-lang-h">
+  <div class="po-stack po-stack--xs">
+    <h2 class="po-h2" id="st-lang-h">{% trans "Languages" %}</h2>
+    <span class="po-muted">{% trans "The languages you write in. People pick one when they sign up, and every campaign and template gets a tab for each." %}</span>
+  </div>
+
+  <div class="po-stack po-stack--sm">
+    {% for lang in languages %}
+    <div class="st-lang">
+      <span class="st-lang__name" lang="{{ lang.code }}">{{ lang.name }}</span>
+      {% if lang.english_name and lang.english_name != lang.name %}<span class="po-small po-muted">{{ lang.english_name }}</span>{% endif %}
+      {% if lang.is_default %}<span class="po-tag po-tag--teal">{% trans "Default" %}</span>{% endif %}
+      <span class="po-grow"></span>
+      <span class="po-num po-muted">{% blocktrans count n=lang.people_count with shown=lang.people_count|intcomma %}{{ shown }} person{% plural %}{{ shown }} people{% endblocktrans %}</span>
+      {% if not lang.is_default %}
+      <form method="post" action="{% url 'settings_language_default' lang.code %}">{% csrf_token %}
+        <button class="po-btn po-btn--white po-btn--sm">{% trans "Make default" %}</button>
+      </form>
+      <form method="post" action="{% url 'settings_language_remove' lang.code %}"
+            data-confirm="{% blocktrans count n=lang.people_count with name=lang.name default=default_language.name %}Remove {{ name }}? The {{ n }} person who reads it will get {{ default }} instead.{% plural %}Remove {{ name }}? The {{ n }} people who read it will get {{ default }} instead.{% endblocktrans %}">{% csrf_token %}
+        <button class="po-iconbtn st-whitebtn" aria-label="{% blocktrans with name=lang.name %}Remove {{ name }}{% endblocktrans %}">{% icon "trash" %}</button>
+      </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if addable_languages %}
+  <form method="post" action="{% url 'settings_language_add' %}" class="po-flex st-add">
+    {% csrf_token %}
+    <label for="st-newlang" class="sr-only">{% trans "Language to add" %}</label>
+    <select id="st-newlang" class="po-select st-add__select" name="code" required>
+      <option value="">{% trans "Choose a language" %}</option>
+      {% for l in addable_languages %}<option value="{{ l.code }}">{{ l.name }}{% if l.english != l.name %} ({{ l.english }}){% endif %}</option>{% endfor %}
+    </select>
+    <button class="po-btn st-tintbtn po-btn--sm">{% icon "plus" %}{% trans "Add a language" %}</button>
+  </form>
+  {% endif %}
+
+  <hr class="po-divider">
+
+  <form method="post" action="{% url 'settings_language_missing' %}" class="po-stack">
+    {% csrf_token %}
+    <fieldset class="st-fieldset">
+      <legend class="po-h3">{% trans "When a translation is missing" %}</legend>
+      <label class="st-choice">
+        <input type="radio" name="missing_translation" value="fallback"{% if org.missing_translation != "hold" %} checked{% endif %}>
+        <span class="st-choice__mark" aria-hidden="true"></span>
+        <span class="po-stack po-stack--xs"><span class="po-strong">{% trans "Send the default language instead" %}</span>
+          <span class="po-small po-muted">{% blocktrans with language=default_language.name %}People still get the message, in {{ language }}{% endblocktrans %}</span></span>
+      </label>
+      <label class="st-choice">
+        <input type="radio" name="missing_translation" value="hold"{% if org.missing_translation == "hold" %} checked{% endif %}>
+        <span class="st-choice__mark" aria-hidden="true"></span>
+        <span class="po-stack po-stack--xs"><span class="po-strong">{% trans "Hold the message until every language is written" %}</span>
+          <span class="po-small po-muted">{% trans "Nothing goes out half-translated. Messages from your buildings are still sent, in the default language." %}</span></span>
+      </label>
+    </fieldset>
+    <div class="po-flex po-flex--end"><button class="po-btn po-btn--teal po-btn--sm">{% icon "check" %}{% trans "Save" %}</button></div>
+  </form>
+
+  <hr class="po-divider">
+
+  <h3 class="po-h3">{% trans "Built-in wording" %}</h3>
+  <span class="po-muted">{% trans "Unsubscribe links, the preferences page, the signup form and the bot's own replies come already translated for some languages." %}</span>
+  <div class="po-flex">
+    {% for lang in languages %}
+    {% if lang.has_builtin_wording %}<span class="po-tag po-tag--ok">{% icon "check" 14 2.8 %}{% blocktrans with name=lang.name %}{{ name }}: complete{% endblocktrans %}</span>
+    {% else %}<span class="po-tag po-tag--peach">{% icon "warning" 14 2.4 %}{% blocktrans with name=lang.name %}{{ name }}: shown in English{% endblocktrans %}</span>{% endif %}
+    {% endfor %}
+  </div>
+  {% if unshipped_languages %}
+  <div class="po-notice" role="note">{% icon "warning" %}
+    <span>{% blocktrans count n=unshipped_languages|length with names=unshipped_languages|join:", " %}Post Office has no built-in translation for {{ names }} yet. People who read it see your own writing in their language, but the footer, the unsubscribe link, the preferences page, the signup form and the bot's replies in English.{% plural %}Post Office has no built-in translation for {{ names }} yet. People who read them see your own writing in their language, but the footer, the unsubscribe link, the preferences page, the signup form and the bot's replies in English.{% endblocktrans %}</span>
+  </div>
+  {% endif %}
+</section>

@@ -1,0 +1,29 @@
+/* Outbox screen. Shared components come from app.css. */
+.ob-counter{flex:1 1 200px}
+.ob-counter__label{font-size:14px;font-weight:600;color:var(--muted)}
+.ob-counter__value{font-family:var(--font-display);font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+
+.ob-filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.ob-filter{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 6px 0 14px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-soft);font-size:14px}
+.ob-filter>span{color:var(--muted)}
+.ob-filter select,.ob-filter input{height:40px;border:0;background:transparent;font-weight:600;font-size:14px;border-radius:999px;padding:0 8px;max-width:170px;cursor:pointer}
+
+.ob-table{min-width:960px}
+.ob-title{font-weight:600;font-size:15px;color:var(--ink)}
+.ob-from{display:flex;align-items:center;gap:8px;font-weight:500;white-space:nowrap}
+.ob-from svg{border-radius:28%}
+.ob-channels,.ob-langs{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ob-chan{width:30px;height:30px;border-radius:10px;background:var(--teal-tint);color:var(--teal);display:inline-flex;align-items:center;justify-content:center}
+.ob-lang{font-size:12px;font-weight:700;letter-spacing:.03em;padding:4px 8px;border-radius:8px;background:var(--teal-tint);color:var(--teal-deep);white-space:nowrap}
+.ob-lang--fallback{background:transparent;color:var(--peach-deep);border:1.5px dashed var(--peach-chart);padding:3px 7px}
+.ob-status{gap:6px}
+.ob-reason{font-size:13px;font-weight:600;color:var(--danger);max-width:44ch}
+.ob-reason--soft{color:var(--peach-deep);font-weight:500}
+.ob-sub td{background:var(--hover)}
+.ob-sub td:first-child{padding-left:28px;box-shadow:inset 4px 0 0 var(--teal-tint)}
+.ob-summary .po-btn--ghost{color:var(--teal-deep)}
+
+@media (max-width:760px){
+  .ob-filters .po-grow{display:none}
+  .ob-filter{flex:1 1 150px;justify-content:space-between}
+}

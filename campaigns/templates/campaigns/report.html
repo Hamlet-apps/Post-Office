@@ -1,0 +1,158 @@
+{% extends "shell.html" %}
+{% load po cp i18n static %}
+{% block page_title %}{{ campaign.name }} · Post Office{% endblock %}
+{% block extra_js %}<script src="{% static 'js/vendor/chart.umd.min.js' %}" defer></script><script src="{% static 'js/charts.js' %}" defer></script>{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/campaigns.css' %}">{% endblock %}
+{% block back %}<a href="{% url 'campaigns:list' %}" class="po-back">{% icon "chevron-left" 16 %}{% trans "Campaigns" %}</a>{% endblock %}
+{% block eyebrow %}{% endblock %}
+{% block title %}{{ campaign.name }}{% endblock %}
+{% block subtitle %}
+{% if started_day %}
+  {% if campaign.state == "sending" %}{% blocktrans with day=started_day time=started_time %}Started {{ day }} at {{ time }}{% endblocktrans %}{% else %}{% blocktrans with day=started_day time=started_time %}Sent {{ day }} at {{ time }}{% endblocktrans %}{% endif %}{% if list_names %} {% blocktrans %}to {{ list_names }}{% endblocktrans %}{% endif %}{% if channel_names %} {% blocktrans %}by {{ channel_names }}{% endblocktrans %}{% endif %}.
+{% else %}{% trans "Nothing has gone out yet." %}{% endif %}
+{% endblock %}
+{% block actions %}
+<span class="po-tag {{ state_tag }}">{{ campaign.get_state_display }}</span>
+{% if user.can_edit %}
+  {% if campaign.state == "sending" %}
+  <form method="post" action="{% url 'campaigns:pause' campaign.public_id %}">{% csrf_token %}<button class="po-btn po-btn--white">{% icon "pause" %}{% trans "Pause" %}</button></form>
+  {% elif campaign.state == "paused" %}
+  <form method="post" action="{% url 'campaigns:resume' campaign.public_id %}">{% csrf_token %}<button class="po-btn po-btn--teal">{% icon "play" %}{% trans "Resume" %}</button></form>
+  {% endif %}
+  {% if campaign.state == "sending" or campaign.state == "paused" %}
+  <form method="post" action="{% url 'campaigns:cancel' campaign.public_id %}" data-confirm="{% trans 'Stop this send? Messages that have not gone out yet will not be sent.' %}">{% csrf_token %}<button class="po-btn po-btn--danger">{% icon "close" %}{% trans "Stop sending" %}</button></form>
+  {% endif %}
+{% endif %}
+{% if report.from_rows %}<a href="{% url 'campaigns:export' campaign.public_id %}" class="po-btn po-btn--white">{% icon "download" %}{% trans "Export" %}</a>{% endif %}
+{% if user.can_edit %}
+<form method="post" action="{% url 'campaigns:duplicate' campaign.public_id %}">{% csrf_token %}
+  <button class="po-btn po-btn--primary">{% icon "copy" %}{% trans "Use as a starting point" %}</button>
+</form>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if campaign.state == "sending" or campaign.state == "paused" %}
+<div class="po-notice {% if campaign.state == 'paused' %}{% else %}po-notice--info{% endif %}" role="status">{% icon "clock" %}
+  <span>{% if campaign.state == "paused" %}{% trans "This send is paused." %}{% else %}{% trans "This campaign is going out now." %}{% endif %}
+  {% blocktrans count n=waiting with messages=waiting|num %}{{ messages }} message is still waiting.{% plural %}{{ messages }} messages are still waiting.{% endblocktrans %}
+  <a href="{{ request.path }}">{% trans "Refresh" %}</a></span>
+</div>
+{% endif %}
+{% if not report.from_rows and report.has_data %}
+<div class="po-notice po-notice--plain">{% icon "info" %}<span>{% trans "The message rows for this campaign were cleared after 180 days. These totals were kept." %}</span></div>
+{% endif %}
+
+{% if not report.has_data %}
+<section class="po-panel"><div class="po-empty">
+  <span class="po-icontile po-icontile--lg">{% icon "outbox" 22 1.8 %}</span>
+  <span class="po-h3">{% trans "No messages yet" %}</span>
+  <span>{% trans "Numbers appear here as soon as the first messages go out." %}</span>
+</div></section>
+{% else %}
+
+<div class="cr-cards">
+  <div class="po-card">
+    <div class="po-flex po-flex--between po-flex--nowrap"><span class="po-strong po-muted">{% trans "Delivered" %}</span><span class="po-icontile">{% icon "check" %}</span></div>
+    <span class="po-bignum cr-num">{{ stats.delivered|num }}</span>
+    <span class="po-small po-muted">{% if stats.delivered_rate is not None %}{% blocktrans with pct=stats.delivered_rate|pct sent=stats.sent|num %}{{ pct }} of {{ sent }} sent{% endblocktrans %}{% endif %}</span>
+  </div>
+  <div class="po-card">
+    <div class="po-flex po-flex--between po-flex--nowrap"><span class="po-strong po-muted">{% trans "Opened" %}</span><span class="po-icontile">{% icon "mail-open" %}</span></div>
+    <span class="po-bignum cr-num">{% if stats.open_rate is None %}–{% else %}{{ stats.open_rate|pct }}{% endif %}</span>
+    <span class="po-small po-muted">{% if stats.open_rate is None %}{% trans "Only email reports opens" %}{% else %}{% blocktrans count n=stats.email_opened with people=stats.email_opened|num %}{{ people }} person, by email{% plural %}{{ people }} people, by email{% endblocktrans %}{% endif %}</span>
+  </div>
+  <div class="po-card">
+    <div class="po-flex po-flex--between po-flex--nowrap"><span class="po-strong po-muted">{% trans "Clicked" %}</span><span class="po-icontile">{% icon "click" %}</span></div>
+    <span class="po-bignum cr-num">{% if stats.click_rate is None %}–{% else %}{{ stats.click_rate|pct }}{% endif %}</span>
+    <span class="po-small po-muted">{% blocktrans count n=stats.clicked with people=stats.clicked|num %}{{ people }} person{% plural %}{{ people }} people{% endblocktrans %}</span>
+  </div>
+  <div class="po-card">
+    <div class="po-flex po-flex--between po-flex--nowrap"><span class="po-strong po-muted">{% trans "Unsubscribed" %}</span><span class="po-icontile">{% icon "user-minus" %}</span></div>
+    <span class="po-bignum cr-num">{{ report.unsubscribed|num }}</span>
+    <span class="po-small po-muted">{% if report.unsubscribed_rate is not None %}{% blocktrans with pct=report.unsubscribed_rate|pct %}{{ pct }} of delivered{% endblocktrans %}{% endif %}</span>
+  </div>
+</div>
+
+<div class="po-cols">
+  <section class="po-panel po-col-2" aria-labelledby="cr-opens-title">
+    <div class="po-stack" style="gap:4px">
+      <h2 class="po-h2" id="cr-opens-title">{% trans "Opens in the first 48 hours" %}</h2>
+      <span class="po-sub">{{ report.opens.summary }}</span>
+    </div>
+    {% chart_data report.opens.chart %}
+    <div class="ch-canvas" style="height:230px"><canvas id="ch-report-opens" role="img" aria-label="{{ report.opens.summary }}"></canvas></div>
+    <noscript>{{ report.opens.svg }}</noscript>
+  </section>
+
+  <section class="po-panel po-col-1" aria-labelledby="cr-lang-title">
+    <h2 class="po-h2" id="cr-lang-title">{% trans "By language" %}</h2>
+    {% for row in report.languages %}
+    <div class="po-stack" style="gap:6px">
+      <div class="po-flex" style="gap:10px;align-items:baseline">
+        <span class="po-strong" lang="{{ row.code }}">{{ row.name }}</span>
+        <span class="po-small po-muted po-num">{% blocktrans with n=row.sent|num %}{{ n }} sent{% endblocktrans %}</span>
+        <span class="po-grow"></span>
+        <span class="po-small po-num cr-key cr-key--open">{% if row.open_rate is None %}–{% else %}{% blocktrans with pct=row.open_rate|pct %}{{ pct }} opened{% endblocktrans %}{% endif %}</span>
+        <span class="po-small po-num cr-key cr-key--click">{% if row.click_rate is None %}–{% else %}{% blocktrans with pct=row.click_rate|pct %}{{ pct }} clicked{% endblocktrans %}{% endif %}</span>
+      </div>
+      <div class="cr-bar" aria-hidden="true"><span style="width:{{ row.open_width|stringformat:'.1f' }}%"></span></div>
+      <div class="cr-bar cr-bar--click" aria-hidden="true"><span style="width:{{ row.click_width|stringformat:'.1f' }}%"></span></div>
+    </div>
+    {% empty %}
+    <p class="po-muted">{% trans "No messages to break down yet." %}</p>
+    {% endfor %}
+  </section>
+</div>
+
+<div class="po-cols">
+  <section class="po-panel po-col-2" aria-labelledby="cr-links-title">
+    <h2 class="po-h2" id="cr-links-title">{% trans "Links people clicked" %}</h2>
+    {% if report.links %}
+    <div class="po-tablewrap">
+      <table class="po-table cr-links">
+        <thead><tr><th scope="col">{% trans "Link" %}</th><th scope="col" class="po-right">{% trans "Clicks" %}</th><th scope="col" class="po-right">{% trans "Share" %}</th></tr></thead>
+        <tbody>
+          {% for link in report.links %}
+          <tr>
+            <td><div class="po-stack" style="gap:2px">
+              {% if link.label %}<span class="po-strong">{{ link.label }}</span>{% endif %}
+              <a href="{{ link.url }}" rel="noopener noreferrer" target="_blank" class="po-small cr-url">{{ link.short }}</a>
+            </div></td>
+            <td class="po-right po-num po-strong">{{ link.clicks|num }}</td>
+            <td class="po-right po-num po-muted">{% if link.share is None %}–{% else %}{{ link.share|pct0 }}{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="po-empty"><span>{% if org.tracking_enabled %}{% trans "No tracked links in this campaign, or nobody has clicked one yet." %}{% else %}{% trans "Tracking is switched off in Settings, so clicks are not counted." %}{% endif %}</span></div>
+    {% endif %}
+  </section>
+
+  <section class="po-panel po-col-1" aria-labelledby="cr-chan-title">
+    <h2 class="po-h2" id="cr-chan-title">{% trans "By channel" %}</h2>
+    {% for row in report.channels %}
+    <div class="po-flex po-flex--nowrap" style="gap:12px">
+      <span class="po-icontile" style="width:36px;height:36px">{% icon row.icon %}</span>
+      <div class="po-stack po-grow" style="gap:2px"><span class="po-strong">{{ row.name }}</span><span class="po-small po-muted po-num">{{ row.detail }}</span></div>
+      <span class="po-midnum" title="{{ row.number_label }}">{{ row.number|num }}<span class="sr-only"> {{ row.number_label }}</span></span>
+    </div>
+    <hr class="po-divider">
+    {% endfor %}
+    <h3 class="po-h3">{% trans "Did not arrive" %} <span class="po-muted po-num">{{ report.not_arrived|num }}</span></h3>
+    {% if report.failures %}
+    <div class="po-stack po-stack--sm">
+      {% for failure in report.failures %}
+      <div class="po-flex po-flex--between po-flex--nowrap po-flex--top"><span class="po-small">{{ failure.reason }}</span><span class="po-num po-strong">{{ failure.count|num }}</span></div>
+      {% endfor %}
+    </div>
+    {% if report.from_rows %}<a href="{{ report.outbox_url }}" class="po-strong po-small">{% trans "See these messages in the Outbox" %}</a>{% endif %}
+    {% else %}
+    <p class="po-small po-muted">{% trans "Every message arrived." %}</p>
+    {% endif %}
+  </section>
+</div>
+{% endif %}
+{% endblock %}

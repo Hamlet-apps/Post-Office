@@ -1,0 +1,13 @@
+{% extends "public/base.html" %}
+{% load po i18n %}
+{% block page_title %}{% trans "You are confirmed" %} · {{ org.name }}{% endblock %}
+{% block card_class %}pub-card--narrow{% endblock %}
+{% block card %}
+<div class="pub-org"><span class="pub-org__mark" aria-hidden="true">{{ org_initials }}</span>{{ org.name }}</div>
+<div class="po-stack po-stack--sm">
+  <h1 class="pub-h1">{% if person.first_name %}{% blocktrans with name=person.first_name %}Thank you, {{ name }}{% endblocktrans %}{% else %}{% trans "Thank you" %}{% endif %}</h1>
+  <span class="pub-lead">{% trans "Your email address is confirmed." %}{% if lists %} {% trans "You will hear from us about:" %}{% endif %}</span>
+  {% if lists %}<ul class="po-stack po-stack--xs" style="margin:0;padding-left:20px">{% for name in lists %}<li>{{ name }}</li>{% endfor %}</ul>{% endif %}
+</div>
+<a class="po-btn po-btn--block" href="{{ preferences_url }}">{% trans "Choose what I hear about" %}</a>
+{% endblock %}

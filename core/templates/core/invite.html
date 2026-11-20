@@ -1,0 +1,26 @@
+{% extends "split.html" %}
+{% load i18n %}
+{% block page_title %}{% trans "Join the team" %} · Post Office{% endblock %}
+{% block side %}
+<div class="po-stack po-stack--sm">
+  <span class="po-h1">{{ org.name|default:"Post Office" }}</span>
+  <span class="po-soft" style="font-size:16px;line-height:1.5">{% trans "You have been invited to help run this post office." %}</span>
+</div>
+{% endblock %}
+{% block card %}
+{% if invalid %}
+<h1 class="po-h1" style="font-size:34px">{% trans "This invite no longer works" %}</h1>
+<p class="po-sub">{% trans "It may have been used already. Ask an owner to send a new one." %}</p>
+<a class="po-btn po-btn--teal" href="{% url 'sign_in' %}">{% trans "Go to sign in" %}</a>
+{% else %}
+<h1 class="po-h1" style="font-size:34px">{% trans "Choose a password" %}</h1>
+<p class="po-sub">{{ member.email }}</p>
+<form method="post" class="po-stack">
+  {% csrf_token %}
+  {% if error %}<div class="po-notice po-notice--danger" role="alert">{{ error }}</div>{% endif %}
+  <div class="po-field"><label for="iv-name">{% trans "Your name" %}</label><input id="iv-name" class="po-input" name="name" value="{{ member.name }}" required></div>
+  <div class="po-field"><label for="iv-pass">{% trans "Password" %}</label><input id="iv-pass" class="po-input" type="password" name="password" autocomplete="new-password" required><span class="po-hint">{% trans "At least 8 characters." %}</span></div>
+  <button class="po-btn po-btn--primary po-btn--block">{% trans "Save and sign in" %}</button>
+</form>
+{% endif %}
+{% endblock %}

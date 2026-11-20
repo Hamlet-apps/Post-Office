@@ -1,0 +1,33 @@
+/* Channels screen. Shared components come from app.css. */
+.ch-section{display:flex;flex-direction:column;gap:12px}
+.ch-section+.ch-section{margin-top:12px}
+.ch-section__head{display:flex;align-items:center;gap:12px;padding:8px 6px 0}
+.ch-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:0 6px}
+
+.ch-card{flex:1 1 300px;gap:14px}
+.ch-card--wide{flex:1 1 620px}
+.ch-spacer{flex:2 1 600px;min-width:0}
+.ch-card__head{display:flex;align-items:flex-start;gap:10px}
+.ch-card__head svg[role="img"]{border-radius:28%}
+.ch-card__sub{font-size:14px;color:var(--muted);overflow-wrap:anywhere}
+.ch-break{overflow-wrap:anywhere;word-break:break-word}
+.ch-addtitle{display:flex;align-items:center;gap:8px;color:var(--teal-deep);font-weight:600;font-size:16px}
+
+.ch-facts{display:flex;flex-direction:column;gap:8px;margin:0;font-size:14px}
+.ch-facts>div{display:flex;justify-content:space-between;gap:12px}
+.ch-facts dt{color:var(--muted)}
+.ch-facts dd{margin:0;font-weight:600;text-align:right;min-width:0;overflow-wrap:anywhere}
+
+.ch-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
+.ch-actions form{display:contents}
+.ch-audience{display:flex;flex-direction:column;gap:12px;padding-top:14px;border-top:1px solid var(--line)}
+
+.ch-details>summary{list-style:none;width:max-content}
+.ch-details>summary::-webkit-details-marker{display:none}
+.ch-details[open]>summary{background:var(--teal-tint);color:var(--teal-deep)}
+.ch-details__body{display:flex;flex-direction:column;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.ch-form .po-seg{align-self:flex-start}
+.ch-form .ch-narrow{flex:0 1 130px}
+.ch-form .ch-wide{flex:2 1 280px}
+.po-card--dashed .po-input,.po-card--dashed .po-select{background:var(--surface);box-shadow:var(--shadow-soft)}
+.po-card--dashed .po-seg--ground{background:var(--ground-deep)}

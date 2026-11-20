@@ -1,0 +1,89 @@
+/* People, Person, import and signup form settings. Shared components come from app.css;
+   the lists-by-channels grid (.sg) is in public.css because the preferences page uses it too. */
+
+/* ---------- People: lists panel beside the table ---------- */
+.pp-layout{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.pp-side{flex:0 0 290px;padding:18px;gap:12px;align-self:flex-start}
+.pp-main{flex:999 1 560px;min-width:0}
+.pp-sidehead{display:flex;flex-direction:column;gap:2px;padding:0 4px}
+.pp-sidenote{padding:0 12px}
+.pp-lists{display:flex;flex-direction:column;gap:2px}
+.pp-listwrap{display:flex;align-items:center;border-radius:14px;transition:background-color 200ms ease}
+.pp-listwrap:hover{background:var(--hover)}
+.pp-listwrap.is-current,.pp-listrow.is-current{background:var(--teal-tint)}
+.pp-listrow{flex:1 1 auto;min-width:0;min-height:48px;display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;text-decoration:none;color:var(--ink)}
+.pp-listrow:hover{color:var(--ink)}
+a.pp-listrow.is-current:hover{background:var(--teal-tint)}
+.pp-side>a.pp-listrow:hover{background:var(--hover)}
+.pp-side>a.pp-listrow.is-current:hover{background:var(--teal-tint)}
+.pp-listrow--static{cursor:default}
+.pp-listrow__text{display:flex;flex-direction:column;gap:1px;flex:1 1 auto;min-width:0}
+.pp-listrow__name{font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pp-listrow__note{font-size:12px;color:var(--muted)}
+.pp-listrow__count{font-size:14px;font-weight:600}
+.pp-listedit{width:40px;height:40px;color:var(--muted)}
+.pp-locked{display:inline-flex;align-items:center;gap:4px}
+.pp-signupbtn{background:var(--teal-tint);color:var(--teal-deep)}
+.pp-signupbtn:hover{background:#CDE8EA;color:var(--teal-deep)}
+
+/* Filters: a pill with a label and a bare select inside it. */
+.pp-filter{height:40px;padding:0 4px 0 14px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow-soft);display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);cursor:pointer}
+.pp-filter select{appearance:none;border:0;background:transparent;height:40px;padding:0 30px 0 0;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;border-radius:999px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235B6170' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+
+/* The table */
+.pp-tablepanel{gap:8px}
+.pp-table{min-width:820px}
+.pp-person{display:flex;align-items:center;gap:12px;min-width:0}
+.pp-person__text{min-width:0;gap:2px}
+.pp-avatar{width:38px;height:38px;border-radius:999px;background:var(--teal-tint);color:var(--teal-deep);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:0 0 auto}
+.pp-avatar--lg{width:52px;height:52px;font-size:16px}
+.pp-langtag{font-size:12px;font-weight:700;letter-spacing:.03em;padding:4px 8px;border-radius:8px;background:var(--teal-tint);color:var(--teal-deep)}
+.pp-reach{display:flex;gap:6px;align-items:center}
+.pp-chan{width:30px;height:30px;border-radius:10px;background:var(--teal-tint);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+
+/* ---------- Person ---------- */
+.pp-personcols{align-items:flex-start}
+.pp-fieldset{border:0;margin:0;padding:0;min-width:0}
+.pp-attr{display:flex;gap:8px;align-items:center}
+.pp-attr .po-input:first-child{flex:0 1 42%}
+.pp-attr .po-input{flex:1 1 auto;min-width:0}
+.pp-reachrow{display:flex;align-items:center;gap:12px}
+.pp-reachrow--top{align-items:flex-start}
+.pp-break{overflow-wrap:anywhere}
+.pp-connect{display:flex;flex-direction:column;gap:8px}
+.pp-careful{align-self:flex-start}
+.pp-history{display:flex;flex-direction:column}
+.pp-event{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--line)}
+.pp-event:first-child{border-top:0}
+.pp-event__when{width:108px;flex:0 0 auto;font-size:13px;color:var(--muted);padding-top:2px}
+.pp-event__error{color:var(--danger);font-weight:600}
+
+/* ---------- Dialogs ---------- */
+.pp-langset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:8px}
+.pp-langset legend{padding:0;margin-bottom:6px;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink)}
+.pp-footleft{margin-right:auto}
+
+/* ---------- Import ---------- */
+.pp-file{padding:9px 14px;height:auto;min-height:48px}
+.pp-agree{align-items:flex-start;background:var(--ground);border-radius:16px;padding:14px 16px}
+.pp-agree input{margin-top:2px}
+.pp-sample{margin:0;background:var(--surface);border-radius:14px;padding:12px 14px;overflow-x:auto;font-size:12px;line-height:1.6}
+.pp-summary{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+
+/* ---------- Signup form settings ---------- */
+.sf-settings{flex-basis:420px !important}
+.sf-switchrow{display:flex;width:100%;justify-content:space-between;gap:16px;min-height:48px}
+.sf-link{background:var(--ground);border-radius:14px;padding:13px 14px;font-size:13px;line-height:1.5;overflow-wrap:anywhere;min-height:48px}
+.sf-previewcol{position:sticky;top:16px;align-self:flex-start}
+.sf-frame{background:var(--ground-deep);border-radius:var(--r-panel);padding:12px;display:flex;justify-content:center}
+.sf-frame iframe{width:100%;height:860px;border:0;border-radius:18px;background:var(--ground)}
+.sf-frame--phone iframe{max-width:390px}
+
+@media (max-width:760px){
+  .pp-side{flex:1 1 100%}
+  .pp-event{flex-wrap:wrap}
+  .pp-event__when{width:100%}
+  .sf-previewcol{position:static}
+  .sf-frame iframe{height:760px}
+}

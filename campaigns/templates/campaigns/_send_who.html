@@ -1,0 +1,98 @@
+{% load po cp i18n %}
+<form id="cs-who" class="po-panel po-col-2" method="post" action="{% url 'campaigns:audience' campaign.public_id %}"
+      hx-post="{% url 'campaigns:audience' campaign.public_id %}" hx-trigger="change" hx-target="#cs-who" hx-swap="outerHTML"
+      aria-labelledby="cs-who-title">
+  {% csrf_token %}
+  <div class="po-flex po-flex--between">
+    <h2 class="po-h2" id="cs-who-title">{% trans "Who gets it" %}</h2>
+    <span class="po-tag po-tag--teal po-num">{% blocktrans count n=audience.people with people=audience.people|num %}{{ people }} person{% plural %}{{ people }} people{% endblocktrans %}</span>
+  </div>
+  <fieldset class="cs-fieldset po-stack"{% if not editable %} disabled{% endif %}>
+    <legend class="sr-only">{% trans "Audience and channels" %}</legend>
+
+    <div class="po-stack po-stack--sm" role="group" aria-labelledby="cs-lists-label">
+      <span class="po-label" id="cs-lists-label">{% trans "Lists and segments" %}</span>
+      {% if lists %}
+      <div class="cs-tiles">
+        {% for item in lists %}
+        <label class="cs-tile">
+          <input type="checkbox" name="lists" value="{{ item.list.public_id }}"{% if item.on %} checked{% endif %}>
+          <span class="cs-tile__icon">{% icon "list" 18 %}</span>
+          <span class="cs-tile__body"><span class="po-strong">{{ item.name }}</span>
+            <span class="po-small po-muted po-num">{% blocktrans count n=item.count with people=item.count|num %}{{ people }} person{% plural %}{{ people }} people{% endblocktrans %}</span></span>
+          <span class="cs-tile__check">{% icon "check" 14 2.8 %}</span>
+        </label>
+        {% endfor %}
+        {% for segment in segments %}
+        <span class="cs-tile cs-tile--off">
+          <span class="cs-tile__icon">{% icon "filter" 18 %}</span>
+          <span class="cs-tile__body"><span class="po-strong">{{ segment.name }}</span>
+            <span class="po-small po-muted">{% trans "Segment. Sending to segments comes later." %}</span></span>
+        </span>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="po-notice">{% icon "info" %}<span>{% trans "There are no campaign lists yet." %} <a href="/people/">{% trans "Add a list in People" %}</a></span></div>
+      {% endif %}
+    </div>
+
+    <div class="po-stack po-stack--sm" role="group" aria-labelledby="cs-channels-label">
+      <span class="po-label" id="cs-channels-label">{% trans "Channels" %}</span>
+      <div class="cs-tiles">
+        <label class="cs-tile">
+          <input type="checkbox" name="channels" value="email"{% if email_on %} checked{% endif %}>
+          <span class="cs-tile__icon">{% icon "mail" 18 %}</span>
+          <span class="cs-tile__body"><span class="po-strong">{% trans "Email" %}</span>
+            <span class="po-small po-muted po-num">{% blocktrans with n=reach.email|num %}{{ n }} reachable{% endblocktrans %}</span></span>
+          <span class="cs-tile__check">{% icon "check" 14 2.8 %}</span>
+        </label>
+        <label class="cs-tile{% if not bots %} cs-tile--off{% endif %}">
+          <input type="checkbox" name="channels" value="telegram"{% if telegram_on %} checked{% endif %}{% if not bots %} disabled{% endif %}>
+          <span class="cs-tile__icon">{% icon "telegram" 18 %}</span>
+          <span class="cs-tile__body"><span class="po-strong">{% trans "Telegram" %}</span>
+            <span class="po-small po-muted po-num">{% if bots %}{% blocktrans with n=reach.telegram|num %}{{ n }} reachable{% endblocktrans %}{% else %}{% trans "No bot connected yet" %}{% endif %}</span></span>
+          <span class="cs-tile__check">{% icon "check" 14 2.8 %}</span>
+        </label>
+      </div>
+    </div>
+
+    {% if push_apps %}
+    <div class="po-stack po-stack--sm" role="group" aria-labelledby="cs-push-label">
+      <span class="po-label" id="cs-push-label">{% trans "Push notifications, through your apps" %}</span>
+      <div class="cs-tiles">
+        {% for item in push_apps %}
+        <label class="cs-tile">
+          <input type="checkbox" name="push_apps" value="{{ item.app.public_id }}"{% if item.on %} checked{% endif %}>
+          <span class="cs-tile__icon">{% icon "push" 18 %}</span>
+          <span class="cs-tile__body"><span class="po-strong">{% blocktrans with building=item.app.building.name %}{{ building }} app{% endblocktrans %}</span>
+            <span class="po-small po-muted po-num">{{ item.app.label }} · {{ item.count|num }}</span></span>
+          <span class="cs-tile__check">{% icon "check" 14 2.8 %}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="po-fieldrow">
+      <div class="po-field"><label for="cs-sender">{% trans "Email sender" %}</label>
+        <select class="po-select" id="cs-sender" name="sender">
+          {% if not senders %}<option value="">{% trans "No newsletter sender yet" %}</option>{% elif not campaign.sender_id %}<option value="">{% trans "Choose a sender" %}</option>{% endif %}
+          {% for s in senders %}<option value="{{ s.public_id }}"{% if s.pk == campaign.sender_id %} selected{% endif %}>{{ s.from_name }}{% if s.state != "ok" %} ({{ s.get_state_display|lower }}){% endif %}</option>{% endfor %}
+        </select></div>
+      <div class="po-field"><label for="cs-bot">{% trans "Telegram bot" %}</label>
+        <select class="po-select" id="cs-bot" name="bot">
+          {% if not bots %}<option value="">{% trans "No bot yet" %}</option>{% elif not campaign.bot_id %}<option value="">{% trans "Choose a bot" %}</option>{% endif %}
+          {% for b in bots %}<option value="{{ b.public_id }}"{% if b.pk == campaign.bot_id %} selected{% endif %}>{{ b }}</option>{% endfor %}
+        </select></div>
+      <div class="po-field"><label for="cs-type">{% trans "Message type" %}</label>
+        <input class="po-input" id="cs-type" value="{% trans 'Newsletter (needs consent)' %}" readonly aria-describedby="cs-type-hint">
+        <span class="sr-only" id="cs-type-hint">{% trans "Campaigns are always newsletters." %}</span></div>
+    </div>
+  </fieldset>
+
+  <div class="po-notice po-notice--info">{% icon "info" %}
+    <span>{% trans "People get it on every channel they signed up for, so someone with email and Telegram gets both." %}
+      {% if no_email %}{% blocktrans count n=no_email with people=no_email|num %}{{ people }} person here will not get it by email.{% plural %}{{ people }} people here will not get it by email.{% endblocktrans %}{% endif %}</span>
+  </div>
+  <noscript><button class="po-btn">{% trans "Save" %}</button></noscript>
+</form>

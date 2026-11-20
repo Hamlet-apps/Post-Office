@@ -1,0 +1,24 @@
+{% extends "split.html" %}
+{% load po i18n %}
+{% block page_title %}{% trans "Set up" %} · Post Office{% endblock %}
+{% block side %}
+<div class="po-stack po-stack--sm">
+  <span class="po-h1">{% trans "Let’s get your post office open" %}</span>
+  <span class="po-soft" style="font-size:16px;line-height:1.5">{% trans "Four short steps. You can change any of this later in Settings." %}</span>
+</div>
+<ol class="po-steps">
+  {% for number, label in steps %}
+  <li{% if number == step %} aria-current="step"{% elif number < step %} class="is-done"{% endif %}><span>{% if number < step %}{% icon "check" 16 2.8 %}{% else %}{{ number }}{% endif %}</span>{% trans label %}</li>
+  {% endfor %}
+</ol>
+{% endblock %}
+{% block side_foot %}{% blocktrans %}Step {{ step }} of {{ total }}{% endblocktrans %}{% endblock %}
+{% block card_class %}po-split__card--wide{% endblock %}
+{% block card %}
+<div class="po-stack po-stack--sm">
+  <span class="po-eyebrow">{% blocktrans %}Step {{ step }} of {{ total }}{% endblocktrans %}</span>
+  <h1 class="po-h1" style="font-size:34px;line-height:1.1">{% block step_title %}{% endblock %}</h1>
+  <span class="po-sub" style="font-size:16px;line-height:1.5">{% block step_intro %}{% endblock %}</span>
+</div>
+{% block step %}{% endblock %}
+{% endblock %}

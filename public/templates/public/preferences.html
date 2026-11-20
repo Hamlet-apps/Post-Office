@@ -1,0 +1,52 @@
+{% extends "public/base.html" %}
+{% load po i18n %}
+{% block page_title %}{% trans "Choose what you hear about" %} · {{ org.name }}{% endblock %}
+{% block card %}
+<div class="pub-top">
+  <div class="pub-org"><span class="pub-org__mark" aria-hidden="true">{{ org_initials }}</span>{{ org.name }}</div>
+  {% if languages|length > 1 %}
+  <form method="post" action="{% url 'public:preferences_language' token %}" class="po-seg" role="group" aria-label="{% trans 'Language' %}">
+    {% csrf_token %}
+    {% for l in languages %}
+    <button type="submit" name="lang" value="{{ l.code }}" lang="{{ l.code }}" aria-pressed="{% if l.code == code %}true{% else %}false{% endif %}">{{ l.name }}</button>
+    {% endfor %}
+  </form>
+  {% endif %}
+</div>
+
+{% if done %}
+<div class="po-stack po-stack--sm">
+  <h1 class="pub-h1">{% trans "Your choices are saved" %}</h1>
+  <span class="pub-lead">{% trans "You can close this page. The link at the bottom of any message from us brings you back." %}</span>
+</div>
+<div><a class="po-btn" href="{% url 'public:preferences' token %}">{% trans "Change something else" %}</a></div>
+{% else %}
+<div class="po-stack po-stack--sm">
+  <h1 class="pub-h1">{% if person.first_name %}{% blocktrans with name=person.first_name %}{{ name }}, choose what you hear about{% endblocktrans %}{% else %}{% trans "Choose what you hear about" %}{% endif %}</h1>
+  <span class="pub-lead">{{ intro }}</span>
+</div>
+
+{% if unsubscribed %}
+<div class="po-notice po-notice--ok" role="status">{% icon "check" %}<span>{% blocktrans with lists=unsubscribed|join:", " %}You will no longer get {{ lists }} by email. Anything else you get is listed below.{% endblocktrans %}</span></div>
+{% endif %}
+
+{% include "public/_preferences_grid.html" %}
+
+{% if telegram_url %}
+<div class="po-flex po-flex--between">
+  <span class="po-small po-muted po-grow">{% trans "Telegram is not connected yet, so nothing can arrive there. Open our bot and press Start." %}</span>
+  <a class="po-btn po-btn--sm" href="{{ telegram_url }}" rel="noopener">{% icon "telegram" 16 %}{% trans "Connect Telegram" %}</a>
+</div>
+{% endif %}
+
+<div class="po-notice po-notice--info">{% icon "info" %}<span class="po-grow">{% trans "You get each message everywhere you ticked. Notifications inside our apps about your own orders and shifts are switched on and off in those apps." %}</span></div>
+<hr class="po-divider">
+<div class="pub-actions">
+  <form method="post" action="{% url 'public:preferences_unsubscribe_all' token %}" hx-post="{% url 'public:preferences_unsubscribe_all' token %}" hx-target="#prefs-grid" hx-swap="outerHTML">
+    {% csrf_token %}
+    <button type="submit" class="pub-danger">{% trans "Unsubscribe from all news" %}</button>
+  </form>
+  <a class="po-btn po-btn--teal" href="{% url 'public:preferences' token %}?done=1">{% trans "Done" %}</a>
+</div>
+{% endif %}
+{% endblock %}

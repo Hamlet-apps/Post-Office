@@ -1,0 +1,8 @@
+{% load po i18n %}
+<span id="cs-go"{% if oob %} hx-swap-oob="true"{% endif %}>
+{% if editable %}
+<button class="po-btn po-btn--primary" form="cs-when" x-data{% if not can_send %} disabled title="{% trans 'Finish the checklist first' %}"{% endif %}>
+  {% icon "send" %}<span x-text="$store.cs.label()">{% trans "Send or schedule" %}</span>
+</button>
+{% endif %}
+</span>

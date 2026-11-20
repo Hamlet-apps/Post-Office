@@ -1,0 +1,24 @@
+{% load po i18n %}
+{% if problem %}
+<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ problem }}</span></div>
+{% elif result.ok %}
+<div class="po-notice po-notice--ok bc-testresult">
+  {% icon "check" %}
+  <div class="po-stack po-stack--sm po-grow">
+    <strong>{% blocktrans with seconds=seconds|floatformat:1 status=result.status %}It answered in {{ seconds }} s (status {{ status }}).{% endblocktrans %}</strong>
+    {% if not sends_reply %}<span>{% trans "Reply is set to no reply, so nothing would be sent to the person." %}</span>
+    {% elif reply_html %}<span>{% blocktrans with name=first_name %}{{ name }} would get this in Telegram:{% endblocktrans %}</span>
+    <div class="bc-bubble">{{ reply_html|safe|linebreaksbr }}</div>
+    {% else %}<span>{% trans "The answer was empty, so nothing would be sent to the person." %}</span>{% endif %}
+  </div>
+</div>
+{% else %}
+<div class="po-notice po-notice--danger bc-testresult" role="alert">
+  {% icon "warning" %}
+  <div class="po-stack po-stack--xs po-grow">
+    <strong>{% if result.outcome == "no_answer" %}{% trans "No answer" %}{% else %}{% trans "That did not work" %}{% endif %}</strong>
+    <span>{{ result.detail }}</span>
+    <span>{% blocktrans %}The person would get the bot's "No answer" text.{% endblocktrans %}</span>
+  </div>
+</div>
+{% endif %}

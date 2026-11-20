@@ -1,0 +1,40 @@
+{% extends "core/setup_base.html" %}
+{% load po i18n %}
+{% block step_title %}{% trans "Which languages do you write in?" %}{% endblock %}
+{% block step_intro %}{% trans "People choose one when they sign up. Every message you write gets a tab for each language you pick here." %}{% endblock %}
+{% block step %}
+<form method="post" class="po-stack" x-data="{ q: '', picked: [{% for t in tiles %}{% if t.on %}'{{ t.code }}',{% endif %}{% endfor %}], def: '{{ default }}' }"
+      x-effect="if (picked.length && !picked.includes(def)) def = picked[0]">
+  {% csrf_token %}
+  {% if error %}<div class="po-notice po-notice--danger" role="alert">{{ error }}</div>{% endif %}
+  <label class="po-search po-search--sunken">
+    <span class="sr-only">{% trans "Search languages" %}</span>{% icon "search" %}
+    <input type="search" placeholder="{% trans 'Search languages' %}" x-model="q" style="width:320px">
+  </label>
+  <div class="po-langgrid">
+    {% for t in tiles %}
+    <label class="po-langtile" x-show="!q || '{{ t.name|lower|escapejs }} {{ t.english|lower|escapejs }}'.includes(q.toLowerCase())">
+      <input type="checkbox" name="languages" value="{{ t.code }}" x-model="picked"{% if t.on %} checked{% endif %}>
+      <span class="po-grow po-stack po-stack--xs" style="gap:2px">
+        <span lang="{{ t.code }}" style="font-size:17px;font-weight:600">{{ t.name }}</span>
+        <span class="po-small po-muted">{{ t.english }}</span>
+      </span>
+      <span class="po-tag po-tag--white" x-show="def === '{{ t.code }}' && picked.includes('{{ t.code }}')" x-cloak>{% trans "Default" %}</span>
+      <span class="po-langtile__mark">{% icon "check" 14 2.8 %}</span>
+    </label>
+    {% endfor %}
+  </div>
+  <div class="po-field">
+    <label for="su-default">{% trans "Default language" %}</label>
+    <select id="su-default" class="po-select" name="default" x-model="def">
+      {% for t in tiles %}<option value="{{ t.code }}" x-bind:disabled="!picked.includes('{{ t.code }}')" x-show="picked.includes('{{ t.code }}')">{{ t.name }}</option>{% endfor %}
+    </select>
+    <span class="po-hint">{% trans "Used when a message has not been translated yet, and for people who have not picked a language." %}</span>
+  </div>
+  <div class="po-flex po-flex--end">
+    <button class="po-btn po-btn--primary" x-bind:disabled="!picked.length">
+      <span x-text="picked.length === 1 ? '{% trans 'Continue with 1 language' %}' : '{% trans 'Continue with' %} ' + picked.length + ' {% trans 'languages' %}'">{% trans "Continue" %}</span>
+    </button>
+  </div>
+</form>
+{% endblock %}

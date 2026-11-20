@@ -1,0 +1,20 @@
+{% load po i18n %}
+<div class="sg__row">
+  <div class="sg__name"><span class="sg__title">{{ row.name }}</span>{% if row.description %}<span class="sg__desc">{{ row.description }}</span>{% endif %}</div>
+  {% for cell in row.cells %}
+  <div class="sg__col">
+    {% if cell.available %}
+    <form method="post" action="{% url 'public:preferences_toggle' token %}" hx-post="{% url 'public:preferences_toggle' token %}" hx-target="#prefs-grid" hx-swap="outerHTML">
+      {% csrf_token %}
+      <input type="hidden" name="list" value="{{ row.list.public_id }}"><input type="hidden" name="channel" value="{{ cell.channel }}">
+      <input type="hidden" name="on" value="{% if cell.on %}0{% else %}1{% endif %}">
+      <button type="submit" class="sg__tick" aria-pressed="{% if cell.on %}true{% else %}false{% endif %}" aria-label="{{ cell.label }}{% if cell.unconfirmed %}: {% trans 'waiting for you to confirm' %}{% endif %}"{% if cell.unconfirmed %} title="{% trans 'Waiting for you to confirm. Press to switch it on now.' %}"{% endif %}>
+        <span class="sg__box{% if cell.on %} is-on{% elif cell.unconfirmed %} is-waiting{% endif %}">{% if cell.on %}{% icon "check" 16 3 %}{% elif cell.unconfirmed %}{% icon "clock" 16 2.2 %}{% endif %}</span>
+      </button>
+    </form>
+    {% else %}
+    <span class="sg__none" aria-label="{{ cell.label }}: {% trans 'not available' %}">–</span>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>

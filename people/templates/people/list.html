@@ -1,0 +1,201 @@
+{% extends "shell.html" %}
+{% load po i18n static humanize tz %}
+{% block page_title %}{% trans "People" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/people.css' %}">{% endblock %}
+{% block title %}{% trans "People" %}{% endblock %}
+{% block subtitle %}{% blocktrans count n=total with shown=total|intcomma %}{{ shown }} person. Lists you send campaigns to, and private lists your apps keep.{% plural %}{{ shown }} people. Lists you send campaigns to, and private lists your apps keep.{% endblocktrans %}{% endblock %}
+{% block actions %}
+<form method="get" action="{% url 'people:list' %}" role="search">
+  {% if current_list %}<input type="hidden" name="list" value="{{ current_list.public_id }}">{% endif %}
+  {% if lang %}<input type="hidden" name="lang" value="{{ lang }}">{% endif %}
+  {% if channel %}<input type="hidden" name="channel" value="{{ channel }}">{% endif %}
+  {% if status %}<input type="hidden" name="status" value="{{ status }}">{% endif %}
+  <label class="po-search">
+    <span class="sr-only">{% trans "Search" %}</span>{% icon "search" %}
+    <input type="search" name="q" value="{{ q }}" placeholder="{% trans 'Search by name or email' %}">
+  </label>
+</form>
+{% if can_edit %}
+<a class="po-btn po-btn--white" href="{% url 'people:import' %}{% if current_list and current_list.kind == 'campaign' %}?list={{ current_list.public_id }}{% endif %}">{% icon "upload" %}{% trans "Import" %}</a>
+<button type="button" class="po-btn po-btn--primary" hx-get="{% url 'people:person_new' %}" hx-target="#po-dialog-slot">{% icon "plus" %}{% trans "Add person" %}</button>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="pp-layout">
+  <aside class="po-panel pp-side" aria-label="{% trans 'Lists' %}">
+    <a href="{% url 'people:list' %}" class="pp-listrow{% if not current_list %} is-current{% endif %}"{% if not current_list %} aria-current="true"{% endif %}>
+      <span class="pp-listrow__text"><span class="pp-listrow__name">{% trans "Everyone" %}</span><span class="pp-listrow__note">{% trans "All people" %}</span></span>
+      <span class="pp-listrow__count po-num">{{ total|intcomma }}</span>
+    </a>
+    <hr class="po-divider">
+
+    <div class="pp-sidehead">
+      <span class="po-eyebrow">{% trans "Campaign lists" %}</span>
+      <span class="pp-listrow__note">{% trans "People choose to join. You send newsletters here." %}</span>
+    </div>
+    <div class="pp-lists">
+      {% for lst in campaign_lists %}
+      <div class="pp-listwrap{% if lst.current %} is-current{% endif %}">
+        <a href="?list={{ lst.public_id }}" class="pp-listrow"{% if lst.current %} aria-current="true"{% endif %}>
+          {% if lst.building %}<span class="po-logo">{% building_logo lst.building 28 %}</span>{% endif %}
+          <span class="pp-listrow__text">
+            <span class="pp-listrow__name">{{ lst.label }}</span>
+            <span class="pp-listrow__note">{% if lst.on_signup_form %}{% trans "Signup form" %}{% elif lst.building %}{{ lst.building.name }}{% else %}{% trans "Not on the signup form" %}{% endif %}</span>
+          </span>
+          <span class="pp-listrow__count po-num">{{ lst.count|intcomma }}</span>
+        </a>
+        {% if can_edit %}
+        <button type="button" class="po-iconbtn po-iconbtn--plain pp-listedit" hx-get="{% url 'people:list_edit' lst.public_id %}" hx-target="#po-dialog-slot" aria-label="{% blocktrans with name=lst.label %}Edit {{ name }}{% endblocktrans %}" title="{% trans 'Edit list' %}">{% icon "edit" 16 %}</button>
+        {% endif %}
+      </div>
+      {% empty %}
+      <span class="po-small po-muted pp-sidenote">{% trans "No campaign lists yet." %}</span>
+      {% endfor %}
+    </div>
+    {% if can_edit %}
+    <button type="button" class="po-btn po-btn--sm" hx-get="{% url 'people:list_new' %}" hx-target="#po-dialog-slot">{% icon "plus" 16 %}{% trans "New list" %}</button>
+    {% endif %}
+    <hr class="po-divider">
+
+    <div class="pp-sidehead">
+      <span class="po-eyebrow">{% trans "App lists" %}</span>
+      <span class="pp-listrow__note">{% trans "Private. Each app keeps its own list up to date, for app messages only." %}</span>
+    </div>
+    <div class="pp-lists">
+      {% for lst in app_lists %}
+      <div class="pp-listwrap{% if lst.current %} is-current{% endif %}">
+        <a href="?list={{ lst.public_id }}" class="pp-listrow"{% if lst.current %} aria-current="true"{% endif %}>
+          <span class="po-logo">{% building_logo lst.building 28 %}</span>
+          <span class="pp-listrow__text">
+            <span class="pp-listrow__name">{{ lst.label }}</span>
+            <span class="pp-listrow__note pp-locked">{% icon "lock" 12 2.2 %}{% if lst.building %}{{ lst.building.name }}{% else %}{% trans "Kept by an app" %}{% endif %}<span class="sr-only">, {% trans "read-only" %}</span></span>
+          </span>
+          <span class="pp-listrow__count po-num">{{ lst.count|intcomma }}</span>
+        </a>
+      </div>
+      {% empty %}
+      <span class="po-small po-muted pp-sidenote">{% trans "None yet. They appear when a building creates one." %}</span>
+      {% endfor %}
+    </div>
+    <hr class="po-divider">
+
+    <div class="pp-sidehead">
+      <span class="po-eyebrow">{% trans "Segments" %}</span>
+      <span class="pp-listrow__note">{% trans "Saved filters. The builder comes later." %}</span>
+    </div>
+    {% if segments %}
+    <div class="pp-lists">
+      {% for segment in segments %}
+      <div class="pp-listrow pp-listrow--static"><span class="pp-listrow__text"><span class="pp-listrow__name">{{ segment.name }}</span><span class="pp-listrow__note">{% trans "Saved filter" %}</span></span></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if can_edit %}
+    <hr class="po-divider">
+    <a class="po-btn po-btn--sm pp-signupbtn" href="{% url 'people:signup_form' %}">{% icon "edit" 16 %}{% trans "Signup form" %}</a>
+    {% endif %}
+  </aside>
+
+  <div class="pp-main po-stack">
+    <form method="get" action="{% url 'people:list' %}" class="po-flex" aria-label="{% trans 'Filters' %}">
+      {% if current_list %}<input type="hidden" name="list" value="{{ current_list.public_id }}">{% endif %}
+      {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+      <label class="pp-filter"><span>{% trans "Language" %}</span>
+        <select name="lang" onchange="this.form.submit()">
+          <option value="">{% trans "Any" %}</option>
+          {% for l in languages %}<option value="{{ l.code }}"{% if l.code == lang %} selected{% endif %}>{{ l.name }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="pp-filter"><span>{% trans "Channel" %}</span>
+        <select name="channel" onchange="this.form.submit()">
+          <option value="">{% trans "Any" %}</option>
+          {% for value, label in channel_choices %}<option value="{{ value }}"{% if value == channel %} selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="pp-filter"><span>{% trans "Status" %}</span>
+        <select name="status" onchange="this.form.submit()">
+          <option value="">{% trans "Any" %}</option>
+          {% for value, label in status_choices %}<option value="{{ value }}"{% if value == status %} selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </label>
+      <noscript><button class="po-btn po-btn--sm po-btn--white">{% trans "Apply" %}</button></noscript>
+      {% if filtered %}<a class="po-btn po-btn--sm po-btn--ghost" href="{% url 'people:list' %}{% if current_list %}?list={{ current_list.public_id }}{% endif %}">{% icon "close" 16 %}{% trans "Clear filters" %}</a>{% endif %}
+    </form>
+
+    <section class="po-panel pp-tablepanel" aria-label="{% if current_list %}{{ current_list_name }}{% else %}{% trans 'Everyone' %}{% endif %}">
+      {% if current_list %}
+      <div class="po-flex po-flex--between">
+        <div class="po-stack po-stack--xs">
+          <h2 class="po-h2">{{ current_list_name }}</h2>
+          <span class="po-small po-muted">
+            {% if current_list.kind == "app" %}{% icon "lock" 12 2.2 %} {% blocktrans with building=current_list.building.name|default:_("an app") %}Kept by {{ building }}. You cannot change this list or its members here.{% endblocktrans %}
+            {% else %}{% trans "People with this list switched on." %}{% endif %}
+          </span>
+        </div>
+        {% if can_edit and current_list.kind == "campaign" %}
+        <button type="button" class="po-btn po-btn--sm" hx-get="{% url 'people:list_edit' current_list.public_id %}" hx-target="#po-dialog-slot">{% icon "edit" 16 %}{% trans "Edit list" %}</button>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% if people %}
+      <div class="po-tablewrap">
+        <table class="po-table pp-table">
+          <thead><tr>
+            <th scope="col">{% trans "Person" %}</th><th scope="col">{% trans "Language" %}</th><th scope="col">{% trans "Reachable on" %}</th>
+            <th scope="col">{% trans "Lists" %}</th><th scope="col">{% trans "Status" %}</th><th scope="col" class="po-right">{% trans "Joined" %}</th>
+          </tr></thead>
+          <tbody>
+            {% timezone org.tz %}
+            {% for person in people %}
+            <tr>
+              <td><div class="pp-person">
+                <span class="pp-avatar" aria-hidden="true">{{ person.initials }}</span>
+                <div class="po-stack po-stack--xs pp-person__text">
+                  <a class="po-rowlink" href="{% url 'people:person' person.public_id %}">{{ person.full_name|default:person.email|default:person.public_id }}</a>
+                  {% if person.full_name and person.email %}<span class="po-small po-muted">{{ person.email }}</span>{% endif %}
+                </div>
+              </div></td>
+              <td>{% if person.language %}<span class="pp-langtag" title="{{ person.language.name }}">{{ person.language.code|upper }}</span>{% endif %}</td>
+              <td><div class="pp-reach">
+                {% for r in person.reach %}<span class="pp-chan" title="{{ r.label }}">{% icon r.icon 16 2 r.label %}</span>{% empty %}<span class="po-small po-muted">{% trans "Nowhere" %}</span>{% endfor %}
+              </div></td>
+              <td><span class="po-muted">{{ person.list_names|default:"–" }}</span></td>
+              <td><span class="po-tag {{ person.status.2 }}">{{ person.status.1 }}</span></td>
+              <td class="po-right"><span class="po-muted po-num" title="{{ person.created_at|date:'DATETIME_FORMAT' }}">{{ person.created_at|date:"M j, Y" }}</span></td>
+            </tr>
+            {% endfor %}
+            {% endtimezone %}
+          </tbody>
+        </table>
+      </div>
+      <div class="po-pagination">
+        <span>{% blocktrans with first=page.start_index last=page.end_index total=page.paginator.count|intcomma %}{{ first }} to {{ last }} of {{ total }}{% endblocktrans %}</span>
+        {% if pages %}
+        <nav class="po-pages" aria-label="{% trans 'Pages' %}">
+          {% if page.has_previous %}<a href="{% qs page=page.previous_page_number %}" aria-label="{% trans 'Previous page' %}">{% icon "chevron-left" 16 %}</a>{% endif %}
+          {% for n in pages %}
+            {% if n == ellipsis %}<span aria-hidden="true">…</span>
+            {% elif n == page.number %}<span aria-current="page">{{ n }}</span>
+            {% else %}<a href="{% qs page=n %}">{{ n }}</a>{% endif %}
+          {% endfor %}
+          {% if page.has_next %}<a href="{% qs page=page.next_page_number %}" aria-label="{% trans 'Next page' %}">{% icon "chevron-right" 16 %}</a>{% endif %}
+        </nav>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="po-empty">
+        {% if filtered or current_list %}
+        <span class="po-h3">{% trans "Nobody matches" %}</span>
+        <span>{% trans "Try a different search, or clear the filters." %}</span>
+        {% else %}
+        <span class="po-h3">{% trans "Nobody is here yet" %}</span>
+        <span>{% trans "People arrive through the signup form, an import, or your apps." %}</span>
+        {% if can_edit %}<a class="po-btn po-btn--sm" href="{% url 'people:import' %}">{% icon "upload" 16 %}{% trans "Import people" %}</a>{% endif %}
+        {% endif %}
+      </div>
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}

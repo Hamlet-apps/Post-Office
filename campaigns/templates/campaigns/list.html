@@ -1,0 +1,121 @@
+{% extends "shell.html" %}
+{% load po cp i18n static %}
+{% block page_title %}{% trans "Campaigns" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/campaigns.css' %}">{% endblock %}
+{% block title %}{% trans "Campaigns" %}{% endblock %}
+{% block subtitle %}{% trans "Newsletters and announcements you write and send to your lists." %}{% endblock %}
+{% block actions %}
+<form method="get" action="{% url 'campaigns:list' %}" role="search">
+  {% if state != "all" %}<input type="hidden" name="state" value="{{ state }}">{% endif %}
+  <label class="po-search"><span class="sr-only">{% trans "Search campaigns" %}</span>{% icon "search" %}
+    <input type="search" name="q" value="{{ q }}" placeholder="{% trans 'Search campaigns' %}"></label>
+</form>
+{% if user.can_edit %}
+  {% if campaign_templates %}<button type="button" class="po-btn po-btn--white" data-open-dialog="cp-from-template">{% icon "templates" %}{% trans "Start from a template" %}</button>{% endif %}
+  <form method="post" action="{% url 'campaigns:new' %}">{% csrf_token %}
+    <button class="po-btn po-btn--primary">{% icon "plus" %}{% trans "New campaign" %}</button>
+  </form>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="po-flex">
+  <div class="po-seg" role="group" aria-label="{% trans 'Status' %}">
+    {% for tab in tabs %}
+    <a href="{% qs state=tab.key page='' %}"{% if tab.current %} aria-current="true"{% endif %}>{{ tab.label }} <span class="po-num">{{ tab.count }}</span></a>
+    {% endfor %}
+  </div>
+</div>
+
+<section class="po-panel" aria-label="{% trans 'Campaigns' %}">
+  {% if rows %}
+  <div class="po-tablewrap">
+    <table class="po-table cp-table">
+      <thead><tr>
+        <th scope="col">{% trans "Campaign" %}</th>
+        <th scope="col">{% trans "Status" %}</th>
+        <th scope="col">{% trans "Channels" %}</th>
+        <th scope="col">{% trans "Languages" %}</th>
+        <th scope="col" class="po-right">{% trans "Audience" %}</th>
+        <th scope="col" class="po-right">{% trans "Opened" %}</th>
+        <th scope="col" class="po-right">{% trans "Clicked" %}</th>
+        <th scope="col" class="po-right">{% trans "When" %}</th>
+        {% if user.can_edit %}<th scope="col"><span class="sr-only">{% trans "Actions" %}</span></th>{% endif %}
+      </tr></thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td>
+            <div class="po-stack" style="gap:2px">
+              <a href="{{ row.url }}" class="po-rowlink cp-name">{{ row.campaign.name }}</a>
+              <span class="po-small po-muted">{% if row.to %}{% blocktrans with lists=row.to %}To {{ lists }}{% endblocktrans %}{% else %}{% trans "No list chosen yet" %}{% endif %}</span>
+            </div>
+          </td>
+          <td><span class="po-tag {{ row.state_tag }}">{{ row.campaign.get_state_display }}</span></td>
+          <td><div class="po-flex po-flex--nowrap" style="gap:6px">
+            {% for ch in row.channels %}<span class="cp-chan" title="{{ ch.name }}">{% icon ch.icon 16 2 ch.name %}</span>{% empty %}<span class="po-muted">–</span>{% endfor %}
+          </div></td>
+          <td><div class="po-flex" style="gap:6px">{% include "campaigns/_langtags.html" %}</div></td>
+          <td class="po-right po-num">{% if row.audience is None %}–{% else %}{{ row.audience|num }}{% endif %}</td>
+          <td class="po-right po-num po-strong">{% if row.open_rate is None %}–{% else %}{{ row.open_rate|pct }}{% endif %}</td>
+          <td class="po-right po-num po-strong">{% if row.click_rate is None %}–{% else %}{{ row.click_rate|pct }}{% endif %}</td>
+          <td class="po-right po-muted" style="white-space:nowrap">{{ row.when }}</td>
+          {% if user.can_edit %}
+          <td class="po-right">
+            <div class="po-flex po-flex--nowrap po-flex--end po-above" style="gap:4px">
+              <form method="post" action="{% url 'campaigns:duplicate' row.campaign.public_id %}">{% csrf_token %}
+                <button class="po-iconbtn po-iconbtn--plain" title="{% trans 'Duplicate' %}" aria-label="{% blocktrans with name=row.campaign.name %}Duplicate {{ name }}{% endblocktrans %}">{% icon "copy" %}</button></form>
+              {% if row.campaign.state == "draft" %}
+              <form method="post" action="{% url 'campaigns:delete' row.campaign.public_id %}" data-confirm="{% blocktrans with name=row.campaign.name %}Delete the draft “{{ name }}”? This cannot be undone.{% endblocktrans %}">{% csrf_token %}
+                <button class="po-iconbtn po-iconbtn--plain cp-danger" title="{% trans 'Delete draft' %}" aria-label="{% blocktrans with name=row.campaign.name %}Delete the draft {{ name }}{% endblocktrans %}">{% icon "trash" %}</button></form>
+              {% else %}<span class="cp-iconspace" aria-hidden="true"></span>{% endif %}
+            </div>
+          </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="po-pagination">
+    <span>{% blocktrans with first=page.start_index last=page.end_index total=page.paginator.count %}{{ first }} to {{ last }} of {{ total }}{% endblocktrans %}</span>
+    {% if page.paginator.num_pages > 1 %}
+    <nav class="po-pages" aria-label="{% trans 'Pages' %}">
+      {% for n in page.paginator.page_range %}
+        {% if n == page.number %}<span aria-current="page">{{ n }}</span>{% else %}<a href="{% qs page=n %}">{{ n }}</a>{% endif %}
+      {% endfor %}
+    </nav>
+    {% endif %}
+  </div>
+  {% elif not any_campaigns %}
+  <div class="po-empty">
+    <span class="po-icontile po-icontile--lg">{% icon "campaigns" 22 1.8 %}</span>
+    <span class="po-h3">{% trans "No campaigns yet" %}</span>
+    <span>{% trans "Write a newsletter once, in each of your languages, and send it to a list by email, Telegram or push." %}</span>
+    {% if user.can_edit %}<form method="post" action="{% url 'campaigns:new' %}">{% csrf_token %}<button class="po-btn po-btn--teal">{% icon "plus" %}{% trans "Write your first campaign" %}</button></form>{% endif %}
+  </div>
+  {% else %}
+  <div class="po-empty">
+    <span class="po-h3">{% trans "Nothing matches" %}</span>
+    <span>{% if q %}{% blocktrans %}No campaign has “{{ q }}” in its name.{% endblocktrans %}{% else %}{% trans "There are no campaigns in this state." %}{% endif %}</span>
+    <a class="po-btn" href="{% url 'campaigns:list' %}">{% trans "Show all campaigns" %}</a>
+  </div>
+  {% endif %}
+</section>
+
+{% if user.can_edit and campaign_templates %}
+<dialog class="po-dialog po-dialog--sm" id="cp-from-template" aria-labelledby="cp-from-template-title">
+  <form method="post" action="{% url 'campaigns:new' %}">{% csrf_token %}
+    <div class="po-dialog__head"><h2 class="po-h2" id="cp-from-template-title">{% trans "Start from a template" %}</h2>
+      <button type="button" class="po-iconbtn po-iconbtn--plain" data-close-dialog aria-label="{% trans 'Close' %}">{% icon "close" %}</button></div>
+    <div class="po-field"><label for="cp-template">{% trans "Template" %}</label>
+      <select class="po-select" id="cp-template" name="template">
+        {% for t in campaign_templates %}<option value="{{ t.key }}">{{ t.name }}</option>{% endfor %}
+      </select>
+      <span class="po-hint">{% trans "Its content is copied into a new draft. The template itself does not change." %}</span></div>
+    <div class="po-dialog__foot"><button type="button" class="po-btn po-btn--ghost" data-close-dialog>{% trans "Cancel" %}</button>
+      <button class="po-btn po-btn--teal">{% trans "Start writing" %}</button></div>
+  </form>
+</dialog>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% load po i18n %}
+{# Matches for the "To" field. Each button adds a chip through the dialog's Alpine state. #}
+{% for item in lists %}
+<button type="button" class="qm-result" data-id="{{ item.list.public_id }}" data-label="{{ item.label }}"
+        @click="add('lists', $el.dataset.id, $el.dataset.label)">
+  {% icon "list" 16 %}<span class="po-strong">{{ item.label }}</span>
+  <span class="po-muted">{% if item.list.is_app %}{% trans "App list" %}{% else %}{% trans "Campaign list" %}{% endif %}</span>
+</button>
+{% endfor %}
+{% for person in people %}
+<button type="button" class="qm-result" data-id="{{ person.public_id }}" data-label="{{ person.display_name }}"
+        @click="add('people', $el.dataset.id, $el.dataset.label)">
+  {% icon "person" 16 %}<span class="po-strong">{{ person.display_name }}</span>
+  {% if person.email and person.full_name %}<span class="po-muted">{{ person.email }}</span>{% endif %}
+</button>
+{% endfor %}
+{% if q and not lists and not people %}
+<span class="po-small po-muted" style="padding:8px 10px">{% trans "No person or list matches that." %}</span>
+{% endif %}

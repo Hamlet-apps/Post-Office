@@ -1,0 +1,146 @@
+{% extends "shell.html" %}
+{% load po i18n static humanize %}
+{% block page_title %}{% trans "Outbox" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/outbox.css' %}">{% endblock %}
+{% block title %}{% trans "Outbox" %}{% endblock %}
+{% block subtitle %}{% trans "Every message Post Office has sent or is about to send. Click a row to open its campaign report or its template." %}{% endblock %}
+{% block actions %}
+<form method="get" action="{% url 'delivery:outbox' %}" role="search">
+  {% if f.source %}<input type="hidden" name="source" value="{{ f.source }}">{% endif %}
+  {% if f.channel %}<input type="hidden" name="channel" value="{{ f.channel }}">{% endif %}
+  {% if f.status %}<input type="hidden" name="status" value="{{ f.status }}">{% endif %}
+  {% if f.start %}<input type="hidden" name="from" value="{{ f.start|date:'Y-m-d' }}">{% endif %}
+  {% if f.end %}<input type="hidden" name="to" value="{{ f.end|date:'Y-m-d' }}">{% endif %}
+  <label class="po-search"><span class="sr-only">{% trans "Search" %}</span>{% icon "search" %}
+    <input type="search" name="q" value="{{ f.q }}" placeholder="{% trans 'Search by person or message' %}"></label>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="po-cols">
+  {% for counter in counters %}
+  <div class="po-card ob-counter">
+    <div class="po-flex po-flex--between po-flex--nowrap">
+      <span class="ob-counter__label">{{ counter.label }}</span>
+      <span class="po-icontile">{% icon counter.icon %}</span>
+    </div>
+    <span class="ob-counter__value po-num">{{ counter.value|intcomma }}</span>
+    <span class="po-small po-muted">{{ counter.note }}</span>
+  </div>
+  {% endfor %}
+</div>
+
+<form method="get" action="{% url 'delivery:outbox' %}" class="ob-filters" aria-label="{% trans 'Filters' %}">
+  {% if f.q %}<input type="hidden" name="q" value="{{ f.q }}">{% endif %}
+  {% if f.source %}<input type="hidden" name="source" value="{{ f.source }}">{% endif %}
+  <div class="po-seg" role="group" aria-label="{% trans 'Source' %}">
+    <a href="{% qs source='' page='' %}"{% if not f.source %} aria-current="true"{% endif %}>{% trans "All" %}</a>
+    <a href="{% qs source='campaigns' page='' %}"{% if f.source == "campaigns" %} aria-current="true"{% endif %}>{% trans "Campaigns" %}</a>
+    {% for building in buildings %}
+    <a href="{% qs source=building.public_id page='' %}"{% if f.source == building.public_id %} aria-current="true"{% endif %}>{{ building.name }}</a>
+    {% endfor %}
+  </div>
+  <span class="po-grow"></span>
+  <label class="ob-filter"><span>{% trans "Channel" %}</span>
+    <select name="channel" onchange="this.form.submit()">
+      <option value="">{% trans "Any" %}</option>
+      {% for value, label in channel_choices %}<option value="{{ value }}"{% if f.channel == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select></label>
+  <label class="ob-filter"><span>{% trans "Status" %}</span>
+    <select name="status" onchange="this.form.submit()">
+      <option value="">{% trans "Any" %}</option>
+      {% for value, label in status_choices %}<option value="{{ value }}"{% if f.status == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select></label>
+  <label class="ob-filter"><span>{% trans "From" %}</span>
+    <input type="date" name="from" value="{{ f.start|date:'Y-m-d' }}" onchange="this.form.submit()"></label>
+  <label class="ob-filter"><span>{% trans "To" %}</span>
+    <input type="date" name="to" value="{{ f.end|date:'Y-m-d' }}" onchange="this.form.submit()"></label>
+  <noscript><button class="po-btn po-btn--sm po-btn--white">{% trans "Show" %}</button></noscript>
+  {% if is_filtered %}<a class="po-btn po-btn--sm po-btn--ghost" href="{% url 'delivery:outbox' %}">{% trans "Clear filters" %}</a>{% endif %}
+</form>
+
+<section class="po-panel" aria-label="{% trans 'Messages' %}">
+  {% if rows %}
+  <div class="po-tablewrap">
+    <table class="po-table ob-table">
+      <thead><tr>
+        <th scope="col">{% trans "Time" %}</th>
+        <th scope="col">{% trans "To" %}</th>
+        <th scope="col">{% trans "Message" %}</th>
+        <th scope="col">{% trans "From" %}</th>
+        <th scope="col">{% trans "Channel" %}</th>
+        <th scope="col">{% trans "Language" %}</th>
+        <th scope="col">{% trans "Status" %}</th>
+      </tr></thead>
+      {% for row in rows %}
+      {% if row.kind == "c" %}{% with c=row.item %}
+      <tbody x-data="{open:false}">
+        <tr class="ob-summary">
+          <td><span class="po-muted">{{ c.when }}</span></td>
+          <td>
+            <span class="po-strong">{{ c.list_names }}</span><br>
+            <span class="po-small po-muted">{% blocktrans count n=c.people_count with shown=c.people_count|intcomma %}{{ shown }} person{% plural %}{{ shown }} people{% endblocktrans %}</span>
+          </td>
+          <td>
+            <div class="po-stack po-stack--xs">
+              <a href="{{ c.href }}" class="po-rowlink ob-title">{{ c.name }}</a>
+              <span class="po-small po-muted">{% trans "Campaign" %}</span>
+            </div>
+          </td>
+          <td><div class="ob-from">{% app_icon 26 %}<span>{% trans "Campaign" %}</span></div></td>
+          <td><div class="ob-channels">{% for ch in c.channel_list %}{% include "delivery/_channel.html" with channel=ch %}{% endfor %}</div></td>
+          <td><div class="ob-langs">{% for tag in c.language_tags %}{% include "delivery/_lang.html" with code=tag.code fallback=tag.fallback %}{% empty %}<span class="po-muted">–</span>{% endfor %}</div></td>
+          <td>
+            <div class="po-flex ob-status">
+              {% if c.state == "scheduled" %}<span class="po-tag po-tag--peach">{% icon "clock" 14 %}{% trans "Scheduled" %}</span>
+              {% elif c.state == "sending" %}<span class="po-tag po-tag--teal">{% icon "send" 14 %}{% trans "Sending" %}</span>
+              {% elif c.state == "paused" %}<span class="po-tag po-tag--peach">{% icon "pause" 14 %}{% trans "Paused" %}</span>
+              {% elif c.state == "cancelled" %}<span class="po-tag">{% trans "Cancelled" %}</span>
+              {% else %}<span class="po-tag po-tag--ok">{% icon "check" 14 %}{% trans "Sent" %}</span>{% endif %}
+              {% if c.failed_count %}<span class="po-tag po-tag--danger">{% icon "warning" 14 %}{% blocktrans with n=c.failed_count|intcomma %}{{ n }} failed{% endblocktrans %}</span>{% endif %}
+              {% if c.can_expand %}
+              <button type="button" class="po-btn po-btn--sm po-btn--ghost po-above" @click="open=!open" :aria-expanded="open.toString()"
+                      hx-get="{% url 'delivery:campaign_messages' c.public_id %}?{{ filter_query }}" hx-trigger="click once"
+                      hx-target="#ob-exp-{{ c.public_id }}" hx-swap="outerHTML">
+                <span x-show="!open">{% trans "Show each message" %}</span><span x-show="open" x-cloak>{% trans "Hide" %}</span>
+              </button>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% if c.can_expand %}<tr id="ob-exp-{{ c.public_id }}" class="ob-sub" x-show="open" x-cloak><td colspan="7" class="po-muted">{% trans "Loading" %}…</td></tr>{% endif %}
+      </tbody>
+      {% endwith %}{% else %}
+      <tbody>{% include "delivery/_message_row.html" with m=row.item sub=False %}</tbody>
+      {% endif %}
+      {% endfor %}
+    </table>
+  </div>
+  <div class="po-pagination">
+    <span>{% blocktrans with first=page.start_index|intcomma last=page.end_index|intcomma total=page.paginator.count|intcomma %}{{ first }} to {{ last }} of {{ total }}{% endblocktrans %}</span>
+    {% if page.paginator.num_pages > 1 %}
+    <nav class="po-pages" aria-label="{% trans 'Pages' %}">
+      {% if page.has_previous %}<a href="{% qs page=page.previous_page_number %}" aria-label="{% trans 'Previous page' %}">{% icon "chevron-left" 16 %}</a>{% endif %}
+      {% for n in page_numbers %}
+        {% if n == page.number %}<span aria-current="page">{{ n }}</span>{% elif n == page.paginator.ELLIPSIS %}<span class="po-muted">…</span>{% else %}<a href="{% qs page=n %}">{{ n }}</a>{% endif %}
+      {% endfor %}
+      {% if page.has_next %}<a href="{% qs page=page.next_page_number %}" aria-label="{% trans 'Next page' %}">{% icon "chevron-right" 16 %}</a>{% endif %}
+    </nav>
+    {% endif %}
+  </div>
+  {% elif is_filtered %}
+  <div class="po-empty">
+    <span class="po-icontile po-icontile--lg">{% icon "search" 22 1.8 %}</span>
+    <span class="po-h3">{% trans "Nothing matches" %}</span>
+    <span>{% trans "No message fits these filters. Try a wider day range or clear the filters." %}</span>
+    <a class="po-btn po-btn--white" href="{% url 'delivery:outbox' %}">{% trans "Clear filters" %}</a>
+  </div>
+  {% else %}
+  <div class="po-empty">
+    <span class="po-icontile po-icontile--lg">{% icon "outbox" 22 1.8 %}</span>
+    <span class="po-h3">{% trans "Nothing has been sent yet" %}</span>
+    <span>{% trans "Campaigns, app messages and quick messages show up here as soon as they are queued." %}</span>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

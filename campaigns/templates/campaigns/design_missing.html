@@ -1,0 +1,12 @@
+{% extends "shell.html" %}
+{% load po i18n %}
+{% block page_title %}{{ campaign.name }} · Post Office{% endblock %}
+{% block back %}<a href="{% url 'campaigns:list' %}" class="po-back">{% icon "chevron-left" 16 %}{% trans "Campaigns" %}</a>{% endblock %}
+{% block title %}{{ campaign.name }}{% endblock %}
+{% block content %}
+<section class="po-panel"><div class="po-empty">
+  <span class="po-h3">{% trans "The editor is not available yet" %}</span>
+  <span>{% trans "Your draft is saved. You can still choose who gets it." %}</span>
+  <a class="po-btn" href="{% url 'campaigns:send' campaign.public_id %}">{% trans "Audience and send" %}</a>
+</div></section>
+{% endblock %}

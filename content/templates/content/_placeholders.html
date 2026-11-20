@@ -1,0 +1,39 @@
+{% load po i18n %}
+{% comment %}
+Buttons that insert a placeholder at the cursor of the last text field used.
+Campaigns: a row of chips. App messages: the building's variables with their sample values.
+{% endcomment %}
+{% if is_app %}
+<div class="ed-vars">
+  <span class="po-eyebrow">{% blocktrans with name=owner.building.name|default:_("the building") %}From {{ name }}{% endblocktrans %}</span>
+  <span class="po-small po-muted">{% trans "Click to insert at the cursor" %}</span>
+  <div class="ed-vars__list">
+    {% for p in placeholders %}
+    {% if p.list %}
+    {% if form == "email" and view == "visual" %}
+    <button type="button" class="ed-var" data-name="{{ p.name }}" @click="addRepeat($el.dataset.name)" aria-label="{% blocktrans with label=p.label %}Add a repeating list of {{ label }}{% endblocktrans %}"{% if not can_edit %} disabled{% endif %}>
+      <span class="ed-var__top"><span class="po-var">{{ p.label }}</span>{% icon "repeat" 14 %}</span>
+      <span class="ed-var__sample">{% trans "List:" %} {% for f in p.fields %}{{ f.label }}{% if not forloop.last %}, {% endif %}{% endfor %}</span>
+    </button>
+    {% endif %}
+    {% else %}
+    <button type="button" class="ed-var" data-name="{{ p.name }}" @click="insertVar($el.dataset.name)" aria-label="{% blocktrans with label=p.label %}Insert {{ label }}{% endblocktrans %}"{% if not can_edit %} disabled{% endif %}>
+      <span class="ed-var__top"><span class="po-var">{{ p.label }}</span>{% icon "plus" 14 %}</span>
+      {% if p.sample %}<span class="ed-var__sample">{{ p.sample }}</span>{% endif %}
+    </button>
+    {% endif %}
+    {% empty %}
+    <span class="po-small po-muted">{% trans "This message has no details to insert." %}</span>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<div class="po-field">
+  <span class="po-label">{% trans "Insert a detail about the reader" %}</span>
+  <div class="ed-chips">
+    {% for p in placeholders %}
+    <button type="button" class="ed-chipbtn" data-name="{{ p.name }}" @click="insertVar($el.dataset.name)"{% if not can_edit %} disabled{% endif %}>{{ p.label }}</button>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

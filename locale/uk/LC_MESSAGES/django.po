@@ -1,0 +1,4729 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-20 14:01-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+msgid "did not answer in time"
+msgstr ""
+
+msgid "could not be reached"
+msgstr ""
+
+msgid "page not found"
+msgstr ""
+
+#, python-format
+msgid "answered with error %(status)s"
+msgstr ""
+
+#, python-format
+msgid "Sending to %(n)s list"
+msgid_plural "Sending to %(n)s lists"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Choose at least one list"
+msgstr ""
+
+msgid "Nobody would get this campaign yet."
+msgstr ""
+
+msgid "Choose at least one channel"
+msgstr ""
+
+msgid "Pick email, Telegram or a push app."
+msgstr ""
+
+msgid "email"
+msgstr ""
+
+msgid "notification"
+msgstr ""
+
+#, python-format
+msgid "%(language)s, your default language, is not written yet"
+msgstr ""
+
+#, python-format
+msgid ""
+"Write the %(forms)s in %(language)s. People whose language is missing get "
+"the default."
+msgstr ""
+
+#, python-format
+msgid "Subject and content written in %(done)s of %(all)s languages"
+msgstr ""
+
+#, python-format
+msgid "%(language)s is missing. Write it before sending."
+msgstr ""
+
+msgid "Your settings hold a campaign until every language is written."
+msgstr ""
+
+#, python-format
+msgid "%(language)s is missing."
+msgstr ""
+
+#, python-format
+msgid "%(language)s is missing. %(n)s reader will get %(default)s."
+msgid_plural "%(language)s is missing. %(n)s readers will get %(default)s."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(language)s is missing. Its readers will get %(default)s."
+msgstr ""
+
+msgid "The unsubscribe link is missing from the footer"
+msgstr ""
+
+#, python-format
+msgid "Missing in: %(languages)s"
+msgstr ""
+
+msgid "Unsubscribe link is in the footer in every language"
+msgstr ""
+
+msgid "Choose an email sender"
+msgstr ""
+
+msgid "Add one in Channels if there is none to pick."
+msgstr ""
+
+msgid "It has not been tested yet. Send a test from Channels first."
+msgstr ""
+
+msgid "The last connection test failed."
+msgstr ""
+
+#, python-format
+msgid "%(address)s is not working"
+msgstr ""
+
+#, python-format
+msgid "Sending from %(address)s"
+msgstr ""
+
+msgid "Choose a Telegram bot"
+msgstr ""
+
+msgid "Choose a push app"
+msgstr ""
+
+#, python-format
+msgid "%(n)s person has no recorded consent"
+msgid_plural "%(n)s people have no recorded consent"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid ""
+"Newsletters need consent. Record it on the person's page, or take them off "
+"the list."
+msgstr ""
+
+msgid "Everyone on the list agreed to get this"
+msgstr ""
+
+#, python-format
+msgid "%(n)s link does not work"
+msgid_plural "%(n)s links do not work"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "The link works"
+msgid_plural "All %(n)s links work"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "No links to check"
+msgstr ""
+
+msgid "This campaign has already been sent."
+msgstr ""
+
+msgid "Skipped, no reason recorded"
+msgstr ""
+
+msgid "Failed, no reason recorded"
+msgstr ""
+
+msgid "No opens recorded in the first 48 hours."
+msgstr ""
+
+msgid "Half of all opens came within an hour of sending."
+msgstr ""
+
+#, python-format
+msgid "Half of all opens came within %(n)s hour of sending."
+msgid_plural "Half of all opens came within %(n)s hours of sending."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(n)s opens in the first 48 hours"
+msgstr ""
+
+#, python-format
+msgid "%(n)s delivered"
+msgstr ""
+
+#, python-format
+msgid "%(pct)s opened"
+msgstr ""
+
+msgid "opened"
+msgstr ""
+
+#, python-format
+msgid "%(n)s tapped the button"
+msgid_plural "%(n)s tapped the button"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "delivered"
+msgstr ""
+
+msgid "Edited today"
+msgstr ""
+
+#, python-format
+msgid "Edited %(n)s day ago"
+msgid_plural "Edited %(n)s days ago"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(language)s not written yet"
+msgstr ""
+
+#, python-format
+msgid "%(n)s languages to go"
+msgstr ""
+
+#, python-format
+msgid "%(name)s: written"
+msgstr ""
+
+#, python-format
+msgid "%(name)s: not written"
+msgstr ""
+
+msgid "written"
+msgstr ""
+
+msgid "not written"
+msgstr ""
+
+msgid "Before you send"
+msgstr ""
+
+msgid "Done:"
+msgstr ""
+
+msgid "Must fix:"
+msgstr ""
+
+msgid "Warning:"
+msgstr ""
+
+msgid "Finish the checklist first"
+msgstr ""
+
+msgid "Send or schedule"
+msgstr ""
+
+msgid "Languages"
+msgstr ""
+
+#, python-format
+msgid "Write %(name)s"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Readers"
+msgstr ""
+
+msgid "Email"
+msgstr "Електронна пошта"
+
+msgid "What they get"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Choose a channel first"
+msgstr ""
+
+#, python-format
+msgid "%(name)s (fallback)"
+msgstr ""
+
+msgid "Nothing yet"
+msgstr ""
+
+#, python-format
+msgid "Send this campaign to %(people)s person now?"
+msgid_plural "Send this campaign to %(people)s people now?"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "One thing on the checklist needs fixing before this can go out."
+msgid_plural ""
+"%(n)s things on the checklist need fixing before this can go out."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(people)s person will get it."
+msgid_plural "%(people)s people will get it."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Who gets it"
+msgstr ""
+
+#, python-format
+msgid "%(people)s person"
+msgid_plural "%(people)s people"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Audience and channels"
+msgstr ""
+
+msgid "Lists and segments"
+msgstr ""
+
+msgid "Segment. Sending to segments comes later."
+msgstr ""
+
+msgid "There are no campaign lists yet."
+msgstr ""
+
+msgid "Add a list in People"
+msgstr ""
+
+msgid "Channels"
+msgstr ""
+
+#, python-format
+msgid "%(n)s reachable"
+msgstr ""
+
+msgid "Telegram"
+msgstr ""
+
+msgid "No bot connected yet"
+msgstr ""
+
+msgid "Push notifications, through your apps"
+msgstr ""
+
+#, python-format
+msgid "%(building)s app"
+msgstr ""
+
+msgid "Email sender"
+msgstr ""
+
+msgid "No newsletter sender yet"
+msgstr ""
+
+msgid "Choose a sender"
+msgstr ""
+
+msgid "Telegram bot"
+msgstr ""
+
+msgid "No bot yet"
+msgstr ""
+
+msgid "Choose a bot"
+msgstr ""
+
+msgid "Message type"
+msgstr ""
+
+msgid "Newsletter (needs consent)"
+msgstr ""
+
+msgid "Campaigns are always newsletters."
+msgstr ""
+
+msgid ""
+"People get it on every channel they signed up for, so someone with email and"
+" Telegram gets both."
+msgstr ""
+
+#, python-format
+msgid "%(people)s person here will not get it by email."
+msgid_plural "%(people)s people here will not get it by email."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Campaign steps"
+msgstr ""
+
+msgid "Design"
+msgstr ""
+
+msgid "Audience and send"
+msgstr ""
+
+msgid "Written"
+msgstr ""
+
+msgid "Not written"
+msgstr ""
+
+msgid "Campaigns"
+msgstr ""
+
+msgid "The editor is not available yet"
+msgstr ""
+
+msgid "Your draft is saved. You can still choose who gets it."
+msgstr ""
+
+msgid "Newsletters and announcements you write and send to your lists."
+msgstr ""
+
+msgid "Search campaigns"
+msgstr ""
+
+msgid "Start from a template"
+msgstr ""
+
+msgid "New campaign"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Campaign"
+msgstr ""
+
+msgid "Audience"
+msgstr ""
+
+msgid "Opened"
+msgstr ""
+
+msgid "Clicked"
+msgstr ""
+
+msgid "When"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+#, python-format
+msgid "To %(lists)s"
+msgstr ""
+
+msgid "No list chosen yet"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+#, python-format
+msgid "Duplicate %(name)s"
+msgstr ""
+
+#, python-format
+msgid "Delete the draft “%(name)s”? This cannot be undone."
+msgstr ""
+
+msgid "Delete draft"
+msgstr ""
+
+#, python-format
+msgid "Delete the draft %(name)s"
+msgstr ""
+
+#, python-format
+msgid "%(first)s to %(last)s of %(total)s"
+msgstr ""
+
+msgid "Pages"
+msgstr ""
+
+msgid "No campaigns yet"
+msgstr ""
+
+msgid ""
+"Write a newsletter once, in each of your languages, and send it to a list by"
+" email, Telegram or push."
+msgstr ""
+
+msgid "Write your first campaign"
+msgstr ""
+
+msgid "Nothing matches"
+msgstr ""
+
+#, python-format
+msgid "No campaign has “%(q)s” in its name."
+msgstr ""
+
+msgid "There are no campaigns in this state."
+msgstr ""
+
+msgid "Show all campaigns"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Template"
+msgstr ""
+
+msgid ""
+"Its content is copied into a new draft. The template itself does not change."
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Start writing"
+msgstr ""
+
+#, python-format
+msgid "Started %(day)s at %(time)s"
+msgstr ""
+
+#, python-format
+msgid "Sent %(day)s at %(time)s"
+msgstr ""
+
+#, python-format
+msgid "to %(list_names)s"
+msgstr ""
+
+#, python-format
+msgid "by %(channel_names)s"
+msgstr ""
+
+msgid "Nothing has gone out yet."
+msgstr ""
+
+msgid "Pause"
+msgstr ""
+
+msgid "Resume"
+msgstr ""
+
+msgid "Stop this send? Messages that have not gone out yet will not be sent."
+msgstr ""
+
+msgid "Stop sending"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "Use as a starting point"
+msgstr ""
+
+msgid "This send is paused."
+msgstr ""
+
+msgid "This campaign is going out now."
+msgstr ""
+
+#, python-format
+msgid "%(messages)s message is still waiting."
+msgid_plural "%(messages)s messages are still waiting."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid ""
+"The message rows for this campaign were cleared after 180 days. These totals"
+" were kept."
+msgstr ""
+
+msgid "No messages yet"
+msgstr ""
+
+msgid "Numbers appear here as soon as the first messages go out."
+msgstr ""
+
+msgid "Delivered"
+msgstr ""
+
+#, python-format
+msgid "%(pct)s of %(sent)s sent"
+msgstr ""
+
+msgid "Only email reports opens"
+msgstr ""
+
+#, python-format
+msgid "%(people)s person, by email"
+msgid_plural "%(people)s people, by email"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Unsubscribed"
+msgstr ""
+
+#, python-format
+msgid "%(pct)s of delivered"
+msgstr ""
+
+msgid "Opens in the first 48 hours"
+msgstr ""
+
+msgid "By language"
+msgstr ""
+
+#, python-format
+msgid "%(n)s sent"
+msgstr ""
+
+#, python-format
+msgid "%(pct)s clicked"
+msgstr ""
+
+msgid "No messages to break down yet."
+msgstr ""
+
+msgid "Links people clicked"
+msgstr ""
+
+msgid "Link"
+msgstr ""
+
+msgid "Clicks"
+msgstr ""
+
+msgid "Share"
+msgstr ""
+
+msgid "No tracked links in this campaign, or nobody has clicked one yet."
+msgstr ""
+
+msgid "Tracking is switched off in Settings, so clicks are not counted."
+msgstr ""
+
+msgid "By channel"
+msgstr ""
+
+msgid "Did not arrive"
+msgstr ""
+
+msgid "See these messages in the Outbox"
+msgstr ""
+
+msgid "Every message arrived."
+msgstr ""
+
+msgid "Send now"
+msgstr ""
+
+msgid "Schedule"
+msgstr ""
+
+msgid "Schedule for"
+msgstr ""
+
+msgid "Rename this campaign"
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Back to design"
+msgstr ""
+
+msgid "Scheduled"
+msgstr ""
+
+#, python-format
+msgid "Scheduled for %(when)s"
+msgstr ""
+
+#, python-format
+msgid "Time zone: %(tz_name)s."
+msgstr ""
+
+msgid "The send is spread over an hour."
+msgstr ""
+
+msgid "To change anything, move it back to a draft first."
+msgstr ""
+
+msgid "Back to draft"
+msgstr ""
+
+msgid "When to send"
+msgstr ""
+
+msgid "Starts within a minute"
+msgstr ""
+
+msgid "Pick a day and time"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+#, python-format
+msgid "Times are in your organization's time zone, %(tz_name)s."
+msgstr ""
+
+msgid "Spread the send over an hour"
+msgstr ""
+
+msgid "Easier on your mail server and your sender reputation"
+msgstr ""
+
+#, python-format
+msgid "This campaign goes out on %(when)s at %(time)s."
+msgstr ""
+
+msgid "Your role can look at this campaign but not send it."
+msgstr ""
+
+msgid "Send yourself a test"
+msgstr ""
+
+msgid "Send to"
+msgstr ""
+
+#, python-format
+msgid "The %(n)s written language"
+msgid_plural "All %(n)s written, one message each"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Send test"
+msgstr ""
+
+msgid "Tests go by email. The subject starts with [Test]."
+msgstr ""
+
+msgid ""
+"Tests go by email. Turn the email channel on and write the email to send "
+"one."
+msgstr ""
+
+msgid "More"
+msgstr ""
+
+msgid "Save as template"
+msgstr ""
+
+msgid "Delete this draft? This cannot be undone."
+msgstr ""
+
+msgid ""
+"A template keeps the content in every language, so the next campaign can "
+"start from it."
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Only your team sees this name. Readers see the subject."
+msgstr ""
+
+msgid "Template name"
+msgstr ""
+
+msgid "Save template"
+msgstr ""
+
+msgid "Untitled campaign"
+msgstr ""
+
+msgid "Push"
+msgstr "Push"
+
+msgid "Move the campaign back to a draft to change it."
+msgstr ""
+
+msgid "Pick a day and a time for the send."
+msgstr ""
+
+msgid "That time has already passed. Pick a later one, or send now."
+msgstr ""
+
+msgid "This campaign is not a draft any more."
+msgstr ""
+
+#, python-format
+msgid "This campaign cannot be sent yet: %(reasons)s"
+msgstr ""
+
+msgid ""
+"Sending is not set up on this install yet. The campaign is still a draft."
+msgstr ""
+
+msgid ""
+"The send could not start just now. It will be tried again within a minute."
+msgstr ""
+
+msgid "The campaign is going out."
+msgstr ""
+
+#, python-format
+msgid "Scheduled for %(when)s."
+msgstr ""
+
+msgid "Enter the address to send the test to."
+msgstr ""
+
+msgid "Choose an email sender first."
+msgstr ""
+
+msgid "There is no written email to test in that language yet."
+msgstr ""
+
+msgid "Sending is not set up on this install yet."
+msgstr ""
+
+msgid "The mail server refused it."
+msgstr ""
+
+#, python-format
+msgid "The test did not go out: %(reason)s"
+msgstr ""
+
+#, python-format
+msgid "Sent %(n)s test message to %(email)s."
+msgid_plural "Sent %(n)s test messages to %(email)s, one for each language."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Paused. Messages that have not gone out yet are waiting."
+msgstr ""
+
+msgid "Sending again from where it stopped."
+msgstr ""
+
+msgid "Back to a draft. Nothing was sent."
+msgstr ""
+
+msgid "Stopped. Messages that had not gone out will not be sent."
+msgstr ""
+
+#, python-format
+msgid "%(name)s (copy)"
+msgstr ""
+
+msgid "Here is a new draft with the same content."
+msgstr ""
+
+msgid "Only drafts can be deleted."
+msgstr ""
+
+msgid "Draft deleted."
+msgstr ""
+
+msgid "Saved"
+msgstr ""
+
+msgid "Templates are not set up on this install yet."
+msgstr ""
+
+#, python-format
+msgid "Saved as the template \"%(name)s\". Pick it when you start a new campaign."
+msgstr ""
+
+msgid "push"
+msgstr ""
+
+#, python-format
+msgid "%(first)s and %(last)s"
+msgstr ""
+
+msgid "Person"
+msgstr ""
+
+msgid "Channel"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "Reason"
+msgstr ""
+
+msgid "The app did not answer in time"
+msgstr ""
+
+msgid "Could not reach the app"
+msgstr ""
+
+#, python-format
+msgid "The app had a problem (it answered %(status)s)"
+msgstr ""
+
+msgid "The app asked us to slow down"
+msgstr ""
+
+msgid "The app did not accept our signature. Check the shared secret."
+msgstr ""
+
+#, python-format
+msgid "The app refused the notifications (it answered %(status)s)"
+msgstr ""
+
+msgid "Enter the app's address"
+msgstr ""
+
+msgid "Could not reach an app at that address"
+msgstr ""
+
+#, python-format
+msgid ""
+"That address did not answer like an app that works with Post Office (it "
+"answered %(status)s)"
+msgstr ""
+
+msgid "That address did not answer like an app that works with Post Office"
+msgstr ""
+
+msgid ""
+"The app answered, but it did not say where to send notifications or who can "
+"get them"
+msgstr ""
+
+msgid "Not working"
+msgstr ""
+
+msgid "Working"
+msgstr ""
+
+msgid "Not tested"
+msgstr ""
+
+msgid "Connected with"
+msgstr ""
+
+msgid "Gmail, app password"
+msgstr ""
+
+msgid "Other mail server"
+msgstr ""
+
+msgid "Used by"
+msgstr ""
+
+msgid "No apps connected yet"
+msgstr ""
+
+msgid "Daily limit"
+msgstr ""
+
+#, python-format
+msgid "%(n)s emails, the rest wait until tomorrow"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Sent today"
+msgstr ""
+
+#, python-format
+msgid "%(sent)s sent today, %(waiting)s waiting until tomorrow"
+msgstr ""
+
+msgid "Sent this month"
+msgstr ""
+
+#, python-format
+msgid "Sends a test email to %(address)s"
+msgstr ""
+
+msgid "Send a test"
+msgstr ""
+
+msgid "Make default"
+msgstr ""
+
+msgid "Edit or change sender"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+#, python-format
+msgid "Remove %(address)s? Campaigns that use it will need another sender."
+msgstr ""
+
+msgid "Remove this sender"
+msgstr ""
+
+msgid ""
+"This sender cannot be removed while apps are connected. To use another "
+"mailbox, enter its details above and press Test and save."
+msgstr ""
+
+msgid "Kind of mailbox"
+msgstr ""
+
+msgid "Gmail"
+msgstr ""
+
+msgid "Name people see"
+msgstr ""
+
+msgid "Maple Grove Youth"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+msgid "Mail server"
+msgstr ""
+
+msgid "Port"
+msgstr ""
+
+msgid "Encryption"
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Usually the email address"
+msgstr ""
+
+msgid "App password"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "16 letters from your Google account"
+msgstr ""
+
+msgid ""
+"Saved passwords are never shown. Leave this empty to keep the one you have."
+msgstr ""
+
+msgid "Daily limit (optional)"
+msgstr ""
+
+msgid "No limit"
+msgstr ""
+
+msgid "Emails per second"
+msgstr ""
+
+msgid ""
+"Gmail stops at about 500 emails a day for a personal account and 2,000 for "
+"Google Workspace. Set a limit a little below that and the rest wait until "
+"tomorrow."
+msgstr ""
+
+msgid "Test and save"
+msgstr ""
+
+msgid ""
+"The ways Post Office can reach people. People get each message on every "
+"channel they signed up for."
+msgstr ""
+
+msgid ""
+"Add the mailboxes Post Office sends from. Works with Gmail or any other mail"
+" server."
+msgstr ""
+
+msgid "For app messages"
+msgstr ""
+
+msgid ""
+"One sender, so order updates and reminders always come from the same "
+"address."
+msgstr ""
+
+msgid "Add the sender for app messages"
+msgstr ""
+
+msgid "For newsletters"
+msgstr ""
+
+msgid "As many as you need. You pick one when you send a campaign."
+msgstr ""
+
+msgid "Add a newsletter sender"
+msgstr ""
+
+msgid "Each bot is its own channel with its own followers."
+msgstr ""
+
+msgid "Connected people"
+msgstr ""
+
+msgid "Commands"
+msgstr ""
+
+#, python-format
+msgid "%(n)s of yours, 4 built in"
+msgstr ""
+
+msgid "Failed today"
+msgstr ""
+
+msgid "Updates arrive by"
+msgstr ""
+
+msgid "Webhook"
+msgstr ""
+
+msgid "Checking every 2 seconds"
+msgstr ""
+
+msgid "Link copied"
+msgstr ""
+
+msgid "Get the connect link"
+msgstr ""
+
+msgid "New bot token (optional)"
+msgstr ""
+
+msgid ""
+"Saved tokens are never shown. Leave this empty to keep the one you have."
+msgstr ""
+
+#, python-format
+msgid ""
+"Remove %(name)s? Its commands and the people connected to it are removed "
+"too."
+msgstr ""
+
+msgid "Remove this bot"
+msgstr ""
+
+msgid "Add a bot"
+msgstr ""
+
+msgid "Bot token"
+msgstr ""
+
+msgid "Paste the token from BotFather"
+msgstr ""
+
+msgid "Create the bot in Telegram with BotFather, then paste its token here."
+msgstr ""
+
+msgid "Connect bot"
+msgstr ""
+
+msgid "Push notifications"
+msgstr ""
+
+msgid ""
+"Post Office does not send these itself. It asks your app to, and only for "
+"news and announcements. Order and shift notifications stay inside each app."
+msgstr ""
+
+msgid "Connected"
+msgstr ""
+
+#, python-format
+msgid "%(shown)s person allowed notifications"
+msgid_plural "%(shown)s people allowed notifications"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Post Office sends to"
+msgstr ""
+
+msgid "List"
+msgstr ""
+
+msgid ""
+"The shared secret. The app uses it to check that a request really came from "
+"Post Office."
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Posts an empty, signed request to check the address and the secret"
+msgstr ""
+
+msgid "Show the shared secret"
+msgstr ""
+
+msgid "Name of this audience"
+msgstr ""
+
+msgid "Address notifications are sent to"
+msgstr ""
+
+msgid "New shared secret (optional)"
+msgstr ""
+
+msgid "Leave this empty to keep the one you have."
+msgstr ""
+
+#, python-format
+msgid ""
+"Disconnect %(label)s? Campaigns can no longer send notifications to it."
+msgstr ""
+
+msgid "Disconnect"
+msgstr ""
+
+msgid "Connect an app"
+msgstr ""
+
+msgid "App address"
+msgstr ""
+
+msgid ""
+"Enter where the app lives. Post Office finds its notification address on its"
+" own."
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Webhooks"
+msgstr ""
+
+msgid ""
+"Send a copy of a message to any other address, for example a lobby display "
+"or a chat room."
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+msgid "Off"
+msgstr ""
+
+msgid "Gets"
+msgstr ""
+
+msgid "A copy of every campaign when it is sent"
+msgstr ""
+
+msgid "Last time"
+msgstr ""
+
+msgid "Nothing sent yet"
+msgstr ""
+
+msgid ""
+"The shared secret. The other side uses it to check that a request really "
+"came from Post Office."
+msgstr ""
+
+#, python-format
+msgid "Remove %(name)s?"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Add a webhook"
+msgstr ""
+
+msgid "Lobby display"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Add webhook"
+msgstr ""
+
+msgid "Enter the name people see."
+msgstr ""
+
+msgid "Enter the email address this sends from."
+msgstr ""
+
+msgid "Enter the app password."
+msgstr ""
+
+msgid "Enter the password."
+msgstr ""
+
+msgid "The port is a number, usually 587 or 465."
+msgstr ""
+
+msgid "Enter the mail server's address."
+msgstr ""
+
+msgid "The daily limit is a whole number, or empty for no limit."
+msgstr ""
+
+#, python-format
+msgid ""
+"The mail server did not let us in, so nothing was saved. It said: %(error)s"
+msgstr ""
+
+#, python-format
+msgid "%(address)s works and is saved."
+msgstr ""
+
+#, python-format
+msgid ""
+"This is a test from Post Office. If you can read it, %(address)s is set up "
+"correctly."
+msgstr ""
+
+msgid "Test from Post Office"
+msgstr ""
+
+#, python-format
+msgid "Test sent to %(address)s."
+msgstr ""
+
+#, python-format
+msgid "The test did not go out. The mail server said: %(error)s"
+msgstr ""
+
+#, python-format
+msgid "%(name)s is now the default for newsletters."
+msgstr ""
+
+msgid ""
+"Apps are connected and send through this address. Change the sender instead "
+"of removing it."
+msgstr ""
+
+msgid "Sender removed."
+msgstr ""
+
+msgid "Telegram does not know this token. Copy it again from BotFather."
+msgstr ""
+
+msgid "Could not reach Telegram just now. Try again in a minute."
+msgstr ""
+
+#, python-format
+msgid ""
+"The bot is saved, but Telegram did not accept our address for updates "
+"(%(error)s)."
+msgstr ""
+
+msgid "Paste the token from BotFather."
+msgstr ""
+
+#, python-format
+msgid "@%(username)s is connected."
+msgstr ""
+
+msgid "Give the bot a name."
+msgstr ""
+
+msgid "Saved."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is now the default bot."
+msgstr ""
+
+msgid ""
+"Bot removed. People who were connected to it will need to connect again if "
+"you add it back."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is connected: %(labels)s. A list was made for each."
+msgstr ""
+
+msgid ""
+"Enter the full address notifications are sent to, starting with https://."
+msgstr ""
+
+msgid "Give this audience a name."
+msgstr ""
+
+#, python-format
+msgid "The test did not work: %(reason)s."
+msgstr ""
+
+#, python-format
+msgid "%(name)s answered. The address and the shared secret work."
+msgstr ""
+
+msgid ""
+"Disconnected. Its list is kept; remove it from People if you no longer need "
+"it."
+msgstr ""
+
+msgid "Give the webhook a name, for example Lobby display."
+msgstr ""
+
+msgid "Enter the full address, starting with https://."
+msgstr ""
+
+msgid "Webhook added. It gets a copy of every campaign from now on."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is on."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is off."
+msgstr ""
+
+#, python-format
+msgid "%(name)s answered."
+msgstr ""
+
+#, python-format
+msgid "%(name)s did not accept the test (%(status)s)."
+msgstr ""
+
+msgid "Webhook removed."
+msgstr ""
+
+msgid "Connect this chat to your subscription"
+msgstr "Під’єднати цей чат до вашої підписки"
+
+msgid "Stop newsletters here"
+msgstr "Зупинити розсилки тут"
+
+msgid "Change your language"
+msgstr "Змінити мову"
+
+msgid "See what I can do"
+msgstr "Подивитися, що я вмію"
+
+msgid "Connects their Telegram to their subscription"
+msgstr ""
+
+msgid "Stops newsletters on Telegram"
+msgstr ""
+
+msgid "Lets them change their language"
+msgstr ""
+
+msgid "Lists your commands with their descriptions"
+msgstr ""
+
+msgid "Sorry, I do not know that one. Type /help to see what I can do."
+msgstr ""
+"Вибачте, я не знаю такої команди. Надішліть /help, щоб побачити, що я вмію."
+
+msgid "Sorry, that is not working right now. Please try again later."
+msgstr "Вибачте, зараз це не працює. Спробуйте, будь ласка, пізніше."
+
+#, python-format
+msgid ""
+"This link has already been used or is too old. Open your preferences page to"
+" get a new one, or sign up here: %(url)s"
+msgstr ""
+"Це посилання вже використано або воно застаріле. Відкрийте сторінку "
+"налаштувань, щоб отримати нове, або підпишіться тут: %(url)s"
+
+#, python-format
+msgid "You are connected, %(name)s."
+msgstr "Вас під’єднано, %(name)s."
+
+msgid "You are connected."
+msgstr "Вас під’єднано."
+
+#, python-format
+msgid ""
+"Messages you signed up for will arrive here. Choose what you get: %(url)s"
+msgstr ""
+"Повідомлення, на які ви підписалися, надходитимуть сюди. Оберіть, що "
+"отримувати: %(url)s"
+
+#, python-format
+msgid "You are already connected. Choose what you get here: %(url)s"
+msgstr "Вас уже під’єднано. Оберіть, що отримувати, тут: %(url)s"
+
+#, python-format
+msgid "Welcome. To get messages here, sign up first: %(url)s"
+msgstr "Вітаємо. Щоб отримувати повідомлення тут, спершу підпишіться: %(url)s"
+
+msgid "This chat is not connected, so there is nothing to stop."
+msgstr "Цей чат не під’єднано, тож зупиняти нічого."
+
+#, python-format
+msgid ""
+"Done. You will not get newsletters here any more. Messages about things you "
+"signed up for still arrive. Change your mind any time: %(url)s"
+msgstr ""
+"Готово. Розсилки сюди більше не надходитимуть. Повідомлення про те, на що ви"
+" записалися, надходитимуть і далі. Передумати можна будь-коли: %(url)s"
+
+msgid "Which language would you like?"
+msgstr "Якою мовою вам писати?"
+
+msgid "Here is what I can do:"
+msgstr "Ось що я вмію:"
+
+msgid "command"
+msgstr ""
+
+msgid "full text"
+msgstr ""
+
+msgid "arguments"
+msgstr ""
+
+msgid "first name"
+msgstr ""
+
+msgid "language"
+msgstr ""
+
+msgid "person id"
+msgstr ""
+
+msgid "Telegram id"
+msgstr ""
+
+msgid "bot"
+msgstr ""
+
+msgid "This is not a web address."
+msgstr ""
+
+msgid "The address must start with https:// or http://."
+msgstr ""
+
+msgid "This address could not be found. Check the spelling."
+msgstr ""
+
+msgid ""
+"This address points at this server or its local network link, so Post Office"
+" will not call it. If that is what you want, set ALLOW_PRIVATE_TARGETS=1."
+msgstr ""
+
+msgid "The answer was not JSON, so the reply field could not be read."
+msgstr ""
+
+#, python-format
+msgid "No answer within %(seconds)s seconds."
+msgstr ""
+
+msgid "Could not connect to the address."
+msgstr ""
+
+msgid "The request could not be sent. Check the address and the headers."
+msgstr ""
+
+#, python-format
+msgid "The address answered with an error (status %(status)s)."
+msgstr ""
+
+msgid "That is a lot of commands. Please wait a minute and try again."
+msgstr "Забагато команд. Зачекайте хвилину й спробуйте знову."
+
+msgid ""
+"This one is for people who are connected. Press /start to connect, then try "
+"again."
+msgstr ""
+"Ця команда для під’єднаних людей. Натисніть /start, щоб під’єднатися, і "
+"спробуйте знову."
+
+#, python-format
+msgid "Saved. I will write to you in %(language)s."
+msgstr "Збережено. Я писатиму вам такою мовою: %(language)s."
+
+msgid "New command"
+msgstr ""
+
+msgid "Editing"
+msgstr ""
+
+msgid "This could not be saved yet. Check the marked fields."
+msgstr ""
+
+msgid "Command"
+msgstr ""
+
+msgid "Lowercase letters, numbers and underscores."
+msgstr ""
+
+msgid "Description, shown in the bot's menu"
+msgstr ""
+
+#, python-format
+msgid "Description in %(language)s"
+msgstr ""
+
+msgid "Pass it to"
+msgstr ""
+
+msgid "A web address"
+msgstr ""
+
+msgid "Post Office calls it and waits up to 10 seconds for the answer."
+msgstr ""
+
+msgid "Method"
+msgstr ""
+
+msgid "Headers"
+msgstr ""
+
+msgid "Header name"
+msgstr ""
+
+msgid "Value"
+msgstr ""
+
+msgid "Header value"
+msgstr ""
+
+msgid "Remove header"
+msgstr ""
+
+msgid ""
+"Saved values are kept secret and shown as dots. Type a new value to replace "
+"one."
+msgstr ""
+
+msgid "Add header"
+msgstr ""
+
+msgid "Body"
+msgstr ""
+
+msgid "Use the standard body"
+msgstr ""
+
+msgid ""
+"GET and DELETE requests have no body. Put details in the address instead."
+msgstr ""
+
+msgid "Insert a detail"
+msgstr ""
+
+msgid ""
+"Adds it where the cursor is: in the body, or at the end of the address for "
+"GET and DELETE."
+msgstr ""
+
+msgid "Reply with this part of the answer"
+msgstr ""
+
+msgid ""
+"The name of the field that holds the text to send back, such as reply or "
+"data.message. Leave empty to send the whole answer."
+msgstr ""
+
+msgid "Reply"
+msgstr ""
+
+msgid "Send back the answer"
+msgstr ""
+
+msgid "Whatever comes back goes to the person"
+msgstr ""
+
+msgid "No reply"
+msgstr ""
+
+msgid "Just pass it along"
+msgstr ""
+
+msgid "Only for connected people"
+msgstr ""
+
+msgid "Others are asked to press /start first"
+msgstr ""
+
+msgid "When off, the bot treats it as a command it does not know"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+#, python-format
+msgid "Delete /%(name)s? The bot will stop answering it."
+msgstr ""
+
+#, python-format
+msgid "What gets sent when Taras types \"%(text)s\""
+msgstr ""
+
+msgid "Example answer"
+msgstr ""
+
+msgid "Reply is set to no reply, so the person gets nothing back."
+msgstr ""
+
+#, python-format
+msgid "Post Office sends the \"%(path)s\" field to the person."
+msgstr ""
+
+msgid "Post Office sends the whole answer to the person."
+msgstr ""
+
+msgid ""
+"The text can use *bold*, _italic_ and [links](https://). An empty answer "
+"sends nothing."
+msgstr ""
+
+msgid ""
+"The address can also answer later, once, within 24 hours, by posting to the "
+"reply_url it was given."
+msgstr ""
+
+#, python-format
+msgid "It answered in %(seconds)s s (status %(status)s)."
+msgstr ""
+
+msgid "Reply is set to no reply, so nothing would be sent to the person."
+msgstr ""
+
+#, python-format
+msgid "%(name)s would get this in Telegram:"
+msgstr ""
+
+msgid "The answer was empty, so nothing would be sent to the person."
+msgstr ""
+
+msgid "No answer"
+msgstr ""
+
+msgid "That did not work"
+msgstr ""
+
+msgid "The person would get the bot's \"No answer\" text."
+msgstr ""
+
+msgid ""
+"What happens when someone types a command to one of your Telegram bots. Post"
+" Office passes it along and sends back the answer."
+msgstr ""
+
+msgid "Bot"
+msgstr ""
+
+msgid "Show"
+msgstr ""
+
+msgid "Add command"
+msgstr ""
+
+msgid "There is no Telegram bot yet"
+msgstr ""
+
+msgid ""
+"Commands belong to a bot. Add a bot in Channels first, then come back here."
+msgstr ""
+
+msgid "Go to Channels"
+msgstr ""
+
+msgid "Your commands"
+msgstr ""
+
+msgid ""
+"Each one calls a web address. Whatever comes back is sent to the person."
+msgstr ""
+
+msgid "Passed to"
+msgstr ""
+
+msgid "Used, 30 days"
+msgstr ""
+
+msgid "No description yet"
+msgstr ""
+
+msgid "Web address"
+msgstr ""
+
+#, python-format
+msgid "/%(name)s on"
+msgstr ""
+
+msgid "No commands of your own yet"
+msgstr ""
+
+msgid ""
+"The built-in ones below already work. Add a command to pass something on to "
+"another service."
+msgstr ""
+
+msgid "Built in"
+msgstr ""
+
+msgid "Always on"
+msgstr ""
+
+msgid "Post Office answers these itself, in the person's language."
+msgstr ""
+
+msgid "Anything else"
+msgstr ""
+
+msgid ""
+"What the bot says when someone types a command it does not know, or the "
+"address does not answer within 10 seconds."
+msgstr ""
+
+msgid "Unknown command"
+msgstr ""
+
+msgid "Leave a field empty to use the wording shown in grey."
+msgstr ""
+
+msgid "Save texts"
+msgstr ""
+
+msgid "Recent"
+msgstr ""
+
+msgid "Result"
+msgstr ""
+
+msgid "Not connected yet"
+msgstr ""
+
+msgid "Post Office"
+msgstr ""
+
+msgid "Nothing"
+msgstr ""
+
+#, python-format
+msgid "Answered in %(seconds)s s"
+msgstr ""
+
+msgid "Did not work"
+msgstr ""
+
+msgid "Previous page"
+msgstr ""
+
+msgid "Next page"
+msgstr ""
+
+msgid "Nobody has typed a command to this bot yet."
+msgstr ""
+
+msgid "Add your first command"
+msgstr ""
+
+msgid "Choose a name, say where to pass it, and Post Office does the rest."
+msgstr ""
+
+#, python-format
+msgid ""
+"Saved, but the bot's menu in Telegram could not be updated: %(reason)s. It "
+"will be tried again the next time you change a command."
+msgstr ""
+
+msgid "Saved, but the bot's menu in Telegram could not be updated."
+msgstr ""
+
+msgid "Use lowercase letters, numbers and underscores, up to 32 characters."
+msgstr ""
+
+#, python-format
+msgid "/%(name)s is built in. Choose another name."
+msgstr ""
+
+#, python-format
+msgid "This bot already has /%(name)s."
+msgstr ""
+
+msgid "Enter the address to pass the command to."
+msgstr ""
+
+#, python-format
+msgid "/%(name)s is saved."
+msgstr ""
+
+#, python-format
+msgid "/%(name)s is deleted."
+msgstr ""
+
+#, python-format
+msgid "/%(name)s is on."
+msgstr ""
+
+#, python-format
+msgid "/%(name)s is off."
+msgstr ""
+
+msgid "The bot's texts are saved."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is not something this message knows. It will be left empty."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is not a list this message knows. Nothing will repeat."
+msgstr ""
+
+msgid "Saved a moment ago"
+msgstr ""
+
+msgid "Saving"
+msgstr ""
+
+msgid "Not saved yet"
+msgstr ""
+
+msgid "Could not save. Check your connection and try again."
+msgstr ""
+
+msgid "Go back to blocks? Your HTML changes will be lost."
+msgstr ""
+
+msgid "Click into a text field first, then pick what to insert."
+msgstr ""
+
+msgid "That picture could not be uploaded."
+msgstr ""
+
+msgid "Drop a block here to add it at the end"
+msgstr ""
+
+msgid "Footer, added automatically in each language"
+msgstr ""
+
+msgid ""
+"Footer, added automatically. Service messages have no unsubscribe link."
+msgstr ""
+
+#, python-brace-format
+msgid "{n} of {total} languages written"
+msgstr ""
+
+msgid "Showing sample data"
+msgstr ""
+
+msgid "Showing placeholders"
+msgstr ""
+
+msgid "Choose a picture"
+msgstr ""
+
+msgid "Replace image"
+msgstr ""
+
+msgid "Add image"
+msgstr ""
+
+msgid "bold"
+msgstr ""
+
+msgid "italic"
+msgstr ""
+
+msgid "link text"
+msgstr ""
+
+msgid "block"
+msgstr ""
+
+msgid "Heading"
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid "Image"
+msgstr ""
+
+msgid "Button"
+msgstr ""
+
+msgid "Event card"
+msgstr ""
+
+msgid "Divider"
+msgstr ""
+
+msgid "Repeating list"
+msgstr ""
+
+msgid "New heading"
+msgstr ""
+
+msgid "Write something here."
+msgstr ""
+
+msgid "Button label"
+msgstr ""
+
+msgid "Event name"
+msgstr ""
+
+msgid "When and where."
+msgstr ""
+
+msgid "Image: choose a picture in the panel"
+msgstr ""
+
+msgid "Empty text block"
+msgstr ""
+
+msgid "Repeating list: pick what to repeat in the panel"
+msgstr ""
+
+msgid "Templates"
+msgstr ""
+
+msgid "Email and Telegram"
+msgstr ""
+
+msgid "Nothing written yet"
+msgstr ""
+
+msgid "This campaign has already gone out, so it cannot be changed."
+msgstr ""
+
+msgid "That did not arrive properly. Please try again."
+msgstr ""
+
+msgid "Pick a language and a form first."
+msgstr ""
+
+msgid "Your role cannot open this."
+msgstr ""
+
+msgid "Choose a picture first."
+msgstr ""
+
+msgid "Use a JPG, PNG, GIF or WebP picture."
+msgstr ""
+
+msgid "That picture is larger than 5 MB. Please use a smaller one."
+msgstr ""
+
+msgid "That file is not a picture we can read."
+msgstr ""
+
+#, python-format
+msgid "You are getting this because you signed up for %(list)s."
+msgstr "Ви отримали цей лист, бо підписалися на «%(list)s»."
+
+msgid "You are getting this because you signed up for news from us."
+msgstr "Ви отримали цей лист, бо підписалися на наші новини."
+
+msgid ""
+"You are getting this because of something you did with us, such as an order "
+"or a shift."
+msgstr ""
+"Ви отримали цей лист через вашу дію в нас, наприклад замовлення чи зміну."
+
+#| msgid "Subscribe"
+msgid "Unsubscribe"
+msgstr "Відписатися"
+
+msgid "Manage preferences"
+msgstr "Керувати налаштуваннями"
+
+#| msgid "Open Telegram"
+msgid "Get this on Telegram"
+msgstr "Отримувати це в Telegram"
+
+msgid "About this message"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Service message"
+msgstr ""
+
+msgid "Sent from"
+msgstr ""
+
+msgid "No app sender set up yet"
+msgstr ""
+
+msgid "Goes out by"
+msgstr ""
+
+msgid ""
+"Service messages still arrive when someone has unsubscribed from your "
+"newsletters. They are not sent as push notifications."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is not written yet"
+msgstr ""
+
+#, python-format
+msgid ""
+"%(n)s reader has this language. Until it is written they get the %(default)s"
+" version."
+msgid_plural ""
+"%(n)s readers have this language. Until it is written they get the "
+"%(default)s version."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "Copy from %(default)s"
+msgstr ""
+
+msgid "Start blank"
+msgstr ""
+
+msgid "the building"
+msgstr ""
+
+#, python-format
+msgid "From %(name)s"
+msgstr ""
+
+msgid "Click to insert at the cursor"
+msgstr ""
+
+#, python-format
+msgid "Add a repeating list of %(label)s"
+msgstr ""
+
+msgid "List:"
+msgstr ""
+
+#, python-format
+msgid "Insert %(label)s"
+msgstr ""
+
+msgid "This message has no details to insert."
+msgstr ""
+
+msgid "Insert a detail about the reader"
+msgstr ""
+
+#, python-format
+msgid "Sent by %(building)s"
+msgstr ""
+
+msgid "Campaign name"
+msgstr ""
+
+msgid ""
+"Reset this message to the version the building sent? Your changes will be "
+"lost."
+msgstr ""
+
+msgid "Reset to default"
+msgstr ""
+
+msgid "Next: audience"
+msgstr ""
+
+msgid "This campaign has already gone out, so it can be read but not changed."
+msgstr ""
+
+msgid "Your role can read this message but not change it."
+msgstr ""
+
+msgid "Form"
+msgstr ""
+
+msgid "Notification"
+msgstr ""
+
+msgid "Editor mode"
+msgstr ""
+
+msgid "Visual"
+msgstr ""
+
+msgid "HTML"
+msgstr ""
+
+msgid "Blocks"
+msgstr ""
+
+msgid "Drag into the email, or press +"
+msgstr ""
+
+#, python-format
+msgid "Add %(label)s block"
+msgstr ""
+
+#, python-format
+msgid "%(n)s reader"
+msgid_plural "%(n)s readers"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Preview data"
+msgstr ""
+
+msgid "Placeholders"
+msgstr ""
+
+msgid "Sample data"
+msgstr ""
+
+msgid "Preview size"
+msgstr ""
+
+msgid "Desktop"
+msgstr ""
+
+msgid "Phone"
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+msgid "Subject line"
+msgstr ""
+
+msgid "Preview text"
+msgstr ""
+
+msgid "Shown next to the subject in the inbox"
+msgstr ""
+
+msgid ""
+"A picture has no description yet. Select it and describe it for people who "
+"cannot see it."
+msgstr ""
+
+#, python-format
+msgid "HTML for %(name)s"
+msgstr ""
+
+msgid ""
+"Editing here turns this language into HTML. Post Office still adds the "
+"footer."
+msgstr ""
+
+msgid "Email HTML"
+msgstr ""
+
+msgid "Placeholders are written like this:"
+msgstr ""
+
+msgid "How it will look"
+msgstr ""
+
+msgid "Email preview"
+msgstr ""
+
+msgid "Nothing selected"
+msgstr ""
+
+msgid ""
+"Pick a block in the email to edit it, or drag a new one in from the left."
+msgstr ""
+
+msgid "Selected block"
+msgstr ""
+
+msgid "Align"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+msgid "Centre"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid ""
+"Line breaks are kept. Use *bold*, _italic_ and [link text](https://address)."
+msgstr ""
+
+msgid "Description for screen readers"
+msgstr ""
+
+msgid "Describe the picture for people who cannot see it."
+msgstr ""
+
+msgid "Link (optional)"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "A thin line between two parts of the email. There is nothing to set."
+msgstr ""
+
+msgid "Repeat once for each"
+msgstr ""
+
+msgid "Choose a list"
+msgstr ""
+
+msgid "Show in each row"
+msgstr ""
+
+msgid "Choose a list first."
+msgstr ""
+
+msgid "Move up"
+msgstr ""
+
+msgid "Move down"
+msgstr ""
+
+msgid "Telegram message"
+msgstr ""
+
+msgid ""
+"The short form of this message, sent on Telegram to people who chose it."
+msgstr ""
+
+msgid ""
+"One short message for Telegram and for push notifications. Telegram shows "
+"the formatting; push notifications get the same words as plain text."
+msgstr ""
+
+msgid "Bold"
+msgstr ""
+
+msgid "Italic"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Write the notification"
+msgstr ""
+
+msgid ""
+"Use *bold*, _italic_ and [link text](https://address). Telegram allows 4,096"
+" characters, or 1,024 when an image is attached."
+msgstr ""
+
+msgid ""
+"This is longer than Telegram allows. Shorten it or it will not be sent on "
+"Telegram."
+msgstr ""
+
+msgid "Link button"
+msgstr ""
+
+msgid "Telegram shows it as a button under the message."
+msgstr ""
+
+msgid ""
+"Telegram shows it as a button under the message. Tapping a push notification"
+" opens the same address."
+msgstr ""
+
+msgid "See the full calendar"
+msgstr ""
+
+msgid "Opens"
+msgstr ""
+
+msgid "Optional. With an image, Telegram allows 1,024 characters."
+msgstr ""
+
+msgid "The attached image"
+msgstr ""
+
+msgid "Remove image"
+msgstr ""
+
+msgid "On Telegram"
+msgstr ""
+
+#, python-format
+msgid "This language is not written yet. Readers get the %(default)s version."
+msgstr ""
+
+msgid "Your message shows here as you write."
+msgstr ""
+
+msgid "As a push notification"
+msgstr ""
+
+msgid "now"
+msgstr ""
+
+msgid "Tapping it opens"
+msgstr ""
+
+msgid "Quick message"
+msgstr ""
+
+msgid "Send a one-off message"
+msgstr ""
+
+msgid "To"
+msgstr ""
+
+msgid "Add people or lists"
+msgstr ""
+
+msgid "Send by"
+msgstr ""
+
+#, python-format
+msgid "Message in %(name)s"
+msgstr ""
+
+msgid "Write the message"
+msgstr ""
+
+msgid "Use *bold*, _italic_ and [link text](https://address)."
+msgstr ""
+
+msgid "App list"
+msgstr ""
+
+msgid "Campaign list"
+msgstr ""
+
+msgid "No person or list matches that."
+msgstr ""
+
+#, python-format
+msgid "%(total)s person"
+msgid_plural "%(total)s people"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Nobody chosen yet"
+msgstr ""
+
+msgid ""
+"Reusable designs for your campaigns, and the messages your other buildings "
+"send for you."
+msgstr ""
+
+msgid "Search templates"
+msgstr ""
+
+msgid "New template"
+msgstr ""
+
+msgid "Campaign templates"
+msgstr ""
+
+msgid "Start a campaign from one of these"
+msgstr ""
+
+#, python-format
+msgid "%(name)s is not written"
+msgstr ""
+
+msgid "Start a campaign"
+msgstr ""
+
+#, python-format
+msgid ""
+"Delete the template %(name)s? Campaigns already started from it keep their "
+"content."
+msgstr ""
+
+#, python-format
+msgid "Delete %(name)s"
+msgstr ""
+
+msgid "Start from blank"
+msgstr ""
+
+msgid "No campaign templates yet."
+msgstr ""
+
+msgid "App messages"
+msgstr ""
+
+msgid ""
+"Emails and Telegram messages your buildings send on their own. Restyle them "
+"here; the building fills in the details."
+msgstr ""
+
+#, python-format
+msgid "%(n)s message"
+msgid_plural "%(n)s messages"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Sent, 30 days"
+msgstr ""
+
+msgid "Nothing written"
+msgstr ""
+
+msgid "Customised"
+msgstr ""
+
+#, python-format
+msgid ""
+"Reset %(name)s to the version the building sent? Your changes will be lost."
+msgstr ""
+
+msgid "No app messages match your search."
+msgstr ""
+
+msgid "No app messages yet"
+msgstr ""
+
+msgid ""
+"When a building such as Pavilion or Town Hall connects, the messages it "
+"sends show up here."
+msgstr ""
+
+msgid "Untitled template"
+msgstr ""
+
+#, python-format
+msgid "%(name)s is back to the version %(building)s sent."
+msgstr ""
+
+#, python-format
+msgid "%(name)s was deleted."
+msgstr ""
+
+#, python-format
+msgid ""
+"%(language)s is not written. %(count)s %(language)s reader will get the "
+"%(default)s version."
+msgid_plural ""
+"%(language)s is not written. %(count)s %(language)s readers will get the "
+"%(default)s version."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "counted as a newsletter, so consent rules apply"
+msgstr ""
+
+msgid "counted as a service message"
+msgstr ""
+
+msgid "Every channel they use"
+msgstr ""
+
+msgid "Add at least one person or list to send to."
+msgstr ""
+
+#, python-format
+msgid ""
+"Write the message in %(language)s first. Other languages fall back to it."
+msgstr ""
+
+msgid "The message is too long. Telegram allows 4,096 characters."
+msgstr ""
+
+msgid "Nobody is on those lists yet, so there is no one to send to."
+msgstr ""
+
+#, python-format
+msgid "Message on its way to %(count)s person."
+msgid_plural "Message on its way to %(count)s people."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "Good morning, %(name)s"
+msgstr ""
+
+#, python-format
+msgid "Good afternoon, %(name)s"
+msgstr ""
+
+#, python-format
+msgid "Good evening, %(name)s"
+msgstr ""
+
+msgid "Nothing has been sent yet. Add people, then write your first campaign."
+msgstr ""
+
+msgid "A campaign is going out now"
+msgstr ""
+
+msgid "No campaign is scheduled"
+msgstr ""
+
+msgid "One campaign is scheduled"
+msgstr ""
+
+#, python-format
+msgid "%(n)s campaigns are scheduled"
+msgstr ""
+
+#, python-format
+msgid "%(n)s message is waiting in the outbox"
+msgid_plural "%(n)s messages are waiting in the outbox"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "the outbox is clear"
+msgstr ""
+
+#, python-format
+msgid "%(first)s and %(second)s."
+msgstr ""
+
+#, python-format
+msgid "Week of %(day)s"
+msgstr ""
+
+#, python-format
+msgid "the last %(n)s day"
+msgid_plural "the last %(n)s days"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(n)s opens over %(span)s"
+msgstr ""
+
+#, python-format
+msgid "peaking at %(n)s for %(name)s"
+msgstr ""
+
+#, python-format
+msgid "%(n)s link clicks over %(span)s"
+msgstr ""
+
+#, python-format
+msgid "%(n)s new subscribers over %(span)s"
+msgstr ""
+
+msgid "Messages"
+msgstr ""
+
+msgid "Organisation"
+msgstr ""
+
+msgid "Connected buildings"
+msgstr ""
+
+msgid "Consent"
+msgstr ""
+
+msgid "Team"
+msgstr ""
+
+msgid "API keys"
+msgstr ""
+
+msgid "Owner: everything"
+msgstr ""
+
+msgid "Editor: write and send"
+msgstr ""
+
+msgid "Viewer: reports only"
+msgstr ""
+
+msgid "Send messages only"
+msgstr ""
+
+msgid "Add subscribers only"
+msgstr ""
+
+msgid "Send messages and add subscribers"
+msgstr ""
+
+msgid "Enter the name of your organisation."
+msgstr ""
+
+msgid "Enter a working email address."
+msgstr ""
+
+msgid "Choose a time zone."
+msgstr ""
+
+msgid "Organisation details are saved."
+msgstr ""
+
+msgid "Choose a language from the list."
+msgstr ""
+
+msgid "That language is already on the list."
+msgstr ""
+
+#, python-format
+msgid ""
+"%(language)s is added. Every campaign and template now has a tab for it."
+msgstr ""
+
+#, python-format
+msgid ""
+"%(language)s is added. Its built-in wording is not translated yet, so that "
+"part shows in English."
+msgstr ""
+
+#, python-format
+msgid "%(language)s is now the default language."
+msgstr ""
+
+msgid ""
+"The default language cannot be removed. Make another language the default "
+"first."
+msgstr ""
+
+#, python-format
+msgid "%(language)s is removed. %(count)s people now get %(default)s."
+msgstr ""
+
+#, python-format
+msgid "%(language)s is removed."
+msgstr ""
+
+msgid "Give the building a name."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is disconnected. It can no longer send through Post Office."
+msgstr ""
+
+#, python-format
+msgid "Disconnect %(name)s first."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is removed."
+msgstr ""
+
+msgid "Consent settings are saved."
+msgstr ""
+
+#, python-format
+msgid "You are invited to %(org)s on Post Office"
+msgstr ""
+
+#, python-format
+msgid ""
+"%(inviter)s invited you to join %(org)s on Post Office, where the team "
+"writes and sends its messages."
+msgstr ""
+
+msgid "Choose your password"
+msgstr ""
+
+msgid "If you were not expecting this, you can ignore this email."
+msgstr ""
+
+#, python-format
+msgid "%(email)s is already on the team."
+msgstr ""
+
+msgid "Choose a role from the list."
+msgstr ""
+
+msgid ""
+"You are the only owner. Make someone else an owner before you change your "
+"own role."
+msgstr ""
+
+msgid "There must always be at least one owner."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is now %(role)s."
+msgstr ""
+
+msgid ""
+"You are the only owner, so you cannot remove yourself. Make someone else an "
+"owner first."
+msgstr ""
+
+#, python-format
+msgid "%(name)s can no longer sign in."
+msgstr ""
+
+msgid "Say what the key is for, so you can recognise it later."
+msgstr ""
+
+#, python-format
+msgid "The key for %(name)s no longer works."
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Search campaigns and people"
+msgstr ""
+
+msgid "Last 30 days"
+msgstr ""
+
+msgid "Subscribers"
+msgstr ""
+
+#, python-format
+msgid "%(n)s this month"
+msgstr ""
+
+#, python-format
+msgid "%(n)s fewer this month"
+msgstr ""
+
+msgid "No change this month"
+msgstr ""
+
+msgid "Messages sent"
+msgstr ""
+
+msgid "Nothing in the last 30 days"
+msgstr ""
+
+msgid "Open rate"
+msgstr ""
+
+msgid "Click rate"
+msgstr ""
+
+msgid "From the village today"
+msgstr ""
+
+msgid "Messages other buildings sent through Post Office"
+msgstr ""
+
+#, python-format
+msgid "%(messages)s message waiting to send"
+msgid_plural "%(messages)s messages waiting to send"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Outbox clear"
+msgstr ""
+
+#, python-format
+msgid "Last send %(ago)s ago"
+msgstr ""
+
+msgid ""
+"No building has sent anything today. Order confirmations, shift reminders "
+"and other app messages show up here."
+msgstr ""
+
+msgid "Delivered today"
+msgstr ""
+
+#, python-format
+msgid "%(a)s of %(b)s"
+msgstr ""
+
+#, python-format
+msgid "%(messages)s message failed. View in Outbox"
+msgid_plural "%(messages)s messages failed. View in Outbox"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Open the Outbox"
+msgstr ""
+
+msgid "Recent campaigns"
+msgstr ""
+
+msgid "All campaigns"
+msgstr ""
+
+msgid "Sent to"
+msgstr ""
+
+msgid ""
+"Your newsletters and announcements will be listed here with their open and "
+"click rates."
+msgstr ""
+
+msgid "Reachable by channel"
+msgstr ""
+
+msgid "Nobody here yet"
+msgstr ""
+
+msgid ""
+"People arrive through your signup form, an import, or the buildings "
+"connected to Post Office."
+msgstr ""
+
+msgid "Share signup form"
+msgstr ""
+
+msgid "Engagement"
+msgstr ""
+
+msgid "Opens, link clicks and new subscribers"
+msgstr ""
+
+msgid "by week"
+msgstr ""
+
+msgid "Date range"
+msgstr ""
+
+msgid ""
+"Nothing to chart for these days yet. Opens, clicks and new subscribers show "
+"up here once a campaign has gone out."
+msgstr ""
+
+#, python-format
+msgid "%(n)s opens"
+msgstr ""
+
+msgid "Link clicks"
+msgstr ""
+
+msgid "New subscribers"
+msgstr ""
+
+msgid "No newsletters in the last 30 days"
+msgstr ""
+
+msgid "Nothing earlier to compare with"
+msgstr ""
+
+#, python-format
+msgid "%(n)s pts"
+msgstr ""
+
+msgid "higher than the 30 days before"
+msgstr ""
+
+msgid "lower than the 30 days before"
+msgstr ""
+
+msgid "Same as the 30 days before"
+msgstr ""
+
+msgid "Join the team"
+msgstr ""
+
+msgid "You have been invited to help run this post office."
+msgstr ""
+
+msgid "This invite no longer works"
+msgstr ""
+
+msgid "It may have been used already. Ask an owner to send a new one."
+msgstr ""
+
+msgid "Go to sign in"
+msgstr ""
+
+msgid "Choose a password"
+msgstr ""
+
+msgid "Your name"
+msgstr ""
+
+msgid "At least 8 characters."
+msgstr ""
+
+msgid "Save and sign in"
+msgstr ""
+
+msgid ""
+"Other Hamlet apps that are allowed to send messages through Post Office."
+msgstr ""
+
+#, python-format
+msgid ""
+"%(name)s has a new key. The old one has stopped working. Copy the new key "
+"now; it is shown only once."
+msgstr ""
+
+#, python-format
+msgid "%(name)s is connected. Copy its key now; it is shown only once."
+msgstr ""
+
+msgid "Building key"
+msgstr ""
+
+msgid "Paste it into the building's Post Office settings."
+msgstr ""
+
+msgid "has not set up any messages yet"
+msgstr ""
+
+#, python-format
+msgid "Last sent %(when)s"
+msgstr ""
+
+msgid "Has not sent anything yet"
+msgstr ""
+
+#, python-format
+msgid ""
+"Give %(name)s a new key? Its current key stops working at once, so %(name)s "
+"cannot send until you paste the new key into it."
+msgstr ""
+
+msgid "New key"
+msgstr ""
+
+#, python-format
+msgid ""
+"Disconnect %(name)s? It will not be able to send messages through Post "
+"Office. Its templates and past messages stay."
+msgstr ""
+
+msgid "Not connected"
+msgstr ""
+
+msgid "Connect again"
+msgstr ""
+
+#, python-format
+msgid ""
+"Remove %(name)s for good? The templates it set up are removed with it. This "
+"cannot be undone."
+msgstr ""
+
+#, python-format
+msgid "Remove %(name)s"
+msgstr ""
+
+msgid ""
+"No building is connected yet. Connect Town Hall, Pavilion or Bell Tower so "
+"it can send its messages through Post Office."
+msgstr ""
+
+msgid "Connect a building"
+msgstr ""
+
+msgid "Building"
+msgstr ""
+
+msgid "You get a key to paste into the building. It is shown once."
+msgstr ""
+
+msgid "Connect and show the key"
+msgstr ""
+
+msgid "Sign in with Gatehouse"
+msgstr ""
+
+msgid ""
+"Gatehouse is not available yet. Team members sign in with their email and a "
+"password."
+msgstr ""
+
+msgid "Not available yet"
+msgstr ""
+
+msgid "How Post Office records that people agreed to hear from you."
+msgstr ""
+
+msgid "Ask new subscribers to confirm by email"
+msgstr ""
+
+msgid "They get one email with a confirm button before joining a list"
+msgstr ""
+
+msgid "Keep proof of consent"
+msgstr ""
+
+msgid "Saves when, where and how each person agreed"
+msgstr ""
+
+msgid "Unsubscribe link in every newsletter"
+msgstr ""
+
+msgid "Always on. Newsletters cannot be sent without it."
+msgstr ""
+
+msgid "Count opens and clicks"
+msgstr ""
+
+msgid ""
+"Adds a tiny image and tracked links to newsletters so reports can show who "
+"opened and clicked. Turn off to send without tracking."
+msgstr ""
+
+msgid "Save consent settings"
+msgstr ""
+
+msgid ""
+"For anything outside Hamlet that needs to send a message or add a "
+"subscriber, like your website. Hamlet buildings do not need one."
+msgstr ""
+
+#, python-format
+msgid "The key for %(name)s is ready. Copy it now; it is shown only once."
+msgstr ""
+
+msgid "API key"
+msgstr ""
+
+msgid ""
+"Post Office keeps only a fingerprint of it, so it cannot show it to you "
+"again. If it gets lost, revoke it and create a new one."
+msgstr ""
+
+#, python-format
+msgid "Last used %(when)s"
+msgstr ""
+
+msgid "Not used yet"
+msgstr ""
+
+#, python-format
+msgid ""
+"Revoke the key for %(name)s? Whatever uses it stops working at once. This "
+"cannot be undone."
+msgstr ""
+
+msgid "Revoke"
+msgstr ""
+
+msgid "There are no keys yet."
+msgstr ""
+
+msgid "Revoked:"
+msgstr ""
+
+msgid "Create a key"
+msgstr ""
+
+msgid "What is it for"
+msgstr ""
+
+msgid "It can"
+msgstr ""
+
+msgid "Create key"
+msgstr ""
+
+msgid ""
+"The languages you write in. People pick one when they sign up, and every "
+"campaign and template gets a tab for each."
+msgstr ""
+
+#, python-format
+msgid "%(shown)s person"
+msgid_plural "%(shown)s people"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid ""
+"Remove %(name)s? The %(n)s person who reads it will get %(default)s instead."
+msgid_plural ""
+"Remove %(name)s? The %(n)s people who read it will get %(default)s instead."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Language to add"
+msgstr ""
+
+msgid "Choose a language"
+msgstr ""
+
+msgid "Add a language"
+msgstr ""
+
+msgid "When a translation is missing"
+msgstr ""
+
+msgid "Send the default language instead"
+msgstr ""
+
+#, python-format
+msgid "People still get the message, in %(language)s"
+msgstr ""
+
+msgid "Hold the message until every language is written"
+msgstr ""
+
+msgid ""
+"Nothing goes out half-translated. Messages from your buildings are still "
+"sent, in the default language."
+msgstr ""
+
+msgid "Built-in wording"
+msgstr ""
+
+msgid ""
+"Unsubscribe links, the preferences page, the signup form and the bot's own "
+"replies come already translated for some languages."
+msgstr ""
+
+#, python-format
+msgid "%(name)s: complete"
+msgstr ""
+
+#, python-format
+msgid "%(name)s: shown in English"
+msgstr ""
+
+#, python-format
+msgid ""
+"Post Office has no built-in translation for %(names)s yet. People who read "
+"it see your own writing in their language, but the footer, the unsubscribe "
+"link, the preferences page, the signup form and the bot's replies in "
+"English."
+msgid_plural ""
+"Post Office has no built-in translation for %(names)s yet. People who read "
+"them see your own writing in their language, but the footer, the unsubscribe"
+" link, the preferences page, the signup form and the bot's replies in "
+"English."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Replies go to"
+msgstr ""
+
+msgid "Mailing address"
+msgstr ""
+
+msgid "Shown in the footer of every newsletter."
+msgstr ""
+
+msgid "Time zone"
+msgstr ""
+
+msgid "Used for send times, daily limits and the times shown on screen."
+msgstr ""
+
+msgid "Save organisation"
+msgstr ""
+
+msgid "Who can sign in to Post Office and what they can do."
+msgstr ""
+
+#, python-format
+msgid ""
+"The invite is on its way to %(email)s. You can also send them this link "
+"yourself."
+msgstr ""
+
+#, python-format
+msgid ""
+"%(email)s is invited, but the invite could not be emailed. Copy this link "
+"and send it to them yourself."
+msgstr ""
+
+msgid "Invite link"
+msgstr ""
+
+msgid "They open it, choose a name and a password, and are in."
+msgstr ""
+
+msgid "(you)"
+msgstr ""
+
+msgid "Invited, has not joined yet"
+msgstr ""
+
+msgid "Invite link copied"
+msgstr ""
+
+msgid "Copy invite link"
+msgstr ""
+
+#, python-format
+msgid "Role of %(name)s"
+msgstr ""
+
+msgid ""
+"Remove yourself? You will be signed out and will not be able to sign in "
+"again."
+msgstr ""
+
+#, python-format
+msgid "Remove %(name)s? They will not be able to sign in any more."
+msgstr ""
+
+msgid ""
+"There must always be at least one owner. The only owner cannot be removed or"
+" given another role."
+msgstr ""
+
+msgid "Invite someone"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid ""
+"Owners can change channels, commands and these settings. Editors write and "
+"send. Viewers only see reports."
+msgstr ""
+
+msgid "Send invite"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Settings sections"
+msgstr ""
+
+msgid "All on this page. These jump to each section."
+msgstr ""
+
+msgid "Tell us about your organisation"
+msgstr ""
+
+msgid "The name appears on everything you send. You become the first owner."
+msgstr ""
+
+msgid "Organisation name"
+msgstr ""
+
+msgid "Shown at the foot of every newsletter. You can add it later."
+msgstr ""
+
+msgid "Your email"
+msgstr ""
+
+msgid "At least 8 characters. You sign in with your email and this password."
+msgstr ""
+
+msgid "Continue"
+msgstr ""
+
+msgid "Which languages do you write in?"
+msgstr ""
+
+msgid ""
+"People choose one when they sign up. Every message you write gets a tab for "
+"each language you pick here."
+msgstr ""
+
+msgid "Search languages"
+msgstr ""
+
+msgid "Default language"
+msgstr ""
+
+msgid ""
+"Used when a message has not been translated yet, and for people who have not"
+" picked a language."
+msgstr ""
+
+msgid "Continue with 1 language"
+msgstr ""
+
+msgid "Continue with"
+msgstr ""
+
+msgid "languages"
+msgstr ""
+
+msgid "Where should email come from?"
+msgstr ""
+
+msgid ""
+"Add the account that sends confirmations and messages from your other apps. "
+"You can add newsletter senders, Telegram and more later in Channels."
+msgstr ""
+
+#, python-format
+msgid "%(email)s is already connected. Fill this in again only to replace it."
+msgstr ""
+
+msgid "Kind of account"
+msgstr ""
+
+msgid ""
+"Gmail needs an app password, not your normal one. Create it in your Google "
+"account under Security, 2-Step Verification, App passwords."
+msgstr ""
+
+msgid "Skip for now"
+msgstr ""
+
+msgid "Connect your buildings"
+msgstr ""
+
+msgid ""
+"Other Hamlet apps, such as Town Hall and Pavilion, can send their messages "
+"through Post Office. Each one gets its own key."
+msgstr ""
+
+msgid "Connect this building"
+msgstr ""
+
+msgid "Finish"
+msgstr ""
+
+msgid "Skip and finish"
+msgstr ""
+
+msgid "Set up"
+msgstr ""
+
+msgid "Let’s get your post office open"
+msgstr ""
+
+msgid "Four short steps. You can change any of this later in Settings."
+msgstr ""
+
+#, python-format
+msgid "Step %(step)s of %(total)s"
+msgstr ""
+
+msgid "Sign in"
+msgstr ""
+
+msgid "Newsletters, reminders and updates, all from one place."
+msgstr ""
+
+msgid ""
+"Forgot your password? Ask an owner of this post office to send you a new "
+"invite."
+msgstr ""
+
+msgid "That email and password do not match. Please try again."
+msgstr ""
+
+msgid "Enter your name."
+msgstr ""
+
+msgid "Pick at least one language."
+msgstr ""
+
+msgid "Enter the email address and its password."
+msgstr ""
+
+#, python-format
+msgid "The mail server did not accept this: %(problem)s"
+msgstr ""
+
+msgid "Your post office is open."
+msgstr ""
+
+msgid "has not signed up for this by email"
+msgstr ""
+
+msgid "has not signed up for this on Telegram"
+msgstr ""
+
+msgid "has not signed up for this as a notification"
+msgstr ""
+
+msgid "no email sender is set up"
+msgstr ""
+
+msgid "has no email address"
+msgstr ""
+
+msgid "email to this address bounced earlier"
+msgstr ""
+
+msgid "no Telegram bot is set up"
+msgstr ""
+
+msgid "is not connected to the Telegram bot"
+msgstr ""
+
+msgid "has not allowed notifications in the app"
+msgstr ""
+
+msgid "nothing is written for email"
+msgstr ""
+
+msgid "nothing is written for Telegram and notifications"
+msgstr ""
+
+msgid "Nothing to send on the channels this campaign uses"
+msgstr ""
+
+msgid "The campaign was cancelled before this was sent"
+msgstr ""
+
+msgid "has no email address we can use"
+msgstr ""
+
+msgid "no sender for app messages is set up"
+msgstr ""
+
+msgid "turned email off for this app"
+msgstr ""
+
+msgid "turned Telegram off for this app"
+msgstr ""
+
+msgid "this template has nothing written yet"
+msgstr ""
+
+msgid "nothing is written in a language we can send"
+msgstr ""
+
+msgid "Nothing to send on the channels chosen"
+msgstr ""
+
+msgid "A message for you"
+msgstr ""
+
+#, python-format
+msgid "Could not sign in to the mail server (%(reason)s)"
+msgstr ""
+
+#, python-format
+msgid "Post Office hit a problem preparing this message (%(error)s)"
+msgstr ""
+
+#, python-format
+msgid "%(reason)s. Tried %(n)s times."
+msgstr ""
+
+msgid "There is nothing written to send in this language any more"
+msgstr ""
+
+msgid "The email sender this was going out from has been removed"
+msgstr ""
+
+msgid "This person has no email address"
+msgstr ""
+
+msgid "Email to this address bounced earlier, so nothing more is sent to it"
+msgstr ""
+
+msgid "The Telegram bot this was going out from has been removed"
+msgstr ""
+
+msgid "This person is no longer connected to the Telegram bot"
+msgstr ""
+
+msgid "The app this notification was going to is no longer connected"
+msgstr ""
+
+msgid "This person has turned notifications off in the app"
+msgstr ""
+
+msgid "The app could not deliver this notification"
+msgstr ""
+
+msgid "The app did not say whether it delivered this notification"
+msgstr ""
+
+msgid "No message of this campaign fits the filters."
+msgstr ""
+
+#, python-format
+msgid "Show more (%(shown)s of %(total)s shown)"
+msgstr ""
+
+msgid "Push notification"
+msgstr ""
+
+msgid "Sent in the default language because theirs is not written"
+msgstr ""
+
+msgid "default language used"
+msgstr ""
+
+#, python-format
+msgid "Will try again: %(reason)s"
+msgstr ""
+
+#, python-format
+msgid "Waiting until %(when)s"
+msgstr ""
+
+msgid "Waiting"
+msgstr ""
+
+msgid "Sending"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Skipped"
+msgstr ""
+
+msgid "Try again"
+msgstr ""
+
+msgid "Open person"
+msgstr ""
+
+msgid "Outbox"
+msgstr ""
+
+msgid ""
+"Every message Post Office has sent or is about to send. Click a row to open "
+"its campaign report or its template."
+msgstr ""
+
+msgid "Search by person or message"
+msgstr ""
+
+msgid "Filters"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Any"
+msgstr ""
+
+msgid "From"
+msgstr ""
+
+msgid "Clear filters"
+msgstr ""
+
+msgid "Paused"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+#, python-format
+msgid "%(n)s failed"
+msgstr ""
+
+msgid "Show each message"
+msgstr ""
+
+msgid "Hide"
+msgstr ""
+
+msgid "Loading"
+msgstr ""
+
+msgid ""
+"No message fits these filters. Try a wider day range or clear the filters."
+msgstr ""
+
+msgid "Nothing has been sent yet"
+msgstr ""
+
+msgid ""
+"Campaigns, app messages and quick messages show up here as soon as they are "
+"queued."
+msgstr ""
+
+msgid "App message"
+msgstr ""
+
+msgid "No lists"
+msgstr ""
+
+msgid "Nothing queued right now"
+msgstr ""
+
+#, python-format
+msgid "%(n)s is held until later"
+msgid_plural "%(n)s are held until later"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Going out now"
+msgstr ""
+
+msgid "notifications"
+msgstr ""
+
+msgid "Nothing failed today"
+msgstr ""
+
+#, python-format
+msgid "All on %(channel)s"
+msgstr ""
+
+msgid "Waiting to send"
+msgstr ""
+
+#, python-format
+msgid "Out of %(n)s"
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Still not delivered"
+msgstr ""
+
+msgid "Queued again"
+msgstr ""
+
+msgid "Not an email address"
+msgstr ""
+
+msgid "Repeated in the file"
+msgstr ""
+
+msgid "Deleted before, so not added again"
+msgstr ""
+
+msgid "Unsubscribed from this list"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "Updated"
+msgstr ""
+
+msgid "This file could not be read. Save it as CSV (UTF-8) and try again."
+msgstr ""
+
+msgid "This file is larger than 5 MB. Split it into smaller files."
+msgstr ""
+
+msgid "This file is empty."
+msgstr ""
+
+msgid "The first row must name the columns, and one of them must be \"email\"."
+msgstr ""
+
+msgid "This file could not be read as CSV."
+msgstr ""
+
+msgid "This file has a header but no people in it."
+msgstr ""
+
+msgid "These people agreed to receive this."
+msgstr ""
+
+msgid ""
+"Tick the box to say these people agreed to receive this. Without it nothing "
+"is imported."
+msgstr ""
+
+msgid "Choose a campaign list to add these people to."
+msgstr ""
+
+#, python-format
+msgid "Imported from %(file)s"
+msgstr ""
+
+msgid ""
+"By pressing Subscribe, I agree to receive these messages. I can unsubscribe "
+"at any time."
+msgstr ""
+"Натискаючи «Підписатися», я погоджуюся отримувати ці повідомлення. Я можу "
+"відписатися будь-коли."
+
+msgid "I agree to receive these messages. I can unsubscribe at any time."
+msgstr ""
+"Я погоджуюся отримувати ці повідомлення. Я можу відписатися будь-коли."
+
+msgid "Please confirm your email address"
+msgstr "Підтвердьте, будь ласка, вашу електронну адресу"
+
+#, python-format
+msgid "Hi %(name)s,"
+msgstr "Вітаємо, %(name)s,"
+
+msgid "Hi,"
+msgstr "Вітаємо,"
+
+#, python-format
+msgid ""
+"You asked to hear from %(org)s about: %(lists)s. Press the button to confirm"
+" this is your email address."
+msgstr ""
+"Ви попросили отримувати від %(org)s: %(lists)s. Натисніть кнопку, щоб "
+"підтвердити, що це ваша електронна адреса."
+
+msgid "If this was not you, ignore this email and you will hear nothing more."
+msgstr ""
+"Якщо це були не ви, проігноруйте цей лист, і більше нічого не надійде."
+
+msgid "Confirm my email address"
+msgstr "Підтвердити мою адресу"
+
+#, python-format
+msgid "Your choices at %(org)s"
+msgstr "Ваші налаштування в %(org)s"
+
+msgid ""
+"Someone, probably you, just filled in our signup form with this email "
+"address. You are already with us, so nothing was changed. Press the button "
+"to see and change what you hear about."
+msgstr ""
+"Хтось, імовірно ви, щойно заповнив нашу форму підписки з цією адресою. Ви "
+"вже з нами, тож нічого не змінилося. Натисніть кнопку, щоб переглянути й "
+"змінити, що ви отримуєте."
+
+msgid "If this was not you, there is nothing you need to do."
+msgstr "Якщо це були не ви, нічого робити не потрібно."
+
+msgid "Choose what I hear about"
+msgstr "Обрати, що я отримую"
+
+#, python-format
+msgid ""
+"Send them this link. Opening it in Telegram and pressing Start connects them"
+" to %(bot)s. It works once, for 30 days."
+msgstr ""
+
+msgid "Telegram connect link"
+msgstr ""
+
+msgid "Add a Telegram bot in Channels first."
+msgstr ""
+
+msgid "How did they agree?"
+msgstr ""
+
+#, python-format
+msgid "You are switching on %(list)s by %(channel)s for %(name)s."
+msgstr ""
+
+msgid "How this person gave consent"
+msgstr ""
+
+msgid "For example: asked at the front desk on Nov 20 to get the newsletter."
+msgstr ""
+
+msgid ""
+"Newsletters need consent you can prove. This note is kept with your name and"
+" the time."
+msgstr ""
+
+msgid "Record consent and switch on"
+msgstr ""
+
+msgid "Newsletters and announcements"
+msgstr ""
+
+msgid "not available"
+msgstr "недоступно"
+
+msgid "on"
+msgstr ""
+
+msgid "waiting for them to confirm"
+msgstr ""
+
+msgid "off"
+msgstr ""
+
+msgid "Waiting for them to confirm by email. Press to switch off."
+msgstr ""
+
+msgid "On. Press to switch off."
+msgstr ""
+
+msgid "Off. Press to switch on; you will be asked how they agreed."
+msgstr ""
+
+#, python-format
+msgid "From %(building)s"
+msgstr ""
+
+msgid "Kept by an app"
+msgstr ""
+
+msgid "read-only"
+msgstr ""
+
+msgid ""
+"Kept by the app. They can change it themselves on their preferences page."
+msgstr ""
+
+msgid ""
+"App lists are kept by each app, so their boxes cannot be changed here. Push "
+"notifications about orders and shifts are sent by each app itself, so they "
+"are not listed."
+msgstr ""
+
+msgid "No lists yet"
+msgstr ""
+
+msgid "Create a campaign list on the People screen first."
+msgstr ""
+
+msgid "Edit list"
+msgstr ""
+
+msgid "New campaign list"
+msgstr ""
+
+msgid "A list people choose to join. Campaigns are sent to it."
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Short name for links"
+msgstr ""
+
+msgid "made from the name"
+msgstr ""
+
+msgid ""
+"Used in pre-filled signup links and by apps, for example newsletter. "
+"Changing it breaks links you already shared."
+msgstr ""
+
+msgid "Offer this list on the signup form"
+msgstr ""
+
+msgid "Delete list"
+msgstr ""
+
+msgid "Save list"
+msgstr ""
+
+msgid "Create list"
+msgstr ""
+
+#, python-format
+msgid ""
+"Delete this list? %(n)s person is on it. They stay in People, but their "
+"choice for this list is lost."
+msgid_plural ""
+"Delete this list? %(n)s people are on it. They stay in People, but their "
+"choices for this list are lost."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Add a person"
+msgstr ""
+
+msgid "You choose their lists on the next screen."
+msgstr ""
+
+msgid "First name"
+msgstr "Ім’я"
+
+msgid "Last name"
+msgstr ""
+
+msgid "Add person"
+msgstr ""
+
+msgid "Import people"
+msgstr ""
+
+msgid "People"
+msgstr ""
+
+msgid ""
+"Add people from a spreadsheet saved as CSV. You see what will happen before "
+"anything is saved."
+msgstr ""
+
+msgid ""
+"Create a campaign list on the People screen first. Imported people are added"
+" to one."
+msgstr ""
+
+msgid "CSV file"
+msgstr ""
+
+msgid "Up to 5 MB. The first row names the columns."
+msgstr ""
+
+msgid "Add them to"
+msgstr ""
+
+msgid "Choose a campaign list"
+msgstr ""
+
+msgid ""
+"They are switched on for this list by email. App lists cannot be imported "
+"into."
+msgstr ""
+
+msgid ""
+"Newsletters need consent. Your name and the time are kept with each person "
+"as proof."
+msgstr ""
+
+msgid "Check the file"
+msgstr ""
+
+msgid "What the file needs"
+msgstr ""
+
+msgid "is required. Rows without a real address are skipped."
+msgstr ""
+
+msgid "are optional."
+msgstr ""
+
+msgid ""
+"is optional: a code such as en or uk, or the language's name. Anything else "
+"gets your default language."
+msgstr ""
+
+msgid "Any other column is kept as an extra detail on the person."
+msgstr ""
+
+msgid ""
+"People who were deleted, or who unsubscribed from the list, are never added "
+"back by an import."
+msgstr ""
+
+msgid "Choose another file"
+msgstr ""
+
+msgid "Check before importing"
+msgstr ""
+
+#, python-format
+msgid "%(file)s into %(list)s. Nothing is saved yet."
+msgstr ""
+
+msgid "Added and switched on for this list"
+msgstr ""
+
+msgid "Already here. Details are filled in and the list switched on"
+msgstr ""
+
+msgid "Left out. Nothing changes for them"
+msgstr ""
+
+msgid "Why rows are skipped"
+msgstr ""
+
+#, python-format
+msgid ""
+"%(n)s address belongs to someone who was deleted. They are not added back; "
+"they can sign up again themselves."
+msgid_plural ""
+"%(n)s addresses belong to people who were deleted. They are not added back; "
+"they can sign up again themselves."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "The first row"
+msgid_plural "The first %(n)s rows"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(total)s row in the file."
+msgid_plural "%(total)s rows in the file."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Extra columns are kept as details on each person."
+msgstr ""
+
+msgid "What happens"
+msgstr ""
+
+#, python-format
+msgid "You ticked: “%(wording)s”"
+msgstr ""
+
+#, python-format
+msgid "Import %(shown)s person"
+msgid_plural "Import %(shown)s people"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid ""
+"%(shown)s person. Lists you send campaigns to, and private lists your apps "
+"keep."
+msgid_plural ""
+"%(shown)s people. Lists you send campaigns to, and private lists your apps "
+"keep."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Search by name or email"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Lists"
+msgstr ""
+
+msgid "Everyone"
+msgstr ""
+
+msgid "All people"
+msgstr ""
+
+msgid "Campaign lists"
+msgstr ""
+
+msgid "People choose to join. You send newsletters here."
+msgstr ""
+
+msgid "Signup form"
+msgstr ""
+
+msgid "Not on the signup form"
+msgstr ""
+
+#, python-format
+msgid "Edit %(name)s"
+msgstr ""
+
+msgid "No campaign lists yet."
+msgstr ""
+
+msgid "New list"
+msgstr ""
+
+msgid "App lists"
+msgstr ""
+
+msgid ""
+"Private. Each app keeps its own list up to date, for app messages only."
+msgstr ""
+
+msgid "None yet. They appear when a building creates one."
+msgstr ""
+
+msgid "Segments"
+msgstr ""
+
+msgid "Saved filters. The builder comes later."
+msgstr ""
+
+msgid "Saved filter"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "an app"
+msgstr ""
+
+#, python-format
+msgid "Kept by %(building)s. You cannot change this list or its members here."
+msgstr ""
+
+msgid "People with this list switched on."
+msgstr ""
+
+msgid "Reachable on"
+msgstr ""
+
+msgid "Joined"
+msgstr ""
+
+msgid "Nowhere"
+msgstr ""
+
+msgid "Nobody matches"
+msgstr ""
+
+msgid "Try a different search, or clear the filters."
+msgstr ""
+
+msgid "Nobody is here yet"
+msgstr ""
+
+msgid "People arrive through the signup form, an import, or your apps."
+msgstr ""
+
+#, python-format
+msgid "Joined %(joined)s %(joined_how)s."
+msgstr ""
+
+#, python-format
+msgid "Joined %(joined)s."
+msgstr ""
+
+msgid "Profile"
+msgstr ""
+
+msgid "Extra details"
+msgstr ""
+
+msgid "Detail name"
+msgstr ""
+
+#, python-format
+msgid "Value of %(key)s"
+msgstr ""
+
+#, python-format
+msgid "Remove %(key)s"
+msgstr ""
+
+msgid "None."
+msgstr ""
+
+msgid "Name, such as Neighbourhood"
+msgstr ""
+
+msgid "Detail value"
+msgstr ""
+
+msgid "Remove this detail"
+msgstr ""
+
+msgid "Add a detail"
+msgstr ""
+
+msgid "Where we can reach them"
+msgstr ""
+
+msgid ""
+"A message to this address came back, so email is paused for them. If the "
+"address is right, mark it as working and the next message will try again."
+msgstr ""
+
+msgid "Mark email as working"
+msgstr ""
+
+msgid ""
+"They can change these themselves from the link at the bottom of any message."
+msgstr ""
+
+msgid ""
+"You can switch a box off at any time. Switching a newsletter on asks you how"
+" they agreed."
+msgstr ""
+
+msgid "Proof of consent"
+msgstr ""
+
+msgid "The wording they agreed to:"
+msgstr ""
+
+#, python-format
+msgid "From the address %(ip)s."
+msgstr ""
+
+msgid "Careful"
+msgstr ""
+
+msgid "These cannot be undone from here."
+msgstr ""
+
+#, python-format
+msgid ""
+"Stop all newsletters for %(name)s? Every campaign list is switched off on "
+"every channel. App messages are not affected."
+msgstr ""
+
+msgid "Stop all newsletters"
+msgstr ""
+
+msgid "Delete this person"
+msgstr ""
+
+msgid "History"
+msgstr ""
+
+msgid "See it in the outbox"
+msgstr ""
+
+msgid "Show older"
+msgstr ""
+
+msgid "Nothing has been sent to them yet."
+msgstr ""
+
+#, python-format
+msgid "Delete %(name)s?"
+msgstr ""
+
+msgid ""
+"Their details, choices, proof of consent and message history are removed. "
+"This cannot be undone."
+msgstr ""
+
+msgid ""
+"We keep a scrambled copy of their email address, only so a later import "
+"cannot quietly add them back."
+msgstr ""
+
+msgid "I understand this cannot be undone"
+msgstr ""
+
+msgid "Keep them"
+msgstr ""
+
+msgid ""
+"The page people use to join your lists. Share the link or make a code from "
+"it."
+msgstr ""
+
+msgid "Open the live form"
+msgstr ""
+
+msgid "What people can choose"
+msgstr ""
+
+msgid ""
+"You have no campaign lists yet. Create one on the People screen and it can "
+"be offered here."
+msgstr ""
+
+msgid ""
+"Only campaign lists can be offered. App lists are never on the signup form."
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "Language picker"
+msgstr ""
+
+#, python-format
+msgid "Shows your %(n)s language. Starts on the one their browser uses."
+msgid_plural ""
+"Shows your %(n)s languages. Starts on the one their browser uses."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Offer Telegram"
+msgstr ""
+
+msgid "Adds a box to also connect Telegram"
+msgstr ""
+
+msgid ""
+"Adds a box to also connect Telegram. It appears once a bot is added in "
+"Channels."
+msgstr ""
+
+msgid "Ask for a first name"
+msgstr ""
+
+msgid "Lets you write \\"
+msgstr ""
+
+msgid "Confirm by email"
+msgstr ""
+
+msgid "Sends one email with a confirm button. Owners change this in Settings."
+msgstr ""
+
+msgid "Copy link"
+msgstr ""
+
+msgid "Pre-filled link"
+msgstr ""
+
+msgid ""
+"Fill in anything you already know about the person and copy the link. They "
+"open it, check it and press Subscribe. These links are not saved, so make a "
+"new one whenever you need it. You can turn one into a QR code with any QR "
+"tool."
+msgstr ""
+
+msgid "Tick these for them"
+msgstr ""
+
+msgid "Boxes to pre-tick"
+msgstr ""
+
+msgid "Also send updates on Telegram"
+msgstr ""
+
+msgid "Open the form in"
+msgstr ""
+
+msgid "Language to open in"
+msgstr ""
+
+msgid "Their browser language"
+msgstr ""
+
+msgid ""
+"Consent is never pre-filled. On a pre-filled link the consent wording sits "
+"beside the Subscribe button, and the person gives consent by pressing it "
+"themselves."
+msgstr ""
+
+msgid "Your link"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid ""
+"Preview. It follows the switches and the pre-filled link. Nothing is sent "
+"from here."
+msgstr ""
+
+msgid "Signup form preview"
+msgstr ""
+
+#, python-format
+msgid "Give the list a name in %(language)s."
+msgstr ""
+
+msgid "The short name can only use lower-case letters, numbers and hyphens."
+msgstr ""
+
+msgid "Another list already uses this short name."
+msgstr ""
+
+msgid "List saved."
+msgstr ""
+
+msgid "Choose the CSV file again."
+msgstr ""
+
+#, python-format
+msgid "%(n)d new person"
+msgid_plural "%(n)d new people"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(n)d updated"
+msgstr ""
+
+#, python-format
+msgid "%(n)d skipped"
+msgstr ""
+
+#, python-format
+msgid "Import finished: %(summary)s."
+msgstr ""
+
+msgid "That does not look like an email address."
+msgstr ""
+
+msgid "Someone with this email address is already here."
+msgstr ""
+
+msgid "Give a name or an email address."
+msgstr ""
+
+msgid "Person added. Tick the lists they agreed to below."
+msgstr ""
+
+msgid "No consent is on record for this person."
+msgstr ""
+
+msgid "a team member"
+msgstr ""
+
+#, python-format
+msgid "Pressed Subscribe on a pre-filled signup link on %(when)s"
+msgstr ""
+
+#, python-format
+msgid "Switched this on themselves on their preferences page on %(when)s"
+msgstr ""
+
+#, python-format
+msgid "Ticked the consent box on the signup form on %(when)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"Added by import on %(when)s by %(by)s, who confirmed these people had agreed"
+msgstr ""
+
+#, python-format
+msgid "Gave consent through a connected app or website on %(when)s"
+msgstr ""
+
+#, python-format
+msgid "Recorded by %(by)s on %(when)s"
+msgstr ""
+
+#, python-format
+msgid ", then confirmed by email on %(when)s"
+msgstr ""
+
+msgid ", and has not confirmed by email yet"
+msgstr ""
+
+#, python-format
+msgid "Note: %(note)s"
+msgstr ""
+
+#, python-format
+msgid "%(list)s by %(channel)s"
+msgstr ""
+
+msgid "App"
+msgstr ""
+
+msgid "Clicked a link"
+msgstr ""
+
+msgid "Agreed to receive messages"
+msgstr ""
+
+msgid "Confirmed their email address"
+msgstr ""
+
+msgid "Confirmed"
+msgstr ""
+
+msgid "No address"
+msgstr ""
+
+msgid "Not set"
+msgstr ""
+
+msgid "Bounced"
+msgstr ""
+
+msgid "Marked us as spam"
+msgstr ""
+
+#, python-format
+msgid "Connected %(date)s to %(bot)s"
+msgstr ""
+
+msgid "Blocked the bot"
+msgstr ""
+
+msgid "Someone else already has this email address."
+msgstr ""
+
+msgid "through the signup form"
+msgstr ""
+
+msgid "by import"
+msgstr ""
+
+msgid "through a connected app"
+msgstr ""
+
+msgid "added by a team member"
+msgstr ""
+
+#, python-format
+msgid "through %(source)s"
+msgstr ""
+
+msgid ""
+"A team member recorded that this person agreed to receive these messages."
+msgstr ""
+
+msgid "Say how this person gave consent. Without a note the box stays off."
+msgstr ""
+
+msgid ""
+"Email is marked as working again. The next message will try this address."
+msgstr ""
+
+msgid "All newsletters are stopped for this person."
+msgstr ""
+
+msgid "They had no newsletters switched on."
+msgstr ""
+
+msgid "Signup form saved."
+msgstr ""
+
+msgid ""
+"You are unsubscribed from all news. You can tick anything back on whenever "
+"you like."
+msgstr ""
+"Ви відписалися від усіх новин. Ви можете будь-коли знову поставити позначки."
+
+msgid "News"
+msgstr "Новини"
+
+msgid "About things you signed up for"
+msgstr "Про те, на що ви записалися"
+
+msgid "waiting for you to confirm"
+msgstr "очікує вашого підтвердження"
+
+msgid "Waiting for you to confirm. Press to switch it on now."
+msgstr "Очікує вашого підтвердження. Натисніть, щоб увімкнути зараз."
+
+msgid "Sent with Post Office"
+msgstr "Надіслано через Post Office"
+
+msgid "You are confirmed"
+msgstr "Підтверджено"
+
+#, python-format
+msgid "Thank you, %(name)s"
+msgstr "Дякуємо, %(name)s"
+
+msgid "Thank you"
+msgstr "Дякуємо"
+
+msgid "Your email address is confirmed."
+msgstr "Вашу електронну адресу підтверджено."
+
+msgid "You will hear from us about:"
+msgstr "Ви отримуватимете від нас:"
+
+msgid "This link no longer works"
+msgstr "Це посилання більше не працює"
+
+msgid ""
+"It may be too old, or part of it went missing when it was copied. Use the "
+"link in a newer message from us, or sign up again."
+msgstr ""
+"Можливо, воно застаріле або скопіювалося не повністю. Скористайтеся "
+"посиланням із новішого повідомлення від нас або підпишіться знову."
+
+msgid "Go to the signup form"
+msgstr "Перейти до форми підписки"
+
+msgid "Stay in the loop"
+msgstr "Будьте в курсі"
+
+msgid "Subscribe"
+msgstr "Підписатися"
+
+#, python-format
+msgid "News and events from %(org)s, in your language."
+msgstr "Новини та події від %(org)s вашою мовою."
+
+msgid "This is a preview. Nothing can be sent from here."
+msgstr ""
+
+msgid "Signing up is not open right now. Please come back later."
+msgstr "Підписка зараз недоступна. Будь ласка, зайдіть пізніше."
+
+msgid "What would you like to hear about?"
+msgstr "Про що ви хочете отримувати повідомлення?"
+
+msgid "Also send me updates on Telegram"
+msgstr "Також надсилайте мені повідомлення в Telegram"
+
+msgid "Choose what you hear about"
+msgstr "Оберіть, що ви отримуєте"
+
+msgid "Your choices are saved"
+msgstr "Ваші налаштування збережено"
+
+msgid ""
+"You can close this page. The link at the bottom of any message from us "
+"brings you back."
+msgstr ""
+"Можете закрити цю сторінку. Посилання внизу будь-якого нашого повідомлення "
+"поверне вас сюди."
+
+msgid "Change something else"
+msgstr "Змінити ще щось"
+
+#, python-format
+msgid "%(name)s, choose what you hear about"
+msgstr "%(name)s, оберіть, що ви отримуєте"
+
+#, python-format
+msgid ""
+"You will no longer get %(lists)s by email. Anything else you get is listed "
+"below."
+msgstr ""
+"Ви більше не отримуватимете «%(lists)s» електронною поштою. Усе інше, що ви "
+"отримуєте, показано нижче."
+
+msgid ""
+"Telegram is not connected yet, so nothing can arrive there. Open our bot and"
+" press Start."
+msgstr ""
+"Telegram ще не під’єднано, тому туди нічого не надійде. Відкрийте нашого "
+"бота й натисніть Start."
+
+msgid "Connect Telegram"
+msgstr "Під’єднати Telegram"
+
+msgid ""
+"You get each message everywhere you ticked. Notifications inside our apps "
+"about your own orders and shifts are switched on and off in those apps."
+msgstr ""
+"Ви отримуєте кожне повідомлення всюди, де стоїть позначка. Сповіщення в "
+"наших застосунках про ваші замовлення та зміни вмикаються й вимикаються в "
+"самих застосунках."
+
+msgid "Unsubscribe from all news"
+msgstr "Відписатися від усіх новин"
+
+msgid "Done"
+msgstr "Готово"
+
+msgid "Check your inbox. We sent you an email with one last step."
+msgstr "Перевірте пошту. Ми надіслали вам лист з останнім кроком."
+
+msgid ""
+"Nothing after a few minutes? Look in your spam folder, or fill in the form "
+"again."
+msgstr ""
+"Нічого не прийшло за кілька хвилин? Перевірте папку «Спам» або заповніть "
+"форму ще раз."
+
+msgid "You are signed up."
+msgstr "Ви підписані."
+
+msgid ""
+"If you were already with us, we sent you an email with a link to your "
+"choices instead."
+msgstr ""
+"Якщо ви вже були з нами, ми натомість надіслали вам лист із посиланням на "
+"ваші налаштування."
+
+msgid "One more step for Telegram"
+msgstr "Ще один крок для Telegram"
+
+msgid "Open our bot in Telegram and press Start. That connects it to you."
+msgstr ""
+"Відкрийте нашого бота в Telegram і натисніть Start. Так він під’єднається до"
+" вас."
+
+msgid "Open Telegram"
+msgstr "Відкрити Telegram"
+
+msgid "Enter your email address, like name@example.com."
+msgstr "Введіть вашу електронну адресу, наприклад name@example.com."
+
+msgid "Tick at least one thing you would like to hear about."
+msgstr "Позначте хоча б одну тему, яка вас цікавить."
+
+msgid "Tick the box to say you agree to receive these messages."
+msgstr "Поставте позначку, щоб підтвердити згоду отримувати ці повідомлення."
+
+msgid ""
+"Too many signups came from your connection. Please try again in an hour."
+msgstr ""
+"З вашого з’єднання надійшло забагато заявок. Спробуйте ще раз за годину."
+
+#, python-format
+msgid "%(list)s by email"
+msgstr "«%(list)s» електронною поштою"
+
+#, python-format
+msgid "%(list)s by Telegram"
+msgstr "«%(list)s» у Telegram"
+
+#, python-format
+msgid "%(list)s by push"
+msgstr "«%(list)s» push-сповіщенням"
+
+msgid "Tick how you want to get each kind of message. Changes save as you go."
+msgstr ""
+"Позначте, як ви хочете отримувати кожен вид повідомлень. Зміни зберігаються "
+"одразу."
+
+msgid "Post Office home"
+msgstr ""
+
+#, python-format
+msgid "Signed in as %(name)s. Sign out"
+msgstr ""
+
+msgid "Part of Hamlet"
+msgstr ""

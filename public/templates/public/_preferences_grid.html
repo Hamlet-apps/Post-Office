@@ -1,0 +1,14 @@
+{% load po i18n %}
+<div class="sg sg--large" id="prefs-grid">
+  {% if stopped %}<div class="po-notice po-notice--ok" role="status">{% icon "check" %}<span>{% trans "You are unsubscribed from all news. You can tick anything back on whenever you like." %}</span></div>{% endif %}
+  <div class="sg__scroll"><div class="sg__inner">
+    <div class="sg__row sg__row--head" aria-hidden="true">
+      <span class="sg__name"></span>
+      {% for label in grid.column_labels %}<div class="sg__col sg__colhead">{{ label }}</div>{% endfor %}
+    </div>
+    {% if grid.campaign %}<span class="po-eyebrow">{% trans "News" %}</span>{% endif %}
+    {% for row in grid.campaign %}{% include "public/_preferences_row.html" %}{% endfor %}
+    {% if grid.app %}<span class="po-eyebrow">{% trans "About things you signed up for" %}</span>{% endif %}
+    {% for row in grid.app %}{% include "public/_preferences_row.html" %}{% endfor %}
+  </div></div>
+</div>

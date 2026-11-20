@@ -1,0 +1,13 @@
+{% load po i18n humanize %}
+{% for m in messages_page %}{% include "delivery/_message_row.html" with m=m sub=True %}{% empty %}
+<tr class="ob-sub" x-show="open"><td colspan="7" class="po-muted">{% trans "No message of this campaign fits the filters." %}</td></tr>
+{% endfor %}
+{% if page.has_next %}
+<tr class="ob-sub" x-show="open">
+  <td colspan="7">
+    <button type="button" class="po-btn po-btn--sm po-btn--white"
+            hx-get="{% url 'delivery:campaign_messages' campaign.public_id %}?{{ filter_query }}{% if filter_query %}&amp;{% endif %}page={{ page.next_page_number }}"
+            hx-target="closest tr" hx-swap="outerHTML">{% blocktrans with shown=page.end_index|intcomma total=page.paginator.count|intcomma %}Show more ({{ shown }} of {{ total }} shown){% endblocktrans %}</button>
+  </td>
+</tr>
+{% endif %}

@@ -1,0 +1,13 @@
+{% load po i18n %}
+{% comment %}The two steps of a campaign. Pass step=1 or step=2.{% endcomment %}
+<div class="po-panel cs-stepbar">
+  <div class="cs-steps" role="navigation" aria-label="{% trans 'Campaign steps' %}">
+    <a href="{% url 'campaigns:design' campaign.public_id %}" class="cs-step"{% if step == 1 %} aria-current="step"{% endif %}>
+      <span class="cs-step__n">{% if step == 1 %}1{% else %}{% icon "check" 14 2.8 %}{% endif %}</span>{% trans "Design" %}
+    </a>
+    <span class="cs-steps__line" aria-hidden="true"></span>
+    <a href="{% url 'campaigns:send' campaign.public_id %}" class="cs-step"{% if step == 2 %} aria-current="step"{% endif %}>
+      <span class="cs-step__n">2</span>{% trans "Audience and send" %}
+    </a>
+  </div>
+</div>

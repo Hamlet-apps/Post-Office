@@ -1,0 +1,52 @@
+{% extends "shell.html" %}
+{% load po i18n static %}
+{% block page_title %}{% trans "Settings" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/settings.css' %}">{% endblock %}
+{% block title %}{% trans "Settings" %}{% endblock %}
+{% block subtitle_wrap %}{% endblock %}
+
+{% block content %}
+<div class="st-layout">
+  <nav class="po-panel st-menu" aria-label="{% trans 'Settings sections' %}">
+    <div class="st-menu__links">
+      {% for id, label in sections %}<a href="#{{ id }}"{% if forloop.first and not focus or focus == id %} aria-current="true"{% endif %}>{{ label }}</a>{% endfor %}
+    </div>
+    <span class="st-menu__note">{% trans "All on this page. These jump to each section." %}</span>
+  </nav>
+
+  <div class="st-sections">
+    {% include "core/settings/_organisation.html" %}
+    {% include "core/settings/_languages.html" %}
+    {% include "core/settings/_buildings.html" %}
+    {% include "core/settings/_consent.html" %}
+    {% include "core/settings/_team.html" %}
+    {% include "core/settings/_keys.html" %}
+  </div>
+</div>
+
+<script>
+  /* Jump to the section a form came from, and mark the section in view in the menu. */
+  (function () {
+    var focus = "{{ focus|default:''|escapejs }}";
+    var links = document.querySelectorAll(".st-menu__links a");
+    function mark(id) {
+      links.forEach(function (a) {
+        if (a.getAttribute("href") === "#" + id) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+      });
+    }
+    if (focus) {
+      var el = document.getElementById(focus);
+      if (el) el.scrollIntoView();
+    } else if (location.hash) {
+      mark(location.hash.slice(1));
+    }
+    links.forEach(function (a) { a.addEventListener("click", function () { mark(a.getAttribute("href").slice(1)); }); });
+    if ("IntersectionObserver" in window) {
+      var seen = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) mark(e.target.id); });
+      }, { rootMargin: "-20% 0px -70% 0px" });
+      document.querySelectorAll(".st-section").forEach(function (s) { seen.observe(s); });
+    }
+  })();
+</script>
+{% endblock %}

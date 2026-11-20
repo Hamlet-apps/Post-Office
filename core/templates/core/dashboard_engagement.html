@@ -1,0 +1,39 @@
+{% load po cp i18n %}
+<section class="po-panel po-col-2 db-engagement" id="po-engagement" aria-labelledby="po-eng">
+  <div class="po-flex po-flex--between">
+    <div class="po-stack" style="gap:4px">
+      <h2 class="po-h2" id="po-eng">{% trans "Engagement" %}</h2>
+      <span class="po-sub">{% trans "Opens, link clicks and new subscribers" %}{% if engagement.weekly %} · {% trans "by week" %}{% endif %}</span>
+    </div>
+    <div class="po-seg po-seg--ground" role="group" aria-label="{% trans 'Date range' %}">
+      {% for r in engagement.ranges %}
+      <a href="?range={{ r.days }}" hx-get="{% url 'dashboard' %}?range={{ r.days }}" hx-target="#po-engagement" hx-swap="outerHTML"{% if r.current %} aria-current="true"{% endif %}>{{ r.label }}</a>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if engagement.empty %}
+  <div class="po-notice po-notice--plain">{% icon "info" %}<span>{% trans "Nothing to chart for these days yet. Opens, clicks and new subscribers show up here once a campaign has gone out." %}</span></div>
+  {% endif %}
+
+  {% comment %}Interactive charts: static/js/charts.js draws these with the vendored Chart.js from the JSON below.
+  Without JavaScript the server-drawn SVG is shown instead.{% endcomment %}
+  {% chart_data engagement.chart %}
+  <div class="po-stack db-chart">
+    <div class="db-legend"><span class="db-key" style="background:var(--teal)"></span><span class="po-strong">{% trans "Opens" %}</span><span class="po-midnum">{{ engagement.opens.total|num }}</span></div>
+    <div class="ch-canvas" style="height:210px"><canvas id="ch-opens" role="img" aria-label="{{ engagement.opens.label }}"></canvas></div>
+    <noscript>{{ engagement.opens.svg }}</noscript>
+  </div>
+
+  <div class="po-stack db-chart">
+    <div class="db-legend"><span class="db-key" style="background:var(--peach-chart)"></span><span class="po-strong">{% trans "Link clicks" %}</span><span class="po-midnum">{{ engagement.clicks.total|num }}</span></div>
+    <div class="ch-canvas" style="height:140px"><canvas id="ch-clicks" role="img" aria-label="{{ engagement.clicks.label }}"></canvas></div>
+    <noscript>{{ engagement.clicks.svg }}</noscript>
+  </div>
+
+  <div class="po-stack db-chart">
+    <div class="db-legend"><span class="db-key" style="background:var(--teal-soft)"></span><span class="po-strong">{% trans "New subscribers" %}</span><span class="po-midnum">{{ engagement.subscribers.total|num }}</span></div>
+    <div class="ch-canvas" style="height:130px"><canvas id="ch-subscribers" role="img" aria-label="{{ engagement.subscribers.label }}"></canvas></div>
+    <noscript>{{ engagement.subscribers.svg }}</noscript>
+  </div>
+</section>

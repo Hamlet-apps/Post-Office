@@ -1,0 +1,94 @@
+{% load po i18n tz %}
+<section class="po-panel st-section" id="st-bld" aria-labelledby="st-bld-h">
+  <div class="po-stack po-stack--xs">
+    <h2 class="po-h2" id="st-bld-h">{% trans "Connected buildings" %}</h2>
+    <span class="po-muted">{% trans "Other Hamlet apps that are allowed to send messages through Post Office." %}</span>
+  </div>
+
+  {% if new_key and new_key.owner == "building" %}
+  <div class="po-notice po-notice--ok st-reveal" role="status">
+    <strong>{% if new_key.rotated %}{% blocktrans with name=new_key.name %}{{ name }} has a new key. The old one has stopped working. Copy the new key now; it is shown only once.{% endblocktrans %}{% else %}{% blocktrans with name=new_key.name %}{{ name }} is connected. Copy its key now; it is shown only once.{% endblocktrans %}{% endif %}</strong>
+    <div class="po-flex po-flex--nowrap st-reveal__row">
+      <label for="st-bld-key" class="sr-only">{% trans "Building key" %}</label>
+      <input id="st-bld-key" class="po-input po-input--mono po-input--white po-grow" value="{{ new_key.key }}" readonly>
+      <button type="button" class="po-btn po-btn--white po-btn--sm" data-copy-from="#st-bld-key">{% icon "copy" %}{% trans "Copy" %}</button>
+    </div>
+    <span>{% trans "Paste it into the building's Post Office settings." %}</span>
+  </div>
+  {% endif %}
+
+  {% if buildings %}
+  <div class="st-rows">
+    {% for b in buildings %}
+    <div class="st-row">
+      {% building_logo b 40 %}
+      <div class="st-row__main">
+        <span class="po-strong">{{ b.name }}</span>
+        <span class="po-small po-muted st-wrap">{% if b.host %}{{ b.host }}{% else %}{{ b.get_kind_display }}{% endif %}{% if b.sends %} · {{ b.sends|join:", " }}{% else %} · {% trans "has not set up any messages yet" %}{% endif %}</span>
+      </div>
+      <span class="po-small po-muted">{% if b.last_seen_at %}{% timezone org.tz %}{% blocktrans with when=b.last_seen_at|date:"M j, g:i A" %}Last sent {{ when }}{% endblocktrans %}{% endtimezone %}{% else %}{% trans "Has not sent anything yet" %}{% endif %}</span>
+      {% if b.connected %}
+      <span class="po-tag po-tag--ok">{% icon "check" 14 2.8 %}{% trans "Connected" %}</span>
+      <form method="post" action="{% url 'settings_building_rotate' b.public_id %}"
+            data-confirm="{% blocktrans with name=b.name %}Give {{ name }} a new key? Its current key stops working at once, so {{ name }} cannot send until you paste the new key into it.{% endblocktrans %}">{% csrf_token %}
+        <button class="po-btn po-btn--sm">{% icon "refresh" %}{% trans "New key" %}</button>
+      </form>
+      <form method="post" action="{% url 'settings_building_disconnect' b.public_id %}"
+            data-confirm="{% blocktrans with name=b.name %}Disconnect {{ name }}? It will not be able to send messages through Post Office. Its templates and past messages stay.{% endblocktrans %}">{% csrf_token %}
+        <button class="po-btn po-btn--danger po-btn--sm">{% trans "Disconnect" %}</button>
+      </form>
+      {% else %}
+      <span class="po-tag">{% icon "close" 14 2.4 %}{% trans "Not connected" %}</span>
+      <form method="post" action="{% url 'settings_building_rotate' b.public_id %}">{% csrf_token %}
+        <button class="po-btn po-btn--sm">{% icon "key" %}{% trans "Connect again" %}</button>
+      </form>
+      <form method="post" action="{% url 'settings_building_remove' b.public_id %}"
+            data-confirm="{% blocktrans with name=b.name %}Remove {{ name }} for good? The templates it set up are removed with it. This cannot be undone.{% endblocktrans %}">{% csrf_token %}
+        <button class="po-iconbtn" aria-label="{% blocktrans with name=b.name %}Remove {{ name }}{% endblocktrans %}">{% icon "trash" %}</button>
+      </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="po-notice po-notice--plain">{% icon "building" %}<span>{% trans "No building is connected yet. Connect Town Hall, Pavilion or Bell Tower so it can send its messages through Post Office." %}</span></div>
+  {% endif %}
+
+  <details class="st-details"{% if errors.bld %} open{% endif %}>
+    <summary class="po-btn st-tintbtn po-btn--sm">{% icon "plus" %}{% trans "Connect a building" %}</summary>
+    <form method="post" action="{% url 'settings_building_connect' %}" class="po-stack st-details__body" novalidate>
+      {% csrf_token %}
+      <div class="po-fieldrow">
+        <div class="po-field st-kind">
+          <label for="st-bkind">{% trans "Building" %}</label>
+          <select id="st-bkind" class="po-select" name="kind">{% for value, label in building_kinds %}<option value="{{ value }}"{% if form.bld.kind == value %} selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+        </div>
+        <div class="po-field">
+          <label for="st-bname">{% trans "Name" %}</label>
+          <input id="st-bname" class="po-input" name="name" value="{{ form.bld.name }}" placeholder="Town Hall" maxlength="120" required{% if errors.bld.name %} aria-invalid="true" aria-describedby="st-bname-e"{% endif %}>
+          {% if errors.bld.name %}<span class="po-error" id="st-bname-e">{{ errors.bld.name }}</span>{% endif %}
+        </div>
+        <div class="po-field">
+          <label for="st-burl">{% trans "Address" %}</label>
+          <input id="st-burl" class="po-input po-input--mono" name="base_url" value="{{ form.bld.base_url }}" placeholder="https://townhall.example.org" maxlength="200">
+        </div>
+      </div>
+      <div class="po-flex po-flex--between">
+        <span class="po-hint">{% trans "You get a key to paste into the building. It is shown once." %}</span>
+        <button class="po-btn po-btn--teal po-btn--sm">{% icon "key" %}{% trans "Connect and show the key" %}</button>
+      </div>
+    </form>
+  </details>
+
+  <hr class="po-divider">
+
+  {# TODO(gatehouse): Gatehouse (OpenID Connect) sign-in is not built. When it is, make this switch live: post it to a settings route that saves Organization.gatehouse_enabled, and drop the "not available yet" note. #}
+  <label class="po-switch st-switchrow st-switchrow--off">
+    <span class="po-stack po-stack--xs po-grow">
+      <span class="po-strong">{% trans "Sign in with Gatehouse" %}</span>
+      <span class="po-small po-muted" id="st-gatehouse-note">{% trans "Gatehouse is not available yet. Team members sign in with their email and a password." %}</span>
+    </span>
+    <span class="po-tag">{% icon "lock" 14 2.4 %}{% trans "Not available yet" %}</span>
+    <input type="checkbox" role="switch" disabled aria-describedby="st-gatehouse-note">
+  </label>
+</section>

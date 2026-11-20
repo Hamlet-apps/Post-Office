@@ -1,0 +1,15 @@
+{% load po i18n %}
+<section id="cs-checks" class="po-panel po-col-1" aria-labelledby="cs-checks-title"{% if oob %} hx-swap-oob="true"{% endif %}>
+  <h2 class="po-h2" id="cs-checks-title">{% trans "Before you send" %}</h2>
+  <ul class="cs-checks">
+    {% for check in checklist %}
+    <li class="cs-check cs-check--{{ check.state }}">
+      <span class="cs-check__mark">{% if check.ok %}{% icon "check" 14 2.8 %}{% elif check.blocking %}{% icon "close" 14 2.8 %}{% else %}{% icon "warning" 14 2.4 %}{% endif %}</span>
+      <span class="po-stack" style="gap:2px">
+        <span><span class="sr-only">{% if check.ok %}{% trans "Done:" %}{% elif check.blocking %}{% trans "Must fix:" %}{% else %}{% trans "Warning:" %}{% endif %}</span> {{ check.label }}</span>
+        {% if check.detail %}<span class="po-small po-muted cs-check__detail">{{ check.detail }}</span>{% endif %}
+      </span>
+    </li>
+    {% endfor %}
+  </ul>
+</section>

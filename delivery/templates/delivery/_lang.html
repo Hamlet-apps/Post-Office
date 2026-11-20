@@ -1,0 +1,1 @@
+{% load i18n %}<span class="ob-lang{% if fallback %} ob-lang--fallback{% endif %}"{% if fallback %} title="{% trans 'Sent in the default language because theirs is not written' %}"{% endif %}>{{ code|upper }}{% if fallback %}<span class="sr-only"> {% trans "default language used" %}</span>{% endif %}</span>

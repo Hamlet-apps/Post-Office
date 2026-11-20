@@ -1,0 +1,174 @@
+{% extends "shell.html" %}
+{% load po i18n static tz %}
+{% block page_title %}{{ person.display_name }} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/public.css' %}"><link rel="stylesheet" href="{% static 'css/people.css' %}">{% endblock %}
+{% block back %}<a class="po-back" href="{% url 'people:list' %}">{% icon "chevron-left" 16 %}{% trans "People" %}</a>{% endblock %}
+{% block eyebrow %}{% endblock %}
+{% block title %}{{ person.display_name }}{% endblock %}
+{% block subtitle %}{% if joined_how %}{% blocktrans %}Joined {{ joined }} {{ joined_how }}.{% endblocktrans %}{% else %}{% blocktrans %}Joined {{ joined }}.{% endblocktrans %}{% endif %}{% endblock %}
+{% block actions %}
+<span class="po-tag {{ status.2 }}">{{ status.1 }}</span>
+{% if can_edit %}<button type="submit" form="pp-profile" class="po-btn po-btn--primary">{% icon "check" %}{% trans "Save" %}</button>{% endif %}
+{% endblock %}
+
+{% block content %}
+{% timezone org.tz %}
+<div class="po-cols pp-personcols">
+  <section class="po-panel po-col-1" aria-label="{% trans 'Profile' %}">
+    <div class="pp-person">
+      <span class="pp-avatar pp-avatar--lg" aria-hidden="true">{{ initials }}</span>
+      <div class="po-stack po-stack--xs pp-person__text">
+        <span class="po-h3">{{ person.display_name }}</span>
+        {% if person.email %}<span class="po-small po-muted">{{ person.email }}</span>{% endif %}
+      </div>
+    </div>
+    {% for error in errors %}<div class="po-notice po-notice--danger" role="alert">{{ error }}</div>{% endfor %}
+    <form id="pp-profile" method="post" class="po-stack">
+      {% csrf_token %}
+      <fieldset class="pp-fieldset po-stack"{% if not can_edit %} disabled{% endif %}>
+        <div class="po-fieldrow">
+          <div class="po-field"><label for="pp-first">{% trans "First name" %}</label><input class="po-input" id="pp-first" name="first_name" value="{{ person.first_name }}" maxlength="120"></div>
+          <div class="po-field"><label for="pp-last">{% trans "Last name" %}</label><input class="po-input" id="pp-last" name="last_name" value="{{ person.last_name }}" maxlength="120"></div>
+        </div>
+        <div class="po-field"><label for="pp-email">{% trans "Email" %}</label><input class="po-input" id="pp-email" type="email" name="email" value="{{ person.email|default:'' }}"></div>
+        <div class="po-field">
+          <label for="pp-lang">{% trans "Language" %}</label>
+          <select class="po-select" id="pp-lang" name="language">
+            {% for l in languages %}<option value="{{ l.code }}"{% if l.pk == person.language_id %} selected{% endif %}>{{ l.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <hr class="po-divider">
+        <span class="po-eyebrow">{% trans "Extra details" %}</span>
+        <div class="po-stack po-stack--sm" id="pp-attrs">
+          {% for a in attributes %}
+          <div class="pp-attr">
+            <input class="po-input" name="attr_key" value="{{ a.key }}" aria-label="{% trans 'Detail name' %}" placeholder="{% trans 'Name' %}">
+            <input class="po-input" name="attr_value" value="{{ a.value }}" aria-label="{% blocktrans with key=a.key %}Value of {{ key }}{% endblocktrans %}" placeholder="{% trans 'Value' %}">
+            {% if can_edit %}<button type="button" class="po-iconbtn po-iconbtn--plain" aria-label="{% blocktrans with key=a.key %}Remove {{ key }}{% endblocktrans %}" onclick="this.closest('.pp-attr').remove()">{% icon "close" 16 %}</button>{% endif %}
+          </div>
+          {% empty %}
+          {% if not can_edit %}<span class="po-small po-muted">{% trans "None." %}</span>{% endif %}
+          {% endfor %}
+        </div>
+        <template id="pp-attr-template">
+          <div class="pp-attr">
+            <input class="po-input" name="attr_key" aria-label="{% trans 'Detail name' %}" placeholder="{% trans 'Name, such as Neighbourhood' %}">
+            <input class="po-input" name="attr_value" aria-label="{% trans 'Detail value' %}" placeholder="{% trans 'Value' %}">
+            <button type="button" class="po-iconbtn po-iconbtn--plain" aria-label="{% trans 'Remove this detail' %}" onclick="this.closest('.pp-attr').remove()">{% icon "close" 16 %}</button>
+          </div>
+        </template>
+        {% if can_edit %}
+        <div><button type="button" class="po-btn po-btn--sm" onclick="var t=document.getElementById('pp-attr-template').content.cloneNode(true);document.getElementById('pp-attrs').appendChild(t);document.querySelector('#pp-attrs .pp-attr:last-child input').focus()">{% icon "plus" 16 %}{% trans "Add a detail" %}</button></div>
+        {% endif %}
+      </fieldset>
+    </form>
+    <hr class="po-divider">
+    <span class="po-eyebrow">{% trans "Where we can reach them" %}</span>
+    <div class="po-stack po-stack--sm">
+      {% for r in reach %}
+      <div class="pp-reachrow">
+        <span class="po-icontile">{% icon r.icon 18 %}</span>
+        <div class="po-stack po-stack--xs po-grow"><span class="po-strong">{{ r.name }}</span><span class="po-small po-muted pp-break">{{ r.detail }}</span></div>
+        <span class="po-tag {{ r.css }}">{{ r.state }}</span>
+      </div>
+      {% if r.clear_bounce %}
+      <div class="po-notice">
+        <span class="po-grow">{% trans "A message to this address came back, so email is paused for them. If the address is right, mark it as working and the next message will try again." %}</span>
+      </div>
+      {% if can_edit %}
+      <form method="post" action="{% url 'people:person_clear_bounce' person.public_id %}">{% csrf_token %}
+        <button class="po-btn po-btn--sm">{% icon "refresh" 16 %}{% trans "Mark email as working" %}</button>
+      </form>
+      {% endif %}
+      {% endif %}
+      {% if r.connect and can_edit %}
+      <div id="pp-connect-slot">
+        <button type="button" class="po-btn po-btn--sm" hx-post="{% url 'people:person_connect_link' person.public_id %}" hx-target="#pp-connect-slot">{% icon "link" 16 %}{% trans "Get the connect link" %}</button>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="po-panel po-col-2" aria-labelledby="pp-get">
+    <div class="po-stack po-stack--xs">
+      <h2 class="po-h2" id="pp-get">{% trans "What they get" %}</h2>
+      <span class="po-small po-muted">{% trans "They can change these themselves from the link at the bottom of any message." %}{% if can_edit %} {% trans "You can switch a box off at any time. Switching a newsletter on asks you how they agreed." %}{% endif %}</span>
+    </div>
+    {% include "people/_grid.html" %}
+    <hr class="po-divider">
+    <div class="pp-reachrow pp-reachrow--top">
+      <span class="po-icontile">{% icon "shield" 18 %}</span>
+      <div class="po-stack po-stack--xs po-grow">
+        <span class="po-strong">{% trans "Proof of consent" %}</span>
+        <span class="po-small po-muted">{{ consent_sentence }}</span>
+        {% if consent and consent.wording %}
+        <span class="po-small po-muted">{% trans "The wording they agreed to:" %} <q lang="{{ consent.language }}">{{ consent.wording }}</q></span>
+        {% endif %}
+        {% if consent and show_proof and consent.ip %}
+        <span class="po-small po-muted">{% blocktrans with ip=consent.ip %}From the address {{ ip }}.{% endblocktrans %}</span>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="po-cols">
+  {% if can_edit %}
+  <section class="po-panel po-col-1 pp-careful" aria-label="{% trans 'Careful' %}">
+    <span class="po-eyebrow">{% trans "Careful" %}</span>
+    <span class="po-small po-muted">{% trans "These cannot be undone from here." %}</span>
+    <div class="po-flex">
+      <form method="post" action="{% url 'people:person_stop_news' person.public_id %}" data-confirm="{% blocktrans with name=person.display_name %}Stop all newsletters for {{ name }}? Every campaign list is switched off on every channel. App messages are not affected.{% endblocktrans %}">{% csrf_token %}
+        <button class="po-btn po-btn--sm">{% trans "Stop all newsletters" %}</button>
+      </form>
+      <button type="button" class="po-btn po-btn--sm po-btn--danger" data-open-dialog="pp-delete">{% icon "trash" 16 %}{% trans "Delete this person" %}</button>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="po-panel po-col-2" aria-labelledby="pp-history">
+    <h2 class="po-h2" id="pp-history">{% trans "History" %}</h2>
+    {% if history %}
+    <div class="pp-history">
+      {% for e in history %}
+      <div class="pp-event">
+        <span class="pp-event__when po-num">{{ e.at|date:"M j, g:i A" }}</span>
+        <div class="po-stack po-stack--xs po-grow">
+          <span class="po-strong">{{ e.title }}</span>
+          <span class="po-small po-muted">{{ e.sub }}</span>
+          {% if e.error %}<span class="po-small pp-event__error">{{ e.error }}</span>{% endif %}
+          {% if e.url %}<a class="po-small" href="{{ e.url }}">{% trans "See it in the outbox" %}</a>{% endif %}
+        </div>
+        <span class="po-tag {{ e.tag_class }}">{{ e.tag }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% if history_more %}<div><a class="po-btn po-btn--sm" href="?history=all#pp-history">{% trans "Show older" %}</a></div>{% endif %}
+    {% else %}
+    <div class="po-empty"><span>{% trans "Nothing has been sent to them yet." %}</span></div>
+    {% endif %}
+  </section>
+</div>
+{% endtimezone %}
+
+{% if can_edit %}
+<dialog class="po-dialog po-dialog--sm" id="pp-delete" aria-labelledby="pp-delete-title">
+  <form method="post" action="{% url 'people:person_delete' person.public_id %}" x-data="{ sure: false }">{% csrf_token %}
+    <div class="po-dialog__head">
+      <h2 class="po-h2" id="pp-delete-title">{% blocktrans with name=person.display_name %}Delete {{ name }}?{% endblocktrans %}</h2>
+      <button type="button" class="po-iconbtn po-iconbtn--plain" data-close-dialog aria-label="{% trans 'Close' %}">{% icon "close" %}</button>
+    </div>
+    <div class="po-stack">
+      <span>{% trans "Their details, choices, proof of consent and message history are removed. This cannot be undone." %}</span>
+      <span class="po-small po-muted">{% trans "We keep a scrambled copy of their email address, only so a later import cannot quietly add them back." %}</span>
+      <label class="po-check"><input type="checkbox" x-model="sure" required><span>{% trans "I understand this cannot be undone" %}</span></label>
+    </div>
+    <div class="po-dialog__foot">
+      <button type="button" class="po-btn po-btn--ghost" data-close-dialog>{% trans "Keep them" %}</button>
+      <button type="submit" class="po-btn po-btn--danger" x-bind:disabled="!sure">{% icon "trash" 16 %}{% trans "Delete this person" %}</button>
+    </div>
+  </form>
+</dialog>
+{% endif %}
+{% endblock %}

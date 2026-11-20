@@ -1,0 +1,35 @@
+{% load po i18n %}
+<section class="po-panel st-section" id="st-org" aria-labelledby="st-org-h">
+  <h2 class="po-h2" id="st-org-h">{% trans "Organisation" %}</h2>
+  <form method="post" action="{% url 'settings_organisation' %}" class="po-stack" novalidate>
+    {% csrf_token %}
+    {% if errors.org %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{% trans "This could not be saved yet. Check the marked fields." %}</span></div>{% endif %}
+    <div class="po-fieldrow">
+      <div class="po-field">
+        <label for="st-name">{% trans "Name" %}</label>
+        <input id="st-name" class="po-input" name="name" value="{% if form.org %}{{ form.org.name }}{% else %}{{ org.name }}{% endif %}" maxlength="200" required{% if errors.org.name %} aria-invalid="true" aria-describedby="st-name-e"{% endif %}>
+        {% if errors.org.name %}<span class="po-error" id="st-name-e">{{ errors.org.name }}</span>{% endif %}
+      </div>
+      <div class="po-field">
+        <label for="st-reply">{% trans "Replies go to" %}</label>
+        <input id="st-reply" class="po-input" type="email" name="reply_to" value="{% if form.org %}{{ form.org.reply_to }}{% else %}{{ org.reply_to }}{% endif %}" autocomplete="off"{% if errors.org.reply_to %} aria-invalid="true" aria-describedby="st-reply-e"{% endif %}>
+        {% if errors.org.reply_to %}<span class="po-error" id="st-reply-e">{{ errors.org.reply_to }}</span>{% endif %}
+      </div>
+    </div>
+    <div class="po-field">
+      <label for="st-addr">{% trans "Mailing address" %}</label>
+      <textarea id="st-addr" class="po-textarea st-address" name="mailing_address" rows="2">{% if form.org %}{{ form.org.mailing_address }}{% else %}{{ org.mailing_address }}{% endif %}</textarea>
+      <span class="po-hint">{% trans "Shown in the footer of every newsletter." %}</span>
+    </div>
+    <div class="po-field st-narrow">
+      <label for="st-tz">{% trans "Time zone" %}</label>
+      {% with current=form.org.timezone|default:org.timezone %}
+      <select id="st-tz" class="po-select" name="timezone">
+        {% for tz in timezones %}<option value="{{ tz }}"{% if tz == current %} selected{% endif %}>{{ tz }}</option>{% endfor %}
+      </select>
+      {% endwith %}
+      {% if errors.org.timezone %}<span class="po-error">{{ errors.org.timezone }}</span>{% else %}<span class="po-hint">{% trans "Used for send times, daily limits and the times shown on screen." %}</span>{% endif %}
+    </div>
+    <div class="po-flex po-flex--end"><button class="po-btn po-btn--teal po-btn--sm">{% icon "check" %}{% trans "Save organisation" %}</button></div>
+  </form>
+</section>

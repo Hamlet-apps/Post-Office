@@ -1,0 +1,199 @@
+{% extends "shell.html" %}
+{% load po i18n static humanize %}
+{% block page_title %}{% trans "Commands" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/commands.css' %}">{% endblock %}
+{% block title %}{% trans "Commands" %}{% endblock %}
+{% block subtitle %}{% trans "What happens when someone types a command to one of your Telegram bots. Post Office passes it along and sends back the answer." %}{% endblock %}
+
+{% block actions %}
+{% if bot %}
+<form method="get" action="{% url 'commands:index' %}" class="bc-botpick" x-data>
+  <label for="bc-bot">{% trans "Bot" %}</label>
+  <select id="bc-bot" name="bot" class="po-select po-select--white" @change="$el.form.submit()">
+    {% for b in bots %}<option value="{{ b.public_id }}"{% if b.pk == bot.pk %} selected{% endif %}>{{ b }}</option>{% endfor %}
+  </select>
+  <noscript><button class="po-btn po-btn--white po-btn--sm">{% trans "Show" %}</button></noscript>
+</form>
+<a class="po-btn po-btn--primary" href="?bot={{ bot.public_id }}&amp;new=1">{% icon "plus" %}{% trans "Add command" %}</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if not bot %}
+<section class="po-panel">
+  <div class="po-empty">
+    <span class="po-icontile po-icontile--lg">{% icon "telegram" 22 %}</span>
+    <span class="po-h3">{% trans "There is no Telegram bot yet" %}</span>
+    <span>{% trans "Commands belong to a bot. Add a bot in Channels first, then come back here." %}</span>
+    <a class="po-btn po-btn--teal" href="{% url 'channels:index' %}">{% trans "Go to Channels" %}</a>
+  </div>
+</section>
+{% else %}
+<div class="po-cols">
+  <div class="po-col-2 po-stack">
+
+    <section class="po-panel" x-data>
+      <div class="po-stack po-stack--xs">
+        <h2 class="po-h2">{% trans "Your commands" %}</h2>
+        <span class="po-muted">{% trans "Each one calls a web address. Whatever comes back is sent to the person." %}</span>
+      </div>
+      {% if commands %}
+      <div class="po-tablewrap">
+        <table class="po-table">
+          <thead><tr>
+            <th scope="col">{% trans "Command" %}</th>
+            <th scope="col">{% trans "Passed to" %}</th>
+            <th scope="col" class="po-right">{% trans "Used, 30 days" %}</th>
+            <th scope="col" class="po-right">{% trans "On" %}</th>
+          </tr></thead>
+          <tbody>
+            {% for c in commands %}
+            <tr{% if editing and editing.pk == c.pk %} class="bc-current"{% endif %}>
+              <td>
+                <div class="po-stack po-stack--xs">
+                  <a class="po-rowlink bc-cmd" href="?bot={{ bot.public_id }}&amp;cmd={{ c.public_id }}"{% if editing and editing.pk == c.pk %} aria-current="true"{% endif %}>/{{ c.name }}</a>
+                  <span class="po-small po-muted">{{ c.description|default:_("No description yet") }}</span>
+                </div>
+              </td>
+              <td>
+                {# TODO(switchboard): a Switchboard command shows the workflow name here. #}
+                <div class="po-flex po-flex--nowrap">
+                  <span class="po-icontile">{% icon "globe" 17 %}</span>
+                  <div class="po-stack po-stack--xs po-grow">
+                    <span class="po-strong">{% trans "Web address" %}</span>
+                    <span class="po-mono po-muted bc-wrap">{{ c.method }} {{ c.short_url }}</span>
+                  </div>
+                </div>
+              </td>
+              <td class="po-right"><span class="po-num po-strong">{{ c.used|intcomma }}</span></td>
+              <td class="po-right">
+                <form method="post" action="{% url 'commands:toggle' c.public_id %}" class="po-above bc-toggle">
+                  {% csrf_token %}
+                  {% if editing and editing.pk %}<input type="hidden" name="editing" value="{{ editing.public_id }}">{% endif %}
+                  <label class="po-switch">
+                    <span class="po-small po-muted">{% if c.enabled %}{% trans "On" %}{% else %}{% trans "Off" %}{% endif %}</span>
+                    <input type="checkbox" name="enabled" role="switch"{% if c.enabled %} checked{% endif %} @change="$el.form.submit()"
+                           aria-label="{% blocktrans with name=c.name %}/{{ name }} on{% endblocktrans %}">
+                  </label>
+                  <noscript><button class="po-btn po-btn--sm">{% trans "Save" %}</button></noscript>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="po-empty">
+        <span class="po-h3">{% trans "No commands of your own yet" %}</span>
+        <span>{% trans "The built-in ones below already work. Add a command to pass something on to another service." %}</span>
+        <a class="po-btn po-btn--teal" href="?bot={{ bot.public_id }}&amp;new=1">{% icon "plus" %}{% trans "Add command" %}</a>
+      </div>
+      {% endif %}
+    </section>
+
+    <section class="po-panel">
+      <div class="po-flex">
+        <h2 class="po-h2">{% trans "Built in" %}</h2>
+        <span class="po-tag po-tag--teal">{% icon "lock" 14 2.4 %}{% trans "Always on" %}</span>
+      </div>
+      <span class="po-muted">{% trans "Post Office answers these itself, in the person's language." %}</span>
+      <div class="bc-builtins">
+        {% for name, description in builtins %}
+        <div class="bc-builtin"><span class="bc-cmd">/{{ name }}</span><span>{{ description }}</span></div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="po-panel" id="bc-texts">
+      <h2 class="po-h2">{% trans "Anything else" %}</h2>
+      <span class="po-muted">{% trans "What the bot says when someone types a command it does not know, or the address does not answer within 10 seconds." %}</span>
+      <form method="post" action="{% url 'commands:texts' %}" class="po-stack" x-data="{ lang: '{{ default_code }}' }">
+        {% csrf_token %}
+        <input type="hidden" name="bot" value="{{ bot.public_id }}">
+        {% if texts|length > 1 %}
+        <div class="po-seg" role="group" aria-label="{% trans 'Language' %}">
+          {% for t in texts %}<button type="button" :aria-pressed="(lang === '{{ t.lang.code }}').toString()" @click="lang = '{{ t.lang.code }}'" lang="{{ t.lang.code }}">{{ t.lang.name }}</button>{% endfor %}
+        </div>
+        {% endif %}
+        {% for t in texts %}
+        <div class="po-fieldrow" x-show="lang === '{{ t.lang.code }}'"{% if t.lang.code != default_code %} x-cloak{% endif %}>
+          <div class="po-field">
+            <label for="bc-unknown-{{ t.lang.code }}">{% trans "Unknown command" %} <span class="sr-only">({{ t.lang.name }})</span></label>
+            <input id="bc-unknown-{{ t.lang.code }}" class="po-input" name="unknown_{{ t.lang.code }}" value="{{ t.unknown_command }}" placeholder="{{ t.default_unknown }}" lang="{{ t.lang.code }}">
+          </div>
+          <div class="po-field">
+            <label for="bc-noanswer-{{ t.lang.code }}">{% trans "No answer" %} <span class="sr-only">({{ t.lang.name }})</span></label>
+            <input id="bc-noanswer-{{ t.lang.code }}" class="po-input" name="no_answer_{{ t.lang.code }}" value="{{ t.no_answer }}" placeholder="{{ t.default_no_answer }}" lang="{{ t.lang.code }}">
+          </div>
+        </div>
+        {% endfor %}
+        <div class="po-flex po-flex--between">
+          <span class="po-hint">{% trans "Leave a field empty to use the wording shown in grey." %}</span>
+          <button class="po-btn po-btn--teal po-btn--sm">{% icon "check" %}{% trans "Save texts" %}</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="po-panel" id="bc-recent">
+      <h2 class="po-h2">{% trans "Recent" %}</h2>
+      {% if logs.object_list %}
+      <div class="po-tablewrap">
+        <table class="po-table">
+          <thead><tr>
+            <th scope="col">{% trans "Time" %}</th>
+            <th scope="col">{% trans "Person" %}</th>
+            <th scope="col">{% trans "Command" %}</th>
+            <th scope="col">{% trans "Passed to" %}</th>
+            <th scope="col">{% trans "Result" %}</th>
+          </tr></thead>
+          <tbody>
+            {% for log in logs %}
+            <tr>
+              <td class="po-muted"><time datetime="{{ log.created_at|date:'c' }}">{{ log.when }}</time></td>
+              <td>{% if log.person %}<a class="po-strong" href="/people/{{ log.person.public_id }}/">{{ log.person.display_name }}</a>{% else %}<span class="po-muted">{% trans "Not connected yet" %}</span>{% endif %}</td>
+              <td><span class="po-mono">/{{ log.command }}</span></td>
+              <td class="po-muted">{% if log.target == "built_in" %}{% trans "Post Office" %}{% elif log.target == "http" %}{% trans "Web address" %}{% else %}{% trans "Nothing" %}{% endif %}</td>
+              <td>
+                {% if log.result == "answered" %}<span class="po-tag po-tag--ok">{% blocktrans with seconds=log.seconds %}Answered in {{ seconds }} s{% endblocktrans %}</span>
+                {% elif log.result == "no_answer" %}<span class="po-tag po-tag--danger">{% icon "warning" 14 2.4 %}{% trans "No answer" %}</span>
+                {% elif log.result == "unknown" %}<span class="po-tag">{% trans "Unknown command" %}</span>
+                {% else %}<span class="po-tag po-tag--danger">{% icon "warning" 14 2.4 %}{% trans "Did not work" %}</span>{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="po-pagination">
+        <span>{% blocktrans with first=logs.start_index last=logs.end_index total=logs.paginator.count %}{{ first }} to {{ last }} of {{ total }}{% endblocktrans %}</span>
+        {% if logs.paginator.num_pages > 1 %}
+        <nav class="po-pages" aria-label="{% trans 'Pages' %}">
+          {% if logs.has_previous %}<a href="{% qs page=logs.previous_page_number %}#bc-recent" aria-label="{% trans 'Previous page' %}">{% icon "chevron-left" 16 %}</a>{% endif %}
+          <span aria-current="page">{{ logs.number }}</span>
+          {% if logs.has_next %}<a href="{% qs page=logs.next_page_number %}#bc-recent" aria-label="{% trans 'Next page' %}">{% icon "chevron-right" 16 %}</a>{% endif %}
+        </nav>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="po-empty"><span>{% trans "Nobody has typed a command to this bot yet." %}</span></div>
+      {% endif %}
+    </section>
+  </div>
+
+  <div class="po-col-1 po-stack bc-side">
+    {% if editing %}
+    {% include "commands/_editor.html" %}
+    {% else %}
+    <section class="po-panel">
+      <div class="po-empty">
+        <span class="po-h3">{% trans "Add your first command" %}</span>
+        <span>{% trans "Choose a name, say where to pass it, and Post Office does the rest." %}</span>
+        <a class="po-btn po-btn--primary" href="?bot={{ bot.public_id }}&amp;new=1">{% icon "plus" %}{% trans "Add command" %}</a>
+      </div>
+    </section>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

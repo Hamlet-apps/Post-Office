@@ -1,0 +1,13 @@
+{% load po i18n %}
+{# A language tab with nothing in it: how many readers have it, and two ways to start. #}
+<div class="ed-missing" x-show="blank" x-cloak>
+  <span class="po-icontile po-icontile--peach po-icontile--lg">{% icon "globe" 24 %}</span>
+  <span class="po-h2">{% blocktrans with name=current_language.name %}{{ name }} is not written yet{% endblocktrans %}</span>
+  <span class="po-sub ed-missing__text">{% blocktrans count n=readers with default=default_language_name %}{{ n }} reader has this language. Until it is written they get the {{ default }} version.{% plural %}{{ n }} readers have this language. Until it is written they get the {{ default }} version.{% endblocktrans %}</span>
+  {% if can_edit %}
+  <div class="po-flex ed-missing__actions">
+    <button type="button" class="po-btn po-btn--primary" @click="copyFromDefault()">{% icon "copy" %}{% blocktrans with default=default_language_name %}Copy from {{ default }}{% endblocktrans %}</button>
+    <button type="button" class="po-btn" @click="startBlank()">{% trans "Start blank" %}</button>
+  </div>
+  {% endif %}
+</div>

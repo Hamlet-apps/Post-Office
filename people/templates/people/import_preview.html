@@ -1,0 +1,61 @@
+{% extends "shell.html" %}
+{% load po i18n static humanize %}
+{% block page_title %}{% trans "Import people" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/people.css' %}">{% endblock %}
+{% block back %}<a class="po-back" href="{% url 'people:import' %}?list={{ target.public_id }}">{% icon "chevron-left" 16 %}{% trans "Choose another file" %}</a>{% endblock %}
+{% block eyebrow %}{% endblock %}
+{% block title %}{% trans "Check before importing" %}{% endblock %}
+{% block subtitle %}{% blocktrans with file=file_name list=target.label %}{{ file }} into {{ list }}. Nothing is saved yet.{% endblocktrans %}{% endblock %}
+{% block content %}
+<div class="po-grid pp-summary">
+  <div class="po-card"><span class="po-eyebrow">{% trans "New" %}</span><span class="po-bignum">{{ plan.new|intcomma }}</span><span class="po-small po-muted">{% trans "Added and switched on for this list" %}</span></div>
+  <div class="po-card"><span class="po-eyebrow">{% trans "Updated" %}</span><span class="po-bignum">{{ plan.updated|intcomma }}</span><span class="po-small po-muted">{% trans "Already here. Details are filled in and the list switched on" %}</span></div>
+  <div class="po-card"><span class="po-eyebrow">{% trans "Skipped" %}</span><span class="po-bignum">{{ plan.skipped|intcomma }}</span><span class="po-small po-muted">{% trans "Left out. Nothing changes for them" %}</span></div>
+</div>
+
+{% if reasons %}
+<div class="po-notice">{% icon "info" %}
+  <div class="po-stack po-stack--xs">
+    <span class="po-strong">{% trans "Why rows are skipped" %}</span>
+    {% for label, n in reasons %}<span>{{ label }}: {{ n|intcomma }}</span>{% endfor %}
+    {% if plan.suppressed %}<span>{% blocktrans count n=plan.suppressed %}{{ n }} address belongs to someone who was deleted. They are not added back; they can sign up again themselves.{% plural %}{{ n }} addresses belong to people who were deleted. They are not added back; they can sign up again themselves.{% endblocktrans %}</span>{% endif %}
+  </div>
+</div>
+{% endif %}
+
+<section class="po-panel" aria-labelledby="im-preview">
+  <div class="po-stack po-stack--xs">
+    <h2 class="po-h2" id="im-preview">{% blocktrans count n=preview|length %}The first row{% plural %}The first {{ n }} rows{% endblocktrans %}</h2>
+    <span class="po-small po-muted">{% blocktrans count n=plan.total with total=plan.total|intcomma %}{{ total }} row in the file.{% plural %}{{ total }} rows in the file.{% endblocktrans %}{% if parsed.extra_columns %} {% trans "Extra columns are kept as details on each person." %}{% endif %}</span>
+  </div>
+  <div class="po-tablewrap">
+    <table class="po-table">
+      <thead><tr>
+        <th scope="col">{% trans "Email" %}</th><th scope="col">{% trans "First name" %}</th><th scope="col">{% trans "Last name" %}</th><th scope="col">{% trans "Language" %}</th>
+        {% for column in parsed.extra_columns %}<th scope="col">{{ column }}</th>{% endfor %}
+        <th scope="col">{% trans "What happens" %}</th>
+      </tr></thead>
+      <tbody>
+        {% for row in preview %}
+        <tr>
+          <td>{{ row.email|default:"–" }}</td><td>{{ row.first_name }}</td><td>{{ row.last_name }}</td><td>{{ row.language }}</td>
+          {% for value in row.extras %}<td>{{ value }}</td>{% endfor %}
+          <td><span class="po-tag {% if row.skipped %}po-tag--peach{% elif row.action == 'new' %}po-tag--ok{% else %}po-tag--teal{% endif %}">{{ row.action_label }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<form method="post" action="{% url 'people:import' %}" class="po-flex po-flex--end">
+  {% csrf_token %}
+  <input type="hidden" name="action" value="commit">
+  <input type="hidden" name="token" value="{{ token }}">
+  <input type="hidden" name="list" value="{{ target.public_id }}">
+  <input type="hidden" name="agreed" value="1">
+  <span class="po-small po-muted po-grow">{% icon "check" 14 2.6 %} {% blocktrans %}You ticked: “{{ wording }}”{% endblocktrans %}</span>
+  <a class="po-btn po-btn--ghost" href="{% url 'people:list' %}">{% trans "Cancel" %}</a>
+  <button class="po-btn po-btn--primary"{% if not importable %} disabled{% endif %}>{% blocktrans count n=importable with shown=importable|intcomma %}Import {{ shown }} person{% plural %}Import {{ shown }} people{% endblocktrans %}</button>
+</form>
+{% endblock %}

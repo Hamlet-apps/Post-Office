@@ -1,0 +1,23 @@
+{% load static i18n %}<!doctype html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block page_title %}Post Office{% endblock %}</title>
+<link rel="icon" type="image/svg+xml" href="{% static 'img/icon.svg' %}">
+<link rel="preload" href="{% static 'fonts/inter-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{% static 'css/app.css' %}">
+{% block extra_css %}{% endblock %}
+<script src="{% static 'js/vendor/htmx.min.js' %}" defer></script>
+<script src="{% static 'js/app.js' %}" defer></script>
+{% block extra_js %}{% endblock %}
+<script src="{% static 'js/vendor/alpine.min.js' %}" defer></script>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+{% block body %}{% endblock %}
+<div id="po-dialog-slot"></div>
+<div class="po-toasts" id="po-toasts" role="status" aria-live="polite">
+{% for message in messages %}<div class="po-toast{% if message.level_tag == 'error' %} po-toast--error{% endif %}" data-toast>{{ message }}</div>{% endfor %}
+</div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{% extends "public/base.html" %}
+{% load po i18n %}
+{% block page_title %}{% trans "Stay in the loop" %} · {{ org.name }}{% endblock %}
+{% block card_class %}pub-card--narrow{% endblock %}
+{% block card %}
+<form method="post" action="{{ action }}" class="pub-form" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="lang" value="{{ code }}">
+  {# Pressing Enter in a field uses the form's first submit button. Without this one that would be a language button. #}
+  <button type="submit" class="pub-hp" tabindex="-1" aria-hidden="true"{% if preview %} disabled{% endif %}>{% trans "Subscribe" %}</button>
+  <div class="pub-org"><span class="pub-org__mark" aria-hidden="true">{{ org_initials }}</span>{{ org.name }}</div>
+  {% if show_language %}
+  <div class="po-seg pub-lang" role="group" aria-label="{% trans 'Language' %}">
+    {% for l in languages %}
+    <button type="submit" name="switch_lang" value="{{ l.code }}" lang="{{ l.code }}" formnovalidate aria-pressed="{% if l.code == code %}true{% else %}false{% endif %}">{{ l.name }}</button>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="po-stack po-stack--sm">
+    <h1 class="pub-h1">{% trans "Stay in the loop" %}</h1>
+    <span class="pub-lead">{% blocktrans with org=org.name %}News and events from {{ org }}, in your language.{% endblocktrans %}</span>
+  </div>
+
+  {% if preview %}<div class="po-notice po-notice--plain">{% icon "eye" %}<span>{% trans "This is a preview. Nothing can be sent from here." %}</span></div>{% endif %}
+  {% if errors.form %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ errors.form }}</span></div>{% endif %}
+
+  {% if not lists %}
+  <div class="po-notice">{% icon "info" %}<span>{% trans "Signing up is not open right now. Please come back later." %}</span></div>
+  {% else %}
+  {% if show_first_name %}
+  <div class="po-field">
+    <label for="jf-name">{% trans "First name" %}</label>
+    <input class="po-input" id="jf-name" name="name" value="{{ values.name }}" maxlength="120" autocomplete="given-name">
+  </div>
+  {% endif %}
+  <div class="po-field">
+    <label for="jf-email">{% trans "Email" %}</label>
+    <input class="po-input" id="jf-email" type="email" name="email" value="{{ values.email }}" required autocomplete="email" inputmode="email"{% if errors.email %} aria-invalid="true" aria-describedby="jf-email-error"{% endif %}>
+    {% if errors.email %}<span class="po-error" id="jf-email-error" role="alert">{{ errors.email }}</span>{% endif %}
+  </div>
+  <div class="pub-hp" aria-hidden="true">
+    <label for="jf-website">Website</label>
+    <input id="jf-website" type="text" name="website" value="" tabindex="-1" autocomplete="off">
+  </div>
+
+  <fieldset class="pub-topics"{% if errors.lists %} aria-describedby="jf-lists-error"{% endif %}>
+    <legend>{% trans "What would you like to hear about?" %}</legend>
+    {% for lst in lists %}
+    <label class="pub-tick">
+      <input type="checkbox" name="lists" value="{{ lst.slug }}"{% if lst.checked %} checked{% endif %}>
+      <span class="pub-tick__text"><span>{{ lst.name }}</span>{% if lst.description %}<span class="pub-tick__desc">{{ lst.description }}</span>{% endif %}</span>
+    </label>
+    {% endfor %}
+    {% if errors.lists %}<span class="po-error" id="jf-lists-error" role="alert">{{ errors.lists }}</span>{% endif %}
+  </fieldset>
+
+  {% if show_telegram or not prefilled %}<hr class="po-divider">{% endif %}
+  {% if show_telegram %}
+  <label class="pub-tick pub-tick--plain">
+    <input type="checkbox" name="telegram" value="1"{% if values.telegram %} checked{% endif %}>
+    <span>{% trans "Also send me updates on Telegram" %}</span>
+  </label>
+  {% endif %}
+
+  {% if prefilled %}
+  {# Opened from a pre-filled link: no tick box. The wording sits beside the button, and pressing it is the consent. #}
+  <button type="submit" class="po-btn po-btn--primary po-btn--block"{% if preview %} disabled{% endif %}>{% trans "Subscribe" %}</button>
+  <p class="pub-consent" id="jf-consent-text">{{ wording }}</p>
+  {% else %}
+  {# The consent box is never ticked for the person: not here, not from a link, not after an error. #}
+  <label class="pub-tick pub-tick--plain">
+    <input type="checkbox" name="consent" value="1" required{% if errors.consent %} aria-invalid="true" aria-describedby="jf-consent-error"{% endif %}>
+    <span>{{ wording }}</span>
+  </label>
+  {% if errors.consent %}<span class="po-error" id="jf-consent-error" role="alert">{{ errors.consent }}</span>{% endif %}
+  <button type="submit" class="po-btn po-btn--primary po-btn--block"{% if preview %} disabled{% endif %}>{% trans "Subscribe" %}</button>
+  {% endif %}
+  {% endif %}
+</form>
+{% endblock %}
+{% block below %}{% endblock %}

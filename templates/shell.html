@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load po i18n %}
+{% comment %}
+The staff page shell: the teal side menu and a main column.
+Blocks: page_title, back, eyebrow, title, subtitle, actions, header (replaces the whole header), content.
+For a full-width screen, override the main_class block with: po-main--wide
+{% endcomment %}
+{% block body %}
+<div class="po-page">
+  <nav class="po-rail" aria-label="Post Office">
+    <a href="{% url 'dashboard' %}" class="po-rail__logo" aria-label="{% trans 'Post Office home' %}">{% app_icon 48 %}</a>
+    <div class="po-railnav">
+      {% for item in nav_items %}
+      <a href="{% url item.url_name %}" class="po-navitem"{% if item.current %} aria-current="page"{% endif %}>{% icon item.icon 22 1.8 %}<span>{% trans item.label %}</span></a>
+      {% endfor %}
+    </div>
+    <div class="po-railfoot">
+      {% if user.is_owner %}
+      <a href="{% url 'settings' %}" class="po-navitem"{% if nav_settings_current %} aria-current="page"{% endif %}>{% icon "settings" 22 1.8 %}<span>{% trans "Settings" %}</span></a>
+      {% endif %}
+      <form method="post" action="{% url 'sign_out' %}">{% csrf_token %}
+        <button type="submit" class="po-avatar" title="{% blocktrans with name=user %}Signed in as {{ name }}. Sign out{% endblocktrans %}" aria-label="{% blocktrans with name=user %}Signed in as {{ name }}. Sign out{% endblocktrans %}">{{ user.initial }}</button>
+      </form>
+    </div>
+  </nav>
+
+  <main class="po-main {% block main_class %}{% endblock %}">
+    {% block header %}
+    <header class="po-header">
+      <div class="po-header__text">
+        {% block back %}{% endblock %}
+        <span class="po-eyebrow">{% block eyebrow %}{{ org.name }}{% endblock %}</span>
+        <h1 class="po-h1">{% block title %}{% endblock %}</h1>
+        {% block subtitle_wrap %}<span class="po-sub">{% block subtitle %}{% endblock %}</span>{% endblock %}
+      </div>
+      <div class="po-header__actions">{% block actions %}{% endblock %}</div>
+    </header>
+    {% endblock %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

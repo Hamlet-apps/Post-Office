@@ -1,0 +1,12 @@
+{% extends "public/base.html" %}
+{% load po i18n %}
+{% block page_title %}{% trans "This link no longer works" %} · {{ org.name }}{% endblock %}
+{% block card_class %}pub-card--narrow{% endblock %}
+{% block card %}
+<div class="pub-org"><span class="pub-org__mark" aria-hidden="true">{{ org_initials }}</span>{{ org.name }}</div>
+<div class="po-stack po-stack--sm">
+  <h1 class="pub-h1">{% trans "This link no longer works" %}</h1>
+  <span class="pub-lead">{% trans "It may be too old, or part of it went missing when it was copied. Use the link in a newer message from us, or sign up again." %}</span>
+</div>
+<a class="po-btn po-btn--block" href="{% url 'public:join' %}">{% trans "Go to the signup form" %}</a>
+{% endblock %}

@@ -1,0 +1,111 @@
+{% load po i18n %}
+{% comment %}
+The quick message dialog. Other screens load it into #po-dialog-slot:
+  <button hx-get="{% url 'content:quick_message' %}" hx-target="#po-dialog-slot">Quick message</button>
+Optional: ?person=p_12 or ?list=lst_3 to start with a recipient.
+It is a fragment with no stylesheet of its own, so its few one-off rules are in the style block below.
+{% endcomment %}
+<dialog class="po-dialog" data-auto-open aria-labelledby="qm-title">
+  <style>
+    .qm-to{border-radius:14px;background:var(--ground);padding:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+    .qm-to input{flex:1 1 160px;min-width:0;height:40px;border:0;background:transparent;padding:0 8px;font-size:15px}
+    .qm-results{display:flex;flex-direction:column;gap:2px;max-height:220px;overflow:auto}
+    .qm-results:empty{display:none}
+    .qm-result{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;border:0;border-radius:12px;background:transparent;padding:6px 10px;text-align:left;cursor:pointer;font-size:14px}
+    .qm-result:hover{background:var(--ground)}
+    .qm-result .po-muted{margin-left:auto;font-size:13px}
+    .qm-text{min-height:150px}
+    .qm-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:4px}
+  </style>
+  <form class="po-stack" data-remove-label="{% trans 'Remove' %}" hx-post="{% url 'content:quick_message' %}" hx-target="#po-dialog-slot" hx-swap="innerHTML"
+        x-data="{
+          lang: '{{ default_code }}',
+          channel: '{{ channel }}',
+          chips: {{ chips_json }},
+          texts: {{ texts_json }},
+          add(kind, id, label) {
+            if (!this.chips.some(function (c) { return c.id === id; })) this.chips.push({ kind: kind, id: id, label: label });
+            this.$refs.search.value = '';
+            this.$refs.results.innerHTML = '';
+            this.$refs.search.focus();
+            this.changed();
+          },
+          remove(index) { this.chips.splice(index, 1); this.changed(); },
+          changed() { var el = this.$root; this.$nextTick(function () { el.dispatchEvent(new CustomEvent('qm-change', { bubbles: true })); }); }
+        }">
+    <div class="po-dialog__head">
+      <div class="po-stack po-stack--xs">
+        <span class="po-eyebrow">{% trans "Quick message" %}</span>
+        <h2 class="po-h2" id="qm-title">{% trans "Send a one-off message" %}</h2>
+      </div>
+      <button type="button" class="po-iconbtn" data-close-dialog aria-label="{% trans 'Close' %}">{% icon "close" %}</button>
+    </div>
+
+    {% if error %}
+    <div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ error }}</span></div>
+    {% endif %}
+
+    <div class="po-field">
+      <label for="qm-search">{% trans "To" %}</label>
+      <div class="qm-to">
+        <template x-for="(chip, index) in chips" :key="chip.id">
+          <span class="po-chip">
+            <span x-text="chip.label"></span>
+            <button type="button" @click="remove(index)" :aria-label="$root.dataset.removeLabel + ' ' + chip.label">{% icon "close" 14 %}</button>
+            <input type="hidden" :name="chip.kind" :value="chip.id">
+          </span>
+        </template>
+        <input id="qm-search" x-ref="search" type="search" name="q" autocomplete="off" placeholder="{% trans 'Add people or lists' %}"
+               hx-get="{% url 'content:quick_message_search' %}" hx-trigger="input changed delay:250ms, search" hx-target="#qm-results" hx-swap="innerHTML" hx-params="q"
+               @keydown.enter.prevent>
+      </div>
+      <div class="qm-results" id="qm-results" x-ref="results" aria-live="polite"></div>
+    </div>
+
+    <div class="po-field">
+      <span class="po-label" id="qm-channel-label">{% trans "Send by" %}</span>
+      <div>
+        <div class="po-seg" role="group" aria-labelledby="qm-channel-label">
+          {% for value, label in channel_options %}
+          <button type="button" :aria-pressed="channel === '{{ value }}' ? 'true' : 'false'" @click="channel = '{{ value }}'">{{ label }}</button>
+          {% endfor %}
+        </div>
+      </div>
+      <input type="hidden" name="channel" :value="channel">
+    </div>
+
+    <div class="po-field">
+      <span class="po-label" id="qm-message-label">{% trans "Message" %}</span>
+      <div class="po-flex" role="group" aria-label="{% trans 'Language' %}">
+        {% for language in languages %}
+        <button type="button" class="po-pill" :aria-pressed="lang === '{{ language.code }}' ? 'true' : 'false'" @click="lang = '{{ language.code }}'">
+          <span class="po-dot" :class="(texts['{{ language.code }}'] || '').trim() ? '' : 'po-dot--missing'"></span>
+          <span lang="{{ language.code }}">{{ language.name }}</span>
+          <span class="sr-only" x-show="(texts['{{ language.code }}'] || '').trim()">{% trans "written" %}</span>
+          <span class="sr-only" x-show="!(texts['{{ language.code }}'] || '').trim()">{% trans "not written" %}</span>
+        </button>
+        {% endfor %}
+      </div>
+      {% for language in languages %}
+      <textarea class="po-textarea qm-text" name="text_{{ language.code }}" lang="{{ language.code }}" maxlength="{{ limit }}"
+                x-show="lang === '{{ language.code }}'"{% if language.code != default_code %} x-cloak{% endif %}
+                x-model="texts['{{ language.code }}']" @input.debounce.400ms="changed()"
+                aria-label="{% blocktrans with name=language.english_name|default:language.name %}Message in {{ name }}{% endblocktrans %}"
+                placeholder="{% trans 'Write the message' %}"></textarea>
+      {% endfor %}
+      <span class="po-hint">{% trans "Use *bold*, _italic_ and [link text](https://address)." %}</span>
+    </div>
+
+    <div id="qm-summary" class="po-stack po-stack--sm"
+         hx-post="{% url 'content:quick_message_summary' %}" hx-trigger="qm-change from:closest form" hx-target="this" hx-include="closest form" hx-swap="innerHTML" hx-sync="this:replace">
+      {% include "content/quick_message_summary.html" %}
+    </div>
+
+    <div class="qm-foot">
+      <div class="po-flex po-ml-auto">
+        <button type="button" class="po-btn po-btn--ghost" data-close-dialog>{% trans "Cancel" %}</button>
+        <button type="submit" class="po-btn po-btn--primary">{% icon "send" %}{% trans "Send now" %}</button>
+      </div>
+    </div>
+  </form>
+</dialog>

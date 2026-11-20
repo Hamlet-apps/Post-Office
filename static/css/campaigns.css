@@ -1,0 +1,81 @@
+/* Campaigns: the list, audience and send, and the report.
+   The dashboard loads this file too, for the language tags and the chart frame. */
+
+/* ---------- Language tags: filled = written, dashed = not written ---------- */
+.cp-lang{display:inline-flex;align-items:center;font-size:12px;font-weight:700;letter-spacing:.03em;padding:4px 8px;border-radius:8px;background:var(--teal-tint);color:var(--teal-deep);white-space:nowrap}
+.cp-lang--missing{padding:3px 7px;border:1.5px dashed var(--peach-chart);color:var(--peach-deep);background:var(--surface)}
+.cp-chan{width:30px;height:30px;border-radius:10px;background:var(--teal-tint);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+
+/* ---------- List ---------- */
+.cp-table{min-width:880px}
+.cp-name{font-size:15px}
+.cp-danger{color:var(--danger)}
+.cp-danger:hover{background:var(--danger-tint)}
+.cp-iconspace{width:44px;flex:0 0 auto}
+
+/* ---------- Steps ---------- */
+.cs-stepbar{padding:12px;gap:0}
+.cs-steps{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.cs-step{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 14px 0 9px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted);text-decoration:none}
+.cs-step:hover{background:var(--ground);color:var(--ink)}
+.cs-step__n{width:26px;height:26px;border-radius:999px;background:var(--teal-tint);color:var(--teal-deep);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.cs-step[aria-current="step"]{color:var(--ink);background:var(--surface);box-shadow:inset 0 0 0 2px var(--teal-tint)}
+.cs-step[aria-current="step"] .cs-step__n{background:var(--teal);color:#fff}
+.cs-steps__line{width:18px;height:2px;background:var(--line-strong);border-radius:2px}
+
+/* ---------- Audience and send ---------- */
+.cs-fieldset{border:0;margin:0;padding:0;min-width:0}
+.cs-fieldset[disabled]{opacity:.7}
+.cs-tiles{display:flex;flex-wrap:wrap;gap:10px}
+.cs-tile{flex:1 1 170px;min-width:0;min-height:64px;border-radius:18px;padding:14px;display:flex;align-items:center;gap:12px;background:var(--ground);cursor:pointer;position:relative;transition:background-color 200ms ease}
+.cs-tile input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.cs-tile__icon{width:36px;height:36px;border-radius:12px;background:var(--surface);color:var(--muted);display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.cs-tile__body{display:flex;flex-direction:column;gap:2px;flex:1 1 auto;min-width:0}
+.cs-tile__check{width:24px;height:24px;border-radius:999px;border:2px solid #C9C4BB;background:var(--surface);color:transparent;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.cs-tile:has(input:checked){background:var(--teal-tint);box-shadow:inset 0 0 0 2px var(--teal)}
+.cs-tile:has(input:checked) .cs-tile__icon{color:var(--teal)}
+.cs-tile:has(input:checked) .cs-tile__check{background:var(--teal);border-color:var(--teal);color:#fff}
+.cs-tile:has(input:focus-visible){outline:3px solid var(--teal);outline-offset:2px}
+.cs-tile--off{cursor:not-allowed;background:transparent;box-shadow:inset 0 0 0 2px var(--line-strong)}
+.cs-tile--off input{cursor:not-allowed}
+.cs-tile--radio{flex:0 0 auto}
+.cs-tile__radio{width:22px;height:22px;border-radius:999px;background:var(--surface);border:2px solid #C9C4BB;flex:0 0 auto;box-sizing:border-box}
+.cs-tile--radio:has(input:checked) .cs-tile__radio{border:7px solid var(--teal)}
+.cs-spread{display:flex;width:100%;justify-content:space-between;gap:16px}
+.cs-write{background:var(--teal-tint);color:var(--teal-deep)}
+.cs-write:hover{background:#CBE7E9;color:var(--teal-deep)}
+.cs-langtable{min-width:560px}
+.cs-checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.cs-check{display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:1.4}
+.cs-check__mark{width:24px;height:24px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--ok-tint);color:var(--ok)}
+.cs-check--warning .cs-check__mark{background:var(--peach-tint);color:var(--peach-deep)}
+.cs-check--blocked .cs-check__mark{background:var(--danger-tint);color:var(--danger)}
+.cs-check--blocked{font-weight:600}
+.cs-check__detail{font-weight:400;overflow-wrap:anywhere}
+.cs-spacer{min-height:0}
+
+/* ---------- Report ---------- */
+.cr-cards{display:flex;flex-wrap:wrap;gap:16px}
+.cr-cards>.po-card{flex:1 1 200px}
+.cr-num{font-size:34px}
+.cr-bar{height:8px;border-radius:999px;background:var(--ground);overflow:hidden}
+.cr-bar>span{display:block;height:100%;border-radius:999px;background:var(--teal)}
+.cr-bar--click{height:6px}
+.cr-bar--click>span{background:var(--peach-chart)}
+.cr-key{font-weight:600;white-space:nowrap}
+.cr-key--click{color:var(--peach-deep)}
+.cr-links{min-width:420px}
+.cr-url{color:var(--muted);overflow-wrap:anywhere;position:relative;z-index:1}
+
+/* ---------- The frame around a server-drawn chart (core/charts.py) ---------- */
+.ch-canvas{position:relative;width:100%;min-width:0}
+.ch-canvas canvas{display:block;width:100%;height:100%}
+.ch-row{display:flex;gap:10px}
+.ch-axis{width:40px;flex:0 0 auto;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;font-size:12px;color:var(--muted);line-height:1}
+.ch-plot{flex:1 1 auto;min-width:0;position:relative}
+.ch-x{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);padding-top:8px}
+
+@media (max-width:760px){
+  .cr-num{font-size:28px}
+  .cs-tile{flex-basis:100%}
+}

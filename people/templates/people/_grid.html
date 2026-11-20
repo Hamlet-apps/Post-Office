@@ -1,0 +1,59 @@
+{% load po i18n %}
+<div class="sg" id="person-grid"{% if oob %} hx-swap-oob="outerHTML"{% endif %}>
+  {% if grid.campaign or grid.app %}
+  <div class="sg__scroll"><div class="sg__inner">
+    <div class="sg__row sg__row--head" aria-hidden="true">
+      <span class="sg__name"></span>
+      {% for label in grid.column_labels %}<div class="sg__col sg__colhead">{{ label }}</div>{% endfor %}
+    </div>
+    {% if grid.campaign %}<span class="po-eyebrow">{% trans "Newsletters and announcements" %}</span>{% endif %}
+    {% for row in grid.campaign %}
+    <div class="sg__row">
+      {% if row.list.building %}<span class="po-logo">{% building_logo row.list.building 28 %}</span>{% endif %}
+      <div class="sg__name"><span class="sg__title">{{ row.name }}</span>{% if row.description %}<span class="sg__desc">{{ row.description }}</span>{% endif %}</div>
+      {% for cell in row.cells %}
+      <div class="sg__col">
+        {% if not cell.available %}
+          <span class="sg__none" aria-label="{{ cell.label }}: {% trans 'not available' %}">–</span>
+        {% elif not can_edit %}
+          <span class="sg__box{% if cell.on %} is-on{% elif cell.unconfirmed %} is-waiting{% endif %}" role="img" aria-label="{{ cell.label }}: {% if cell.on %}{% trans 'on' %}{% elif cell.unconfirmed %}{% trans 'waiting for them to confirm' %}{% else %}{% trans 'off' %}{% endif %}">{% if cell.on %}{% icon "check" 16 3 %}{% elif cell.unconfirmed %}{% icon "clock" 16 2.2 %}{% endif %}</span>
+        {% elif cell.on or cell.unconfirmed %}
+          <form method="post" action="{% url 'people:person_subscription' person.public_id %}" hx-post="{% url 'people:person_subscription' person.public_id %}" hx-target="#person-grid" hx-swap="outerHTML">
+            {% csrf_token %}
+            <input type="hidden" name="list" value="{{ row.list.public_id }}"><input type="hidden" name="channel" value="{{ cell.channel }}"><input type="hidden" name="on" value="0">
+            <button type="submit" class="sg__tick" aria-pressed="{% if cell.on %}true{% else %}mixed{% endif %}" aria-label="{{ cell.label }}{% if cell.unconfirmed %}: {% trans 'waiting for them to confirm' %}{% endif %}" title="{% if cell.unconfirmed %}{% trans 'Waiting for them to confirm by email. Press to switch off.' %}{% else %}{% trans 'On. Press to switch off.' %}{% endif %}">
+              <span class="sg__box {% if cell.on %}is-on{% else %}is-waiting{% endif %}">{% if cell.on %}{% icon "check" 16 3 %}{% else %}{% icon "clock" 16 2.2 %}{% endif %}</span>
+            </button>
+          </form>
+        {% else %}
+          <button type="button" class="sg__tick" aria-pressed="false" aria-label="{{ cell.label }}" title="{% trans 'Off. Press to switch on; you will be asked how they agreed.' %}"
+                  hx-get="{% url 'people:person_subscription' person.public_id %}?list={{ row.list.public_id }}&amp;channel={{ cell.channel }}" hx-target="#po-dialog-slot">
+            <span class="sg__box"></span>
+          </button>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+    {% if grid.app %}<hr class="po-divider sg__gap"><span class="po-eyebrow">{% trans "App messages" %}</span>{% endif %}
+    {% for row in grid.app %}
+    <div class="sg__row">
+      <span class="po-logo">{% building_logo row.list.building 28 %}</span>
+      <div class="sg__name"><span class="sg__title">{{ row.name }}</span><span class="sg__desc pp-locked">{% icon "lock" 12 2.2 %}{% if row.list.building %}{% blocktrans with building=row.list.building.name %}From {{ building }}{% endblocktrans %}{% else %}{% trans "Kept by an app" %}{% endif %}</span></div>
+      {% for cell in row.cells %}
+      <div class="sg__col">
+        {% if cell.channel == "push" or not cell.available %}
+          <span class="sg__none" aria-label="{{ cell.label }}: {% trans 'not available' %}">–</span>
+        {% else %}
+          <span class="sg__box sg__box--locked{% if cell.on %} is-on{% endif %}" role="img" aria-label="{{ cell.label }}: {% if cell.on %}{% trans 'on' %}{% else %}{% trans 'off' %}{% endif %}, {% trans 'read-only' %}" title="{% trans 'Kept by the app. They can change it themselves on their preferences page.' %}">{% if cell.on %}{% icon "check" 16 3 %}{% endif %}</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div></div>
+  {% if grid.app %}<span class="po-small po-muted">{% trans "App lists are kept by each app, so their boxes cannot be changed here. Push notifications about orders and shifts are sent by each app itself, so they are not listed." %}</span>{% endif %}
+  {% else %}
+  <div class="po-empty"><span class="po-h3">{% trans "No lists yet" %}</span><span>{% trans "Create a campaign list on the People screen first." %}</span></div>
+  {% endif %}
+</div>

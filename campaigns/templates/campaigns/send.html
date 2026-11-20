@@ -1,0 +1,170 @@
+{% extends "shell.html" %}
+{% load po cp i18n static %}
+{% block page_title %}{{ campaign.name }} · {% trans "Audience and send" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/campaigns.css' %}">{% endblock %}
+{% block extra_js %}
+<script>
+  // What the "When" panel and the button in the header share.
+  document.addEventListener("alpine:init", function () {
+    Alpine.store("cs", {
+      mode: "later",
+      date: "{{ when_date }}",
+      time: "{{ when_time }}",
+      nowLabel: "{% trans 'Send now' as l_now %}{{ l_now|escapejs }}",
+      laterLabel: "{% trans 'Schedule' as l_later %}{{ l_later|escapejs }}",
+      forLabel: "{% trans 'Schedule for' as l_for %}{{ l_for|escapejs }}",
+      label: function () {
+        if (this.mode === "now") return this.nowLabel;
+        var at = new Date(this.date + "T" + this.time);
+        if (isNaN(at)) return this.laterLabel;
+        return this.forLabel + " " + at.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+      }
+    });
+  });
+</script>
+{% endblock %}
+{% block back %}<a href="{% url 'campaigns:list' %}" class="po-back">{% icon "chevron-left" 16 %}{% trans "Campaigns" %}</a>{% endblock %}
+{% block eyebrow %}{% endblock %}
+{% block title %}{{ campaign.name }}{% endblock %}
+{% block subtitle_wrap %}{% endblock %}
+{% block actions %}
+<span class="po-tag {% if campaign.state == 'scheduled' %}po-tag--peach{% else %}po-tag--white{% endif %}">{{ campaign.get_state_display }}</span>
+<button type="button" class="po-iconbtn" data-open-dialog="cs-rename" aria-label="{% trans 'Rename this campaign' %}" title="{% trans 'Rename' %}">{% icon "edit" %}</button>
+<a href="{% url 'campaigns:design' campaign.public_id %}" class="po-btn po-btn--white">{% icon "chevron-left" %}{% trans "Back to design" %}</a>
+{% include "campaigns/_send_go.html" %}
+{% endblock %}
+
+{% block content %}
+{% include "campaigns/_steps.html" with step=2 %}
+
+{% if campaign.state == "scheduled" %}
+<section class="po-panel cs-scheduled" aria-label="{% trans 'Scheduled' %}">
+  <div class="po-flex po-flex--between">
+    <div class="po-flex po-flex--nowrap po-flex--top">
+      <span class="po-icontile po-icontile--peach po-icontile--lg">{% icon "calendar" 22 1.8 %}</span>
+      <div class="po-stack" style="gap:2px">
+        <span class="po-h3">{% blocktrans with when=scheduled_text %}Scheduled for {{ when }}{% endblocktrans %}</span>
+        <span class="po-small po-muted">{% blocktrans %}Time zone: {{ tz_name }}.{% endblocktrans %}{% if campaign.spread_minutes %} {% trans "The send is spread over an hour." %}{% endif %} {% trans "To change anything, move it back to a draft first." %}</span>
+      </div>
+    </div>
+    <form method="post" action="{% url 'campaigns:cancel' campaign.public_id %}">{% csrf_token %}
+      <button class="po-btn">{% trans "Back to draft" %}</button>
+    </form>
+  </div>
+</section>
+{% endif %}
+
+<div class="po-cols">
+  {% include "campaigns/_send_who.html" %}
+  {% include "campaigns/_send_checks.html" %}
+</div>
+
+<div class="po-cols">
+  {% include "campaigns/_send_langs.html" %}
+  <section class="po-panel po-col-1" aria-labelledby="cs-when-title" x-data>
+    <h2 class="po-h2" id="cs-when-title">{% trans "When" %}</h2>
+    {% if editable %}
+    <form id="cs-when" method="post" action="{% url 'campaigns:schedule' campaign.public_id %}" class="po-stack"
+          @submit="if ($store.cs.mode === 'now' &amp;&amp; !window.confirm(document.getElementById('cs-submit').dataset.confirmNow)) $event.preventDefault()">
+      {% csrf_token %}
+      <div class="po-stack po-stack--sm" role="radiogroup" aria-label="{% trans 'When to send' %}">
+        <label class="cs-tile cs-tile--radio">
+          <input type="radio" name="when" value="now" x-model="$store.cs.mode">
+          <span class="cs-tile__radio" aria-hidden="true"></span>
+          <span class="cs-tile__body"><span class="po-strong">{% trans "Send now" %}</span><span class="po-small po-muted">{% trans "Starts within a minute" %}</span></span>
+        </label>
+        <label class="cs-tile cs-tile--radio">
+          <input type="radio" name="when" value="later" x-model="$store.cs.mode" checked>
+          <span class="cs-tile__radio" aria-hidden="true"></span>
+          <span class="cs-tile__body"><span class="po-strong">{% trans "Schedule" %}</span><span class="po-small po-muted">{% trans "Pick a day and time" %}</span></span>
+        </label>
+      </div>
+      <div class="po-stack po-stack--sm" x-show="$store.cs.mode === 'later'">
+        <div class="po-fieldrow">
+          <div class="po-field"><label for="cs-date">{% trans "Date" %}</label>
+            <input class="po-input" id="cs-date" type="date" name="date" min="{{ today }}" x-model="$store.cs.date" value="{{ when_date }}"></div>
+          <div class="po-field"><label for="cs-time">{% trans "Time" %}</label>
+            <input class="po-input" id="cs-time" type="time" name="time" x-model="$store.cs.time" value="{{ when_time }}"></div>
+        </div>
+        <span class="po-hint">{% blocktrans %}Times are in your organization's time zone, {{ tz_name }}.{% endblocktrans %}</span>
+      </div>
+      <label class="po-switch cs-spread">
+        <span class="po-grow po-stack" style="gap:2px">
+          <span class="po-strong">{% trans "Spread the send over an hour" %}</span>
+          <span class="po-small po-muted">{% trans "Easier on your mail server and your sender reputation" %}</span>
+        </span>
+        <input type="checkbox" name="spread" value="1"{% if campaign.spread_minutes %} checked{% endif %}>
+      </label>
+      {% include "campaigns/_send_submit.html" %}
+    </form>
+    {% elif campaign.state == "scheduled" %}
+    <p class="po-muted">{% blocktrans with when=scheduled_day time=scheduled_time %}This campaign goes out on {{ when }} at {{ time }}.{% endblocktrans %}</p>
+    {% else %}
+    <p class="po-muted">{% trans "Your role can look at this campaign but not send it." %}</p>
+    {% endif %}
+  </section>
+</div>
+
+<div class="po-cols">
+  <section class="po-panel po-col-1" aria-labelledby="cs-test-title">
+    <h2 class="po-h2" id="cs-test-title">{% trans "Send yourself a test" %}</h2>
+    {% if show_email or written_email %}
+    <form method="post" action="{% url 'campaigns:test' campaign.public_id %}" class="po-stack"
+          hx-post="{% url 'campaigns:test' campaign.public_id %}" hx-target="#cs-test-result" hx-swap="innerHTML" hx-disabled-elt="find button">
+      {% csrf_token %}
+      <div class="po-fieldrow">
+        <div class="po-field"><label for="cs-test">{% trans "Send to" %}</label>
+          <input class="po-input" id="cs-test" type="email" name="email" value="{{ test_email }}" required autocomplete="email"></div>
+        <div class="po-field"><label for="cs-test-lang">{% trans "Language" %}</label>
+          <select class="po-select" id="cs-test-lang" name="language">
+            <option value="all">{% blocktrans count n=written_email|length %}The {{ n }} written language{% plural %}All {{ n }} written, one message each{% endblocktrans %}</option>
+            {% for lang in written_email %}<option value="{{ lang.code }}">{{ lang.name }}</option>{% endfor %}
+          </select></div>
+      </div>
+      <div class="po-flex"><button class="po-btn po-btn--teal">{% icon "send" %}{% trans "Send test" %}</button>
+        <span class="po-small po-muted">{% trans "Tests go by email. The subject starts with [Test]." %}</span></div>
+      <div id="cs-test-result" aria-live="polite"></div>
+    </form>
+    {% else %}
+    <p class="po-muted">{% trans "Tests go by email. Turn the email channel on and write the email to send one." %}</p>
+    {% endif %}
+  </section>
+  <section class="po-panel po-col-2" aria-labelledby="cs-more-title">
+    <h2 class="po-h2" id="cs-more-title">{% trans "More" %}</h2>
+    <div class="po-flex">
+      <form method="post" action="{% url 'campaigns:duplicate' campaign.public_id %}">{% csrf_token %}
+        <button class="po-btn">{% icon "copy" %}{% trans "Duplicate" %}</button></form>
+      <button type="button" class="po-btn" data-open-dialog="cs-template">{% icon "templates" %}{% trans "Save as template" %}</button>
+      {% if campaign.state == "draft" %}
+      <form method="post" action="{% url 'campaigns:delete' campaign.public_id %}" data-confirm="{% trans 'Delete this draft? This cannot be undone.' %}">{% csrf_token %}
+        <button class="po-btn po-btn--danger">{% icon "trash" %}{% trans "Delete draft" %}</button></form>
+      {% endif %}
+    </div>
+    <span class="po-small po-muted">{% trans "A template keeps the content in every language, so the next campaign can start from it." %}</span>
+  </section>
+</div>
+
+<dialog class="po-dialog po-dialog--sm" id="cs-rename" aria-labelledby="cs-rename-title">
+  <form method="post" action="{% url 'campaigns:rename' campaign.public_id %}">{% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <div class="po-dialog__head"><h2 class="po-h2" id="cs-rename-title">{% trans "Rename this campaign" %}</h2>
+      <button type="button" class="po-iconbtn po-iconbtn--plain" data-close-dialog aria-label="{% trans 'Close' %}">{% icon "close" %}</button></div>
+    <div class="po-field"><label for="cs-name">{% trans "Name" %}</label>
+      <input class="po-input" id="cs-name" name="name" value="{{ campaign.name }}" maxlength="200" required>
+      <span class="po-hint">{% trans "Only your team sees this name. Readers see the subject." %}</span></div>
+    <div class="po-dialog__foot"><button type="button" class="po-btn po-btn--ghost" data-close-dialog>{% trans "Cancel" %}</button>
+      <button class="po-btn po-btn--teal">{% trans "Save" %}</button></div>
+  </form>
+</dialog>
+<dialog class="po-dialog po-dialog--sm" id="cs-template" aria-labelledby="cs-template-title">
+  <form method="post" action="{% url 'campaigns:save_template' campaign.public_id %}">{% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.path }}">
+    <div class="po-dialog__head"><h2 class="po-h2" id="cs-template-title">{% trans "Save as template" %}</h2>
+      <button type="button" class="po-iconbtn po-iconbtn--plain" data-close-dialog aria-label="{% trans 'Close' %}">{% icon "close" %}</button></div>
+    <div class="po-field"><label for="cs-template-name">{% trans "Template name" %}</label>
+      <input class="po-input" id="cs-template-name" name="name" value="{{ campaign.name }}" maxlength="160" required></div>
+    <div class="po-dialog__foot"><button type="button" class="po-btn po-btn--ghost" data-close-dialog>{% trans "Cancel" %}</button>
+      <button class="po-btn po-btn--teal">{% trans "Save template" %}</button></div>
+  </form>
+</dialog>
+{% endblock %}

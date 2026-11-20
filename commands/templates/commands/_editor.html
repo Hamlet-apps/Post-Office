@@ -1,0 +1,178 @@
+{% load po i18n %}
+{{ form_state|json_script:"bc-form-state" }}
+<script>
+  /* The command editor's local state. Saved header values are never sent to the page. */
+  function bcEditor() {
+    var start = JSON.parse(document.getElementById("bc-form-state").textContent);
+    var uid = 0;
+    return {
+      name: start.name,
+      method: start.method,
+      url: start.url,
+      body: start.body,
+      lang: "{{ default_code }}",
+      headers: start.headers.map(function (h) { h.uid = ++uid; return h; }),
+      get hasBody() { return this.method !== "GET" && this.method !== "DELETE"; },
+      changed: function () {
+        var form = this.$refs.form;
+        this.$nextTick(function () { form.dispatchEvent(new Event("po-preview")); });
+      },
+      setMethod: function (m) { this.method = m; this.changed(); },
+      addHeader: function () { this.headers.push({ uid: ++uid, name: "", value: "", orig: null, saved: false }); },
+      removeHeader: function (i) { this.headers.splice(i, 1); this.changed(); },
+      useStandardBody: function () { this.body = start.defaultBody; this.changed(); },
+      insert: function (token, key) {
+        if (this.hasBody) {
+          var el = this.$refs.body;
+          var at = el && typeof el.selectionStart === "number" ? el.selectionStart : this.body.length;
+          this.body = this.body.slice(0, at) + token + this.body.slice(at);
+          this.$nextTick(function () { el.focus(); el.setSelectionRange(at + token.length, at + token.length); });
+        } else {
+          this.url = this.url + (this.url.indexOf("?") < 0 ? "?" : "&") + key + "=" + token;
+        }
+        this.changed();
+      }
+    };
+  }
+</script>
+
+<form id="bc-form" method="post" action="{% url 'commands:save' %}" class="po-panel bc-editor" x-data="bcEditor()" x-ref="form" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="bot" value="{{ bot.public_id }}">
+  {% if editing.pk %}<input type="hidden" name="id" value="{{ editing.public_id }}">{% endif %}
+
+  <div class="po-stack po-stack--xs">
+    <span class="po-eyebrow">{% if is_new %}{% trans "New command" %}{% else %}{% trans "Editing" %}{% endif %}</span>
+    <span class="bc-cmd bc-cmd--big" x-text="'/' + (name || '…')">/{{ editing.name }}</span>
+  </div>
+
+  {% if errors %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{% trans "This could not be saved yet. Check the marked fields." %}</span></div>{% endif %}
+
+  <div class="po-field">
+    <label for="bc-cmd">{% trans "Command" %}</label>
+    <div class="bc-slash"><span aria-hidden="true">/</span>
+      <input id="bc-cmd" class="po-input po-input--mono" name="name" x-model="name" maxlength="32" autocomplete="off" autocapitalize="none" spellcheck="false"
+             pattern="[a-z0-9_]{1,32}" required{% if errors.name %} aria-invalid="true" aria-describedby="bc-cmd-error"{% endif %}>
+    </div>
+    {% if errors.name %}<span class="po-error" id="bc-cmd-error">{{ errors.name }}</span>{% else %}<span class="po-hint">{% trans "Lowercase letters, numbers and underscores." %}</span>{% endif %}
+  </div>
+
+  <div class="po-stack po-stack--sm">
+    <span class="po-label">{% trans "Description, shown in the bot's menu" %}</span>
+    {% if descriptions|length > 1 %}
+    <div class="po-seg" role="group" aria-label="{% trans 'Language' %}">
+      {% for d in descriptions %}<button type="button" :aria-pressed="(lang === '{{ d.lang.code }}').toString()" @click="lang = '{{ d.lang.code }}'" lang="{{ d.lang.code }}">{{ d.lang.name }}</button>{% endfor %}
+    </div>
+    {% endif %}
+    {% for d in descriptions %}
+    <input class="po-input" name="desc_{{ d.lang.code }}" value="{{ d.value }}" maxlength="256" lang="{{ d.lang.code }}"
+           aria-label="{% blocktrans with language=d.lang.name %}Description in {{ language }}{% endblocktrans %}"
+           x-show="lang === '{{ d.lang.code }}'"{% if d.lang.code != default_code %} x-cloak{% endif %}>
+    {% endfor %}
+  </div>
+
+  {# TODO(switchboard): a "Pass it to" switch (Switchboard or Web address) goes here once Switchboard exists. #}
+  <div class="po-stack po-stack--sm">
+    <span class="po-label">{% trans "Pass it to" %}</span>
+    <div class="po-flex po-flex--nowrap">
+      <span class="po-icontile">{% icon "globe" 17 %}</span>
+      <div class="po-stack po-stack--xs"><span class="po-strong">{% trans "A web address" %}</span><span class="po-small po-muted">{% trans "Post Office calls it and waits up to 10 seconds for the answer." %}</span></div>
+    </div>
+  </div>
+
+  <div class="po-stack po-stack--sm">
+    <span class="po-label" id="bc-method-label">{% trans "Method" %}</span>
+    <input type="hidden" name="method" :value="method" value="{{ editing.method }}">
+    <div class="po-seg" role="group" aria-labelledby="bc-method-label">
+      {% for m in methods %}<button type="button" :aria-pressed="(method === '{{ m }}').toString()" @click="setMethod('{{ m }}')">{{ m }}</button>{% endfor %}
+    </div>
+  </div>
+
+  <div class="po-field">
+    <label for="bc-url">{% trans "Address" %}</label>
+    <input id="bc-url" class="po-input po-input--mono" type="url" name="url" x-model="url" placeholder="https://" spellcheck="false" autocomplete="off"
+           {% if errors.url %}aria-invalid="true" aria-describedby="bc-url-error"{% endif %}>
+    {% if errors.url %}<span class="po-error" id="bc-url-error">{{ errors.url }}</span>{% endif %}
+  </div>
+
+  <div class="po-stack po-stack--sm">
+    <span class="po-label">{% trans "Headers" %}</span>
+    <template x-for="(h, i) in headers" :key="h.uid">
+      <div class="bc-header">
+        <input class="po-input po-input--mono" name="header_name" x-model="h.name" placeholder="{% trans 'Name' %}" aria-label="{% trans 'Header name' %}" spellcheck="false" autocomplete="off">
+        <input class="po-input po-input--mono" name="header_value" x-model="h.value" :placeholder="h.saved ? '••••••••' : '{% trans 'Value' %}'" aria-label="{% trans 'Header value' %}" spellcheck="false" autocomplete="off">
+        <input type="hidden" name="header_orig" :value="h.orig === null ? '' : h.orig">
+        <button type="button" class="po-iconbtn" @click="removeHeader(i)" aria-label="{% trans 'Remove header' %}">{% icon "close" %}</button>
+      </div>
+    </template>
+    <span class="po-hint" x-show="headers.some(function (h) { return h.saved; })" x-cloak>{% icon "lock" 13 2.4 %} {% trans "Saved values are kept secret and shown as dots. Type a new value to replace one." %}</span>
+    <div><button type="button" class="po-btn po-btn--sm" @click="addHeader()">{% icon "plus" %}{% trans "Add header" %}</button></div>
+  </div>
+
+  <div class="po-field" x-show="hasBody">
+    <div class="po-flex po-flex--between">
+      <label for="bc-body" class="po-label">{% trans "Body" %}</label>
+      <button type="button" class="po-linkbtn po-small" @click="useStandardBody()">{% trans "Use the standard body" %}</button>
+    </div>
+    <textarea id="bc-body" class="po-textarea po-input--mono bc-body" name="body" x-model="body" x-ref="body" spellcheck="false">{{ editing.body }}</textarea>
+  </div>
+  <div class="po-notice po-notice--info" x-show="!hasBody" x-cloak>{% icon "info" %}<span>{% trans "GET and DELETE requests have no body. Put details in the address instead." %}</span></div>
+
+  <div class="po-stack po-stack--sm">
+    <span class="po-label">{% trans "Insert a detail" %}</span>
+    <div class="po-flex bc-vars">
+      {% for p in placeholders %}<button type="button" class="bc-var" @click="insert('{{ p.token }}', '{{ p.key }}')">{{ p.label }}</button>{% endfor %}
+    </div>
+    <span class="po-hint">{% trans "Adds it where the cursor is: in the body, or at the end of the address for GET and DELETE." %}</span>
+  </div>
+
+  <div class="po-field">
+    <label for="bc-path">{% trans "Reply with this part of the answer" %}</label>
+    <input id="bc-path" class="po-input po-input--mono" name="reply_path" value="{{ editing.reply_path }}" placeholder="reply" maxlength="200" spellcheck="false" autocomplete="off">
+    <span class="po-hint">{% trans "The name of the field that holds the text to send back, such as reply or data.message. Leave empty to send the whole answer." %}</span>
+  </div>
+
+  <hr class="po-divider">
+
+  <fieldset class="bc-fieldset">
+    <legend class="po-label">{% trans "Reply" %}</legend>
+    <label class="bc-choice">
+      <input type="radio" name="reply" value="answer"{% if editing.reply != "none" %} checked{% endif %}>
+      <span class="bc-choice__mark" aria-hidden="true"></span>
+      <span class="po-stack po-stack--xs"><span class="po-strong">{% trans "Send back the answer" %}</span><span class="po-small po-muted">{% trans "Whatever comes back goes to the person" %}</span></span>
+    </label>
+    <label class="bc-choice">
+      <input type="radio" name="reply" value="none"{% if editing.reply == "none" %} checked{% endif %}>
+      <span class="bc-choice__mark" aria-hidden="true"></span>
+      <span class="po-stack po-stack--xs"><span class="po-strong">{% trans "No reply" %}</span><span class="po-small po-muted">{% trans "Just pass it along" %}</span></span>
+    </label>
+  </fieldset>
+
+  <label class="po-switch bc-switchrow">
+    <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "Only for connected people" %}</span><span class="po-small po-muted">{% trans "Others are asked to press /start first" %}</span></span>
+    <input type="checkbox" name="connected_only" role="switch"{% if editing.connected_only %} checked{% endif %}>
+  </label>
+  <label class="po-switch bc-switchrow">
+    <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "On" %}</span><span class="po-small po-muted">{% trans "When off, the bot treats it as a command it does not know" %}</span></span>
+    <input type="checkbox" name="enabled" role="switch"{% if editing.enabled %} checked{% endif %}>
+  </label>
+
+  <hr class="po-divider">
+
+  <div class="po-flex">
+    <button class="po-btn po-btn--primary po-btn--sm">{% icon "check" %}{% trans "Save" %}</button>
+    <button type="button" class="po-btn po-btn--sm" hx-post="{% url 'commands:test' %}" hx-target="#bc-test-result" hx-swap="innerHTML" hx-disabled-elt="this">{% icon "send" %}{% trans "Send a test" %}</button>
+    {% if editing.pk %}<button type="submit" form="bc-delete" class="po-btn po-btn--danger po-btn--sm">{% icon "trash" %}{% trans "Delete" %}</button>{% endif %}
+  </div>
+  <div id="bc-test-result" aria-live="polite"></div>
+</form>
+{% if editing.pk %}
+<form id="bc-delete" method="post" action="{% url 'commands:delete' editing.public_id %}"
+      data-confirm="{% blocktrans with name=editing.name %}Delete /{{ name }}? The bot will stop answering it.{% endblocktrans %}">{% csrf_token %}</form>
+{% endif %}
+
+<section class="po-panel po-panel--dark bc-preview" id="bc-preview" aria-live="polite"
+         hx-post="{% url 'commands:preview' %}" hx-include="#bc-form" hx-swap="innerHTML"
+         hx-trigger="input delay:350ms from:#bc-form, change from:#bc-form, po-preview from:#bc-form">
+  {% include "commands/_preview.html" %}
+</section>

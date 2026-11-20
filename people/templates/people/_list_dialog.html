@@ -1,0 +1,52 @@
+{% load po i18n %}
+<dialog class="po-dialog" data-auto-open aria-labelledby="ld-title">
+  <form method="post" action="{% if lst %}{% url 'people:list_edit' lst.public_id %}{% else %}{% url 'people:list_new' %}{% endif %}"
+        hx-post="{% if lst %}{% url 'people:list_edit' lst.public_id %}{% else %}{% url 'people:list_new' %}{% endif %}" hx-target="#po-dialog-slot">
+    {% csrf_token %}
+    <div class="po-dialog__head">
+      <div class="po-stack po-stack--xs">
+        <h2 class="po-h2" id="ld-title">{% if lst %}{% trans "Edit list" %}{% else %}{% trans "New campaign list" %}{% endif %}</h2>
+        <span class="po-small po-muted">{% trans "A list people choose to join. Campaigns are sent to it." %}</span>
+      </div>
+      <button type="button" class="po-iconbtn po-iconbtn--plain" data-close-dialog aria-label="{% trans 'Close' %}">{% icon "close" %}</button>
+    </div>
+    <div class="po-stack">
+      {% for error in errors %}<div class="po-notice po-notice--danger" role="alert">{{ error }}</div>{% endfor %}
+      {% for row in rows %}
+      <fieldset class="pp-langset">
+        <legend class="po-label">{{ row.lang.name }}{% if row.is_default %} <span class="po-tag po-tag--sm">{% trans "Default" %}</span>{% endif %}</legend>
+        <div class="po-fieldrow">
+          <div class="po-field">
+            <label for="ld-name-{{ row.lang.code }}">{% trans "Name" %}</label>
+            <input class="po-input" id="ld-name-{{ row.lang.code }}" name="name_{{ row.lang.code }}" value="{{ row.name }}" lang="{{ row.lang.code }}" maxlength="120"{% if row.is_default %} required{% endif %}>
+          </div>
+          <div class="po-field">
+            <label for="ld-desc-{{ row.lang.code }}">{% trans "Description" %}</label>
+            <input class="po-input" id="ld-desc-{{ row.lang.code }}" name="description_{{ row.lang.code }}" value="{{ row.description }}" lang="{{ row.lang.code }}" maxlength="200">
+          </div>
+        </div>
+      </fieldset>
+      {% endfor %}
+      <div class="po-field">
+        <label for="ld-slug">{% trans "Short name for links" %}</label>
+        <input class="po-input po-input--mono" id="ld-slug" name="slug" value="{{ values.slug }}" maxlength="80" pattern="[a-z0-9\-]+" placeholder="{% trans 'made from the name' %}">
+        <span class="po-hint">{% trans "Used in pre-filled signup links and by apps, for example newsletter. Changing it breaks links you already shared." %}</span>
+      </div>
+      <label class="po-switch">
+        <input type="checkbox" name="on_signup_form" value="1"{% if values.on_signup_form %} checked{% endif %}>
+        <span>{% trans "Offer this list on the signup form" %}</span>
+      </label>
+    </div>
+    <div class="po-dialog__foot">
+      {% if lst %}
+      <button type="submit" class="po-btn po-btn--danger po-btn--sm pp-footleft" form="ld-delete">{% icon "trash" 16 %}{% trans "Delete list" %}</button>
+      {% endif %}
+      <button type="button" class="po-btn po-btn--ghost" data-close-dialog>{% trans "Cancel" %}</button>
+      <button type="submit" class="po-btn po-btn--primary">{% if lst %}{% trans "Save list" %}{% else %}{% trans "Create list" %}{% endif %}</button>
+    </div>
+  </form>
+  {% if lst %}
+  <form id="ld-delete" method="post" action="{% url 'people:list_delete' lst.public_id %}"
+        data-confirm="{% blocktrans count n=members %}Delete this list? {{ n }} person is on it. They stay in People, but their choice for this list is lost.{% plural %}Delete this list? {{ n }} people are on it. They stay in People, but their choices for this list are lost.{% endblocktrans %}">{% csrf_token %}</form>
+  {% endif %}
+</dialog>

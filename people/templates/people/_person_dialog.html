@@ -1,0 +1,31 @@
+{% load po i18n %}
+<dialog class="po-dialog po-dialog--sm" data-auto-open aria-labelledby="pd-title">
+  <form method="post" action="{% url 'people:person_new' %}" hx-post="{% url 'people:person_new' %}" hx-target="#po-dialog-slot">
+    {% csrf_token %}
+    <div class="po-dialog__head">
+      <div class="po-stack po-stack--xs">
+        <h2 class="po-h2" id="pd-title">{% trans "Add a person" %}</h2>
+        <span class="po-small po-muted">{% trans "You choose their lists on the next screen." %}</span>
+      </div>
+      <button type="button" class="po-iconbtn po-iconbtn--plain" data-close-dialog aria-label="{% trans 'Close' %}">{% icon "close" %}</button>
+    </div>
+    <div class="po-stack">
+      {% for error in errors %}<div class="po-notice po-notice--danger" role="alert">{{ error }}</div>{% endfor %}
+      <div class="po-fieldrow">
+        <div class="po-field"><label for="pd-first">{% trans "First name" %}</label><input class="po-input" id="pd-first" name="first_name" value="{{ values.first_name }}" maxlength="120" autocomplete="off"></div>
+        <div class="po-field"><label for="pd-last">{% trans "Last name" %}</label><input class="po-input" id="pd-last" name="last_name" value="{{ values.last_name }}" maxlength="120" autocomplete="off"></div>
+      </div>
+      <div class="po-field"><label for="pd-email">{% trans "Email" %}</label><input class="po-input" id="pd-email" type="email" name="email" value="{{ values.email }}" autocomplete="off"></div>
+      <div class="po-field">
+        <label for="pd-lang">{% trans "Language" %}</label>
+        <select class="po-select" id="pd-lang" name="language">
+          {% for l in languages %}<option value="{{ l.code }}"{% if l.code == values.language %} selected{% endif %}>{{ l.name }}</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="po-dialog__foot">
+      <button type="button" class="po-btn po-btn--ghost" data-close-dialog>{% trans "Cancel" %}</button>
+      <button type="submit" class="po-btn po-btn--primary">{% trans "Add person" %}</button>
+    </div>
+  </form>
+</dialog>

@@ -1,0 +1,410 @@
+{% extends "shell.html" %}
+{% load po i18n static %}
+{% comment %}
+The message editor, shared by campaigns (step 1: Design) and templates.
+Behaviour lives in static/js/editor.js (Alpine component "poEditor"); the email
+canvas is always rendered by the server with content.render.
+{% endcomment %}
+{% block page_title %}{{ owner.name }} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/editor.css' %}">{% endblock %}
+{% block extra_js %}
+<script src="{% static 'js/vendor/sortable.min.js' %}" defer></script>
+<script src="{% static 'js/editor.js' %}" defer></script>
+{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+{{ state|json_script:"editor-state" }}
+<div class="ed" x-data="poEditor" @focusin="remember($event)">
+
+  <header class="po-header">
+    <div class="po-header__text">
+      <a href="{{ back_url }}" class="po-back" @click.prevent="go($el.href)">{% icon "chevron-left" 16 %}{{ back_label }}</a>
+      {% if is_app %}
+      <h1 class="po-h1">{{ owner.name }}</h1>
+      <span class="po-sub">{% if owner.building %}{% blocktrans with building=owner.building.name %}Sent by {{ building }}{% endblocktrans %}{% endif %}{% if owner.building and owner.fires %} · {% endif %}{{ owner.fires }}</span>
+      {% else %}
+      <label class="sr-only" for="ed-name">{% if is_campaign %}{% trans "Campaign name" %}{% else %}{% trans "Template name" %}{% endif %}</label>
+      <input id="ed-name" type="text" class="po-h1 ed-name" x-model="name" @input="touch()" maxlength="160" autocomplete="off"{% if not can_edit %} readonly{% endif %}>
+      {% endif %}
+    </div>
+    <div class="po-header__actions">
+      {% if is_campaign %}<span class="po-tag">{% trans owner.get_state_display %}</span>{% endif %}
+      {% if can_edit %}
+      <span class="po-muted po-small ed-status" role="status" x-text="statusText"></span>
+      {% endif %}
+      {% if is_app and can_edit %}
+      <form method="post" action="{% url 'content:template_reset' owner.key %}" x-show="customised" x-cloak
+            data-confirm="{% trans 'Reset this message to the version the building sent? Your changes will be lost.' %}">
+        {% csrf_token %}<input type="hidden" name="next" value="editor">
+        <button type="submit" class="po-btn po-btn--white">{% icon "refresh" %}{% trans "Reset to default" %}</button>
+      </form>
+      {% endif %}
+      {% if is_campaign %}
+      <a href="{{ send_url }}" class="po-btn po-btn--primary" @click.prevent="go($el.href)">{% trans "Next: audience" %}</a>
+      {% endif %}
+    </div>
+  </header>
+
+  {% if not can_edit %}
+  <div class="po-notice po-notice--plain">{% icon "lock" %}
+    <span>{% if is_campaign %}{% trans "This campaign has already gone out, so it can be read but not changed." %}{% else %}{% trans "Your role can read this message but not change it." %}{% endif %}</span>
+  </div>
+  {% endif %}
+
+  <div class="po-panel ed-toolbar">
+    {% if is_campaign %}
+    <div class="ed-toolbar__row">
+      <div role="navigation" aria-label="{% trans 'Campaign steps' %}" class="ed-steps">
+        <a href="{{ request.path }}" aria-current="step" class="ed-step"><span class="ed-step__n">1</span>{% trans "Design" %}</a>
+        <span class="ed-step__line" aria-hidden="true"></span>
+        <a href="{{ send_url }}" class="ed-step" @click.prevent="go($el.href)"><span class="ed-step__n">2</span>{% trans "Audience and send" %}</a>
+      </div>
+    </div>
+    {% endif %}
+    <div class="ed-toolbar__row">
+      <div role="group" aria-label="{% trans 'Language' %}" class="ed-langs">
+        <template x-for="l in langs" :key="l.code">
+          <a class="po-pill" :href="pageUrl({lang: l.code})" :aria-current="l.code === lang ? 'true' : 'false'" @click.prevent="go($el.href)">
+            <span class="po-dot" :class="l.written ? '' : 'po-dot--missing'"></span>
+            <span :lang="l.code" x-text="l.name"></span>
+            <span class="ed-langnote" x-text="langNote(l)"></span>
+          </a>
+        </template>
+      </div>
+      <span class="po-grow"></span>
+      <span class="po-muted po-small" x-text="writtenText"></span>
+      <div class="po-seg" role="group" aria-label="{% trans 'Form' %}">
+        <a href="?lang={{ lang }}&amp;form=email"{% if form == "email" %} aria-current="true"{% endif %} @click.prevent="go($el.href)">{% icon "mail" 16 %}{% trans "Email" %}</a>
+        <a href="?lang={{ lang }}&amp;form=notification"{% if form == "notification" %} aria-current="true"{% endif %} @click.prevent="go($el.href)">{% icon "telegram" 16 %}{% if is_app %}{% trans "Telegram" %}{% else %}{% trans "Notification" %}{% endif %}</a>
+      </div>
+      {% if form == "email" %}
+      <div class="po-seg" role="group" aria-label="{% trans 'Editor mode' %}">
+        <button type="button" :aria-pressed="view === 'visual' ? 'true' : 'false'" @click="setView('visual')">{% trans "Visual" %}</button>
+        <button type="button" :aria-pressed="view === 'html' ? 'true' : 'false'" @click="setView('html')">{% icon "code" 16 %}{% trans "HTML" %}</button>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if form == "email" %}
+  {# ------------------------------------------------------------------ Email #}
+  <div class="ed-cols">
+
+    {% if view == "visual" %}
+    <aside class="po-panel ed-palette" x-show="!blank" x-cloak aria-label="{% trans 'Blocks' %}">
+      <span class="po-eyebrow">{% trans "Blocks" %}</span>
+      <span class="po-small po-muted">{% trans "Drag into the email, or press +" %}</span>
+      <div class="ed-pal-list" x-ref="palette" @click="paletteClick($event)">
+        {% for type, label in block_palette %}
+        <div class="ed-pal" data-type="{{ type }}">
+          <span class="ed-pal__grip" aria-hidden="true">{% icon "drag" 16 %}</span>
+          <span class="ed-pal__icon" aria-hidden="true">{% icon type 18 %}</span>
+          <span class="po-grow">{{ label }}</span>
+          <button type="button" class="ed-pal__add" data-add="{{ type }}" aria-label="{% blocktrans %}Add {{ label }} block{% endblocktrans %}"{% if not can_edit %} disabled{% endif %}>{% icon "plus" 16 %}</button>
+        </div>
+        {% endfor %}
+      </div>
+      {% if is_app %}
+      <hr class="po-divider">
+      {% include "content/_placeholders.html" %}
+      {% endif %}
+    </aside>
+    {% endif %}
+
+    <section class="ed-stage" aria-label="{% trans 'Email' %}">
+      {% include "content/_missing.html" %}
+
+      <div class="ed-stage__bar" x-show="!blank" x-cloak>
+        {% if is_app %}
+        <span class="po-small po-strong po-muted" x-text="sample ? i18n.showing_sample : i18n.showing_tags"></span>
+        {% else %}
+        <span class="po-small po-strong po-muted">{% blocktrans count n=readers %}{{ n }} reader{% plural %}{{ n }} readers{% endblocktrans %}</span>
+        {% endif %}
+        <div class="po-flex">
+          {% if is_app and view == "visual" %}
+          <div class="po-seg po-seg--ground" role="group" aria-label="{% trans 'Preview data' %}">
+            <button type="button" :aria-pressed="sample ? 'false' : 'true'" @click="setSample(false)">{% trans "Placeholders" %}</button>
+            <button type="button" :aria-pressed="sample ? 'true' : 'false'" @click="setSample(true)">{% trans "Sample data" %}</button>
+          </div>
+          {% endif %}
+          <div class="po-seg po-seg--ground" role="group" aria-label="{% trans 'Preview size' %}">
+            <button type="button" :aria-pressed="width === 'desktop' ? 'true' : 'false'" @click="width = 'desktop'">{% icon "desktop" 16 %}{% trans "Desktop" %}</button>
+            <button type="button" :aria-pressed="width === 'phone' ? 'true' : 'false'" @click="width = 'phone'">{% icon "phone" 16 %}{% trans "Phone" %}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ed-fields" x-show="!blank" x-cloak>
+        <div class="po-field">
+          <label for="ed-subject">{% trans "Subject" %}</label>
+          <input id="ed-subject" type="text" class="po-input" x-model="subject" @input="touch()" maxlength="300" data-insertable placeholder="{% trans 'Subject line' %}"{% if not can_edit %} readonly{% endif %}>
+        </div>
+        <div class="po-field">
+          <label for="ed-pre">{% trans "Preview text" %}</label>
+          <input id="ed-pre" type="text" class="po-input" x-model="previewText" @input="touch()" maxlength="300" data-insertable placeholder="{% trans 'Shown next to the subject in the inbox' %}"{% if not can_edit %} readonly{% endif %}>
+        </div>
+      </div>
+
+      <template x-for="w in warnings" :key="w">
+        <div class="po-notice ed-stage__notice">{% icon "warning" %}<span x-text="w"></span></div>
+      </template>
+      <div class="po-notice ed-stage__notice" x-show="problemCount > 0" x-cloak>{% icon "warning" %}
+        <span>{% trans "A picture has no description yet. Select it and describe it for people who cannot see it." %}</span>
+      </div>
+
+      {% if view == "html" %}
+      <div class="ed-code" x-show="!blank" x-cloak>
+        <div class="ed-code__head">
+          <span>{% blocktrans with name=current_language.name %}HTML for {{ name }}{% endblocktrans %}</span>
+          <span>{% trans "Editing here turns this language into HTML. Post Office still adds the footer." %}</span>
+        </div>
+        <label class="sr-only" for="ed-html">{% trans "Email HTML" %}</label>
+        <textarea id="ed-html" class="ed-code__area" x-model="html" @input="htmlTouched()" spellcheck="false" autocomplete="off" data-insertable data-jinja data-main{% if not can_edit %} readonly{% endif %}></textarea>
+        <span class="ed-code__hint">{% trans "Placeholders are written like this:" %} <code>{% templatetag openvariable %} person.first_name {% templatetag closevariable %}</code>{% if is_app %} · <code>{% templatetag openblock %} for item in order.items {% templatetag closeblock %} … {% templatetag openblock %} endfor {% templatetag closeblock %}</code>{% endif %}</span>
+        <p class="ed-code__error" x-show="error" x-cloak x-text="error" role="alert"></p>
+        {% include "content/_placeholders.html" %}
+      </div>
+      <span class="po-small po-strong po-muted" x-show="!blank" x-cloak>{% trans "How it will look" %}</span>
+      {% endif %}
+
+      <div class="ed-frame" :class="width === 'phone' ? 'ed-frame--phone' : ''" x-show="!blank && !doc" x-cloak x-ref="canvas"
+           @click="canvasClick($event)" @keydown="canvasKey($event)">{% if not state.doc %}{{ state.canvas|safe }}{% endif %}</div>
+      {# Content written as HTML is staff-written markup: it is shown in a frame that cannot run scripts. #}
+      <iframe class="ed-frame ed-docframe" :class="width === 'phone' ? 'ed-frame--phone' : ''" x-show="!blank && doc" x-cloak x-ref="frame"
+              sandbox="allow-same-origin" :srcdoc="doc" title="{% trans 'Email preview' %}" @load="fitFrame()"></iframe>
+    </section>
+
+    {% if view == "visual" %}
+    <aside class="ed-side" x-show="!blank" x-cloak>
+      <div class="po-panel ed-panel" aria-live="polite">
+        <template x-if="!selected">
+          <div class="po-stack po-stack--sm">
+            <span class="po-eyebrow">{% trans "Nothing selected" %}</span>
+            <span class="po-small po-muted">{% trans "Pick a block in the email to edit it, or drag a new one in from the left." %}</span>
+          </div>
+        </template>
+        <template x-if="selected">
+          <div class="po-stack ed-panel__body">
+            <span class="po-eyebrow">{% trans "Selected block" %}</span>
+            <span class="po-h2" x-text="typeLabel(cur.type)"></span>
+
+            <template x-if="cur.type === 'heading'">
+              <div class="po-stack">
+                <div class="po-field">
+                  <label for="ed-f-heading">{% trans "Text" %}</label>
+                  <input id="ed-f-heading" type="text" class="po-input" x-model="cur.text" @input="touch()" data-insertable data-main :readonly="!editable">
+                </div>
+                <div class="po-field">
+                  <span class="po-label">{% trans "Align" %}</span>
+                  <div class="po-seg po-seg--ground" role="group" aria-label="{% trans 'Align' %}">
+                    <button type="button" :aria-pressed="(cur.align || 'left') === 'left' ? 'true' : 'false'" @click="setField('align', 'left')" :disabled="!editable">{% trans "Left" %}</button>
+                    <button type="button" :aria-pressed="cur.align === 'center' ? 'true' : 'false'" @click="setField('align', 'center')" :disabled="!editable">{% trans "Centre" %}</button>
+                    <button type="button" :aria-pressed="cur.align === 'right' ? 'true' : 'false'" @click="setField('align', 'right')" :disabled="!editable">{% trans "Right" %}</button>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <template x-if="cur.type === 'text'">
+              <div class="po-field">
+                <label for="ed-f-text">{% trans "Text" %}</label>
+                <textarea id="ed-f-text" class="po-textarea ed-panel__text" x-model="cur.text" @input="touch()" data-insertable data-main :readonly="!editable"></textarea>
+                <span class="po-hint">{% trans "Line breaks are kept. Use *bold*, _italic_ and [link text](https://address)." %}</span>
+              </div>
+            </template>
+
+            <template x-if="cur.type === 'image'">
+              <div class="po-stack">
+                <img class="ed-thumb ed-thumb--wide" x-show="cur.src" :src="cur.src" :alt="cur.alt || ''">
+                <label class="po-btn ed-filebtn" :class="editable ? '' : 'is-disabled'">{% icon "upload" %}<span x-text="cur.src ? i18n.replace_image : i18n.choose_image"></span>
+                  <input type="file" class="sr-only" accept="image/png,image/jpeg,image/gif,image/webp" @change="uploadImage($event)" :disabled="!editable">
+                </label>
+                <div class="po-field">
+                  <label for="ed-f-alt">{% trans "Description for screen readers" %}</label>
+                  <input id="ed-f-alt" type="text" class="po-input" x-model="cur.alt" @input="touch()" required data-main :readonly="!editable">
+                  <span class="po-error" x-show="cur.src && !(cur.alt || '').trim()" role="alert">{% trans "Describe the picture for people who cannot see it." %}</span>
+                </div>
+                <div class="po-field">
+                  <label for="ed-f-imglink">{% trans "Link (optional)" %}</label>
+                  <input id="ed-f-imglink" type="text" inputmode="url" class="po-input" x-model="cur.href" @input="touch()" placeholder="https://" :readonly="!editable">
+                </div>
+              </div>
+            </template>
+
+            <template x-if="cur.type === 'button'">
+              <div class="po-stack">
+                <div class="po-field">
+                  <label for="ed-f-btn">{% trans "Button label" %}</label>
+                  <input id="ed-f-btn" type="text" class="po-input" x-model="cur.text" @input="touch()" data-insertable data-main :readonly="!editable">
+                </div>
+                <div class="po-field">
+                  <label for="ed-f-btnlink">{% trans "Link" %}</label>
+                  <input id="ed-f-btnlink" type="text" inputmode="url" class="po-input" x-model="cur.href" @input="touch()" data-insertable placeholder="https://" :readonly="!editable">
+                </div>
+              </div>
+            </template>
+
+            <template x-if="cur.type === 'card'">
+              <div class="po-stack">
+                <div class="po-field">
+                  <label for="ed-f-title">{% trans "Title" %}</label>
+                  <input id="ed-f-title" type="text" class="po-input" x-model="cur.title" @input="touch()" data-insertable :readonly="!editable">
+                </div>
+                <div class="po-field">
+                  <label for="ed-f-cardtext">{% trans "Text" %}</label>
+                  <textarea id="ed-f-cardtext" class="po-textarea ed-panel__text" x-model="cur.text" @input="touch()" data-insertable data-main :readonly="!editable"></textarea>
+                </div>
+              </div>
+            </template>
+
+            <template x-if="cur.type === 'divider'">
+              <span class="po-small po-muted">{% trans "A thin line between two parts of the email. There is nothing to set." %}</span>
+            </template>
+
+            {% if is_app %}
+            <template x-if="cur.type === 'repeat'">
+              <div class="po-stack">
+                <div class="po-field">
+                  <label for="ed-f-source">{% trans "Repeat once for each" %}</label>
+                  <select id="ed-f-source" class="po-select" x-model="cur.source" @change="sourceChanged()" :disabled="!editable">
+                    <option value="">{% trans "Choose a list" %}</option>
+                    {% for p in placeholders %}{% if p.list %}<option value="{{ p.name }}">{{ p.label }}</option>{% endif %}{% endfor %}
+                  </select>
+                </div>
+                <fieldset class="ed-fieldset">
+                  <legend class="po-label">{% trans "Show in each row" %}</legend>
+                  <template x-for="f in listFields(cur.source)" :key="f.name">
+                    <label class="po-switch ed-switchrow">
+                      <span class="po-grow" x-text="f.label"></span>
+                      <input type="checkbox" :checked="(cur.show || []).indexOf(f.name) !== -1" @change="toggleShow(f.name)" :disabled="!editable">
+                    </label>
+                  </template>
+                  <span class="po-small po-muted" x-show="!cur.source">{% trans "Choose a list first." %}</span>
+                </fieldset>
+              </div>
+            </template>
+            {% endif %}
+
+            {% if not is_app %}
+            <template x-if="['heading', 'text', 'card', 'button'].indexOf(cur.type) !== -1">
+              {% include "content/_placeholders.html" %}
+            </template>
+            {% endif %}
+
+            {% if can_edit %}
+            <hr class="po-divider">
+            <div class="po-flex">
+              <button type="button" class="po-iconbtn" @click="move(-1)" :disabled="selectedIndex <= 0" aria-label="{% trans 'Move up' %}" title="{% trans 'Move up' %}">{% icon "arrow-up" %}</button>
+              <button type="button" class="po-iconbtn" @click="move(1)" :disabled="selectedIndex >= blocks.length - 1" aria-label="{% trans 'Move down' %}" title="{% trans 'Move down' %}">{% icon "arrow-down" %}</button>
+              <button type="button" class="po-btn po-btn--sm" @click="duplicate()">{% icon "copy" 16 %}{% trans "Duplicate" %}</button>
+              <button type="button" class="po-btn po-btn--sm po-btn--danger" @click="remove()">{% icon "trash" 16 %}{% trans "Delete" %}</button>
+            </div>
+            {% endif %}
+          </div>
+        </template>
+      </div>
+      {% if is_app %}{% include "content/_about.html" %}{% endif %}
+    </aside>
+    {% elif is_app %}
+    <aside class="ed-side" x-show="!blank" x-cloak>{% include "content/_about.html" %}</aside>
+    {% endif %}
+  </div>
+
+  {% else %}
+  {# ------------------------------------------------------------------ Notification #}
+  <div class="ed-cols">
+    <section class="ed-stage ed-stage--plain" x-show="blank" x-cloak>{% include "content/_missing.html" %}</section>
+
+    <section class="po-panel ed-note" x-show="!blank" x-cloak>
+      <div class="po-stack po-stack--xs">
+        <h2 class="po-h2">{% if is_app %}{% trans "Telegram message" %}{% else %}{% trans "Notification" %}{% endif %}</h2>
+        <span class="po-sub po-small">{% if is_app %}{% trans "The short form of this message, sent on Telegram to people who chose it." %}{% else %}{% trans "One short message for Telegram and for push notifications. Telegram shows the formatting; push notifications get the same words as plain text." %}{% endif %}</span>
+      </div>
+      <div class="ed-notebar">
+        <button type="button" class="ed-mark" aria-label="{% trans 'Bold' %}" title="{% trans 'Bold' %}" @click="wrap('*', '*', i18n.bold)"{% if not can_edit %} disabled{% endif %}>{% icon "bold" 16 %}</button>
+        <button type="button" class="ed-mark" aria-label="{% trans 'Italic' %}" title="{% trans 'Italic' %}" @click="wrap('_', '_', i18n.italic)"{% if not can_edit %} disabled{% endif %}>{% icon "italic" 16 %}</button>
+        <button type="button" class="ed-mark" aria-label="{% trans 'Link' %}" title="{% trans 'Link' %}" @click="wrap('[', '](https://)', i18n.link_text)"{% if not can_edit %} disabled{% endif %}>{% icon "link" 16 %}</button>
+        <span class="po-grow"></span>
+        <span class="po-num po-small po-strong" :class="count > limit ? 'ed-over' : 'po-muted'" x-text="countText" aria-live="polite"></span>
+      </div>
+      <div class="po-field">
+        <label for="ed-note">{% trans "Message" %}</label>
+        <textarea id="ed-note" x-ref="note" class="po-textarea po-input--mono ed-note__text" x-model="text" @input="touch()" data-insertable data-main placeholder="{% trans 'Write the notification' %}"{% if not can_edit %} readonly{% endif %}></textarea>
+        <span class="po-hint">{% trans "Use *bold*, _italic_ and [link text](https://address). Telegram allows 4,096 characters, or 1,024 when an image is attached." %}</span>
+        <span class="po-error" x-show="count > limit" x-cloak role="alert">{% trans "This is longer than Telegram allows. Shorten it or it will not be sent on Telegram." %}</span>
+      </div>
+      <template x-for="w in warnings" :key="w">
+        <div class="po-notice">{% icon "warning" %}<span x-text="w"></span></div>
+      </template>
+      {% include "content/_placeholders.html" %}
+      <hr class="po-divider">
+      <div class="po-stack po-stack--xs">
+        <h3 class="po-h3">{% trans "Link button" %}</h3>
+        <span class="po-sub po-small">{% if is_app %}{% trans "Telegram shows it as a button under the message." %}{% else %}{% trans "Telegram shows it as a button under the message. Tapping a push notification opens the same address." %}{% endif %}</span>
+      </div>
+      <div class="po-fieldrow">
+        <div class="po-field">
+          <label for="ed-bl">{% trans "Button label" %}</label>
+          <input id="ed-bl" type="text" class="po-input" x-model="buttonLabel" @input="touch()" maxlength="120" data-insertable placeholder="{% trans 'See the full calendar' %}"{% if not can_edit %} readonly{% endif %}>
+        </div>
+        <div class="po-field">
+          <label for="ed-bu">{% trans "Opens" %}</label>
+          <input id="ed-bu" type="text" inputmode="url" class="po-input" x-model="buttonUrl" @input="touch()" maxlength="500" data-insertable placeholder="https://"{% if not can_edit %} readonly{% endif %}>
+        </div>
+      </div>
+      <hr class="po-divider">
+      <div class="po-stack po-stack--xs">
+        <h3 class="po-h3">{% trans "Image" %}</h3>
+        <span class="po-sub po-small">{% trans "Optional. With an image, Telegram allows 1,024 characters." %}</span>
+      </div>
+      <div class="po-flex">
+        <img class="ed-thumb" x-show="imageUrl" x-cloak :src="imageUrl" alt="{% trans 'The attached image' %}">
+        {% if can_edit %}
+        <label class="po-btn po-btn--sm ed-filebtn">{% icon "image" 16 %}<span x-text="imageUrl ? i18n.replace_image : i18n.add_image"></span>
+          <input type="file" class="sr-only" accept="image/png,image/jpeg,image/gif,image/webp" @change="uploadNoteImage($event)">
+        </label>
+        <button type="button" class="po-btn po-btn--sm po-btn--ghost" x-show="imageUrl" x-cloak @click="removeNoteImage()">{% trans "Remove image" %}</button>
+        {% endif %}
+      </div>
+    </section>
+
+    <div class="ed-previews" x-show="!blank" x-cloak>
+      <section class="po-panel">
+        <div class="po-flex po-flex--nowrap"><span class="po-icontile">{% icon "telegram" 18 %}</span><h2 class="po-h2 ed-h2sm">{% trans "On Telegram" %}</h2></div>
+        <div class="po-notice" x-show="note.fallback" x-cloak>{% icon "warning" %}
+          <span>{% blocktrans with default=default_language_name %}This language is not written yet. Readers get the {{ default }} version.{% endblocktrans %}</span>
+        </div>
+        <div class="ed-tg">
+          <span class="po-small po-strong po-muted">{{ org_name }}</span>
+          <img class="ed-tg__img" x-show="note.image_url" x-cloak :src="note.image_url" alt="">
+          <div class="ed-tg__bubble" x-show="note.telegram_html" x-html="note.telegram_html"></div>
+          <div class="ed-tg__bubble ed-tg__bubble--empty" x-show="!note.telegram_html" x-cloak>{% trans "Your message shows here as you write." %}</div>
+          <div class="ed-tg__btn" x-show="note.button_label" x-cloak x-text="note.button_label"></div>
+        </div>
+      </section>
+      {% if not is_app %}
+      <section class="po-panel">
+        <div class="po-flex po-flex--nowrap"><span class="po-icontile">{% icon "push" 18 %}</span><h2 class="po-h2 ed-h2sm">{% trans "As a push notification" %}</h2></div>
+        <div class="ed-push">
+          <div class="ed-push__card">
+            {% app_icon 36 %}
+            <div class="ed-push__text">
+              <div class="po-flex po-flex--between po-flex--nowrap"><span class="po-strong po-small">{{ org_name }}</span><span class="po-muted ed-push__now">{% trans "now" %}</span></div>
+              <span class="po-small" x-text="note.push_body"></span>
+            </div>
+          </div>
+        </div>
+        <span class="po-small po-muted ed-wrapany" x-show="note.button_url" x-cloak>{% trans "Tapping it opens" %} <span x-text="note.button_url"></span></span>
+      </section>
+      {% else %}
+      {% include "content/_about.html" %}
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  {# Pieces the script adds to the server-rendered canvas. #}
+  <template x-ref="handleTpl"><span class="ed-handle" aria-hidden="true">{% icon "drag" 18 %}</span></template>
+  <template x-ref="lockTpl"><div class="ed-footnote">{% icon "lock" 14 %}<span></span></div></template>
+</div>
+{% endblock %}

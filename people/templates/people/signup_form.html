@@ -1,0 +1,151 @@
+{% extends "shell.html" %}
+{% load po i18n static %}
+{% block page_title %}{% trans "Signup form" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/people.css' %}">{% endblock %}
+{% block extra_js %}
+{{ config|json_script:"sf-config" }}
+<script>
+  /* The signup form settings screen: the switches, the pre-filled link builder and the preview frame share one state. */
+  function signupSettings() {
+    var cfg = JSON.parse(document.getElementById("sf-config").textContent);
+    return {
+      lists: cfg.lists, showLanguage: cfg.showLanguage, showTelegram: cfg.showTelegram, showFirstName: cfg.showFirstName,
+      pre: { name: "", email: "", lists: {}, telegram: false, lang: "" },
+      size: "phone",
+      params: function () {
+        var self = this, out = [];
+        var picked = Object.keys(this.lists).filter(function (slug) { return self.lists[slug] && self.pre.lists[slug]; });
+        if (this.showFirstName && this.pre.name.trim()) out.push("name=" + encodeURIComponent(this.pre.name.trim()));
+        if (this.pre.email.trim()) out.push("email=" + encodeURIComponent(this.pre.email.trim()));
+        if (picked.length) out.push("lists=" + picked.map(encodeURIComponent).join(","));
+        if (this.showTelegram && cfg.hasBot && this.pre.telegram) out.push("telegram=1");
+        if (this.pre.lang) out.push("lang=" + encodeURIComponent(this.pre.lang));
+        return out;
+      },
+      get link() {
+        var p = this.params();
+        return cfg.joinUrl + (p.length ? "?" + p.join("&") : "");
+      },
+      get previewSrc() {
+        var self = this;
+        var shown = Object.keys(this.lists).filter(function (slug) { return self.lists[slug]; });
+        var p = ["preview=1", "pv_lists=" + shown.map(encodeURIComponent).join(","),
+                 "pv_language=" + (this.showLanguage ? 1 : 0), "pv_telegram=" + (this.showTelegram ? 1 : 0),
+                 "pv_first_name=" + (this.showFirstName ? 1 : 0)].concat(this.params());
+        return cfg.previewUrl + "?" + p.join("&");
+      }
+    };
+  }
+</script>
+{% endblock %}
+{% block back %}<a class="po-back" href="{% url 'people:list' %}">{% icon "chevron-left" 16 %}{% trans "People" %}</a>{% endblock %}
+{% block eyebrow %}{% endblock %}
+{% block title %}{% trans "Signup form" %}{% endblock %}
+{% block subtitle %}{% trans "The page people use to join your lists. Share the link or make a code from it." %}{% endblock %}
+{% block actions %}
+<a class="po-btn po-btn--white" href="{{ join_url }}" target="_blank" rel="noopener">{% icon "external" %}{% trans "Open the live form" %}</a>
+<button type="submit" form="sf-form" class="po-btn po-btn--primary">{% icon "check" %}{% trans "Save" %}</button>
+{% endblock %}
+
+{% block content %}
+<div class="po-cols" x-data="signupSettings()">
+  <div class="po-col-1 po-stack sf-settings">
+    <form id="sf-form" method="post" class="po-stack">
+      {% csrf_token %}
+      <section class="po-panel" aria-labelledby="sf-choose">
+        <h2 class="po-h2" id="sf-choose">{% trans "What people can choose" %}</h2>
+        {% for lst in lists %}
+        {% if not forloop.first %}<hr class="po-divider">{% endif %}
+        <label class="po-switch sf-switchrow">
+          <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{{ lst.label }}</span><span class="po-small po-muted">{{ lst.note|default:lst.slug }}</span></span>
+          <input type="checkbox" name="lists" value="{{ lst.slug }}" x-model="lists['{{ lst.slug|escapejs }}']"{% if lst.on_signup_form %} checked{% endif %}>
+        </label>
+        {% empty %}
+        <div class="po-notice">{% icon "info" %}<span>{% trans "You have no campaign lists yet. Create one on the People screen and it can be offered here." %}</span></div>
+        {% endfor %}
+        <span class="po-small po-muted">{% trans "Only campaign lists can be offered. App lists are never on the signup form." %}</span>
+      </section>
+
+      <section class="po-panel" aria-labelledby="sf-details">
+        <h2 class="po-h2" id="sf-details">{% trans "Details" %}</h2>
+        <label class="po-switch sf-switchrow">
+          <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "Language picker" %}</span><span class="po-small po-muted">{% blocktrans count n=language_count %}Shows your {{ n }} language. Starts on the one their browser uses.{% plural %}Shows your {{ n }} languages. Starts on the one their browser uses.{% endblocktrans %}</span></span>
+          <input type="checkbox" name="show_language" value="1" x-model="showLanguage"{% if config.showLanguage %} checked{% endif %}>
+        </label>
+        <hr class="po-divider">
+        <label class="po-switch sf-switchrow">
+          <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "Offer Telegram" %}</span><span class="po-small po-muted">{% if has_bot %}{% trans "Adds a box to also connect Telegram" %}{% else %}{% trans "Adds a box to also connect Telegram. It appears once a bot is added in Channels." %}{% endif %}</span></span>
+          <input type="checkbox" name="show_telegram" value="1" x-model="showTelegram"{% if config.showTelegram %} checked{% endif %}>
+        </label>
+        <hr class="po-divider">
+        <label class="po-switch sf-switchrow">
+          <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "Ask for a first name" %}</span><span class="po-small po-muted">{% trans "Lets you write \"Hi Olena\" in messages" %}</span></span>
+          <input type="checkbox" name="show_first_name" value="1" x-model="showFirstName"{% if config.showFirstName %} checked{% endif %}>
+        </label>
+        <hr class="po-divider">
+        <div class="sf-switchrow po-flex po-flex--nowrap">
+          <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "Confirm by email" %}</span><span class="po-small po-muted">{% trans "Sends one email with a confirm button. Owners change this in Settings." %}</span></span>
+          <span class="po-tag {% if org.confirm_by_email %}po-tag--ok{% endif %}">{% if org.confirm_by_email %}{% trans "On" %}{% else %}{% trans "Off" %}{% endif %}</span>
+        </div>
+      </section>
+    </form>
+
+    <section class="po-panel" aria-labelledby="sf-share">
+      <h2 class="po-h2" id="sf-share">{% trans "Share" %}</h2>
+      <div class="po-field">
+        <span class="po-label">{% trans "Link" %}</span>
+        <div class="po-flex po-flex--nowrap">
+          <div class="sf-link po-mono po-grow" id="sf-plain-link">{{ join_url }}</div>
+          <button type="button" class="po-iconbtn" data-copy-from="#sf-plain-link" aria-label="{% trans 'Copy link' %}">{% icon "copy" %}</button>
+        </div>
+      </div>
+      <hr class="po-divider">
+      <div class="po-stack po-stack--xs">
+        <h3 class="po-h3">{% trans "Pre-filled link" %}</h3>
+        <span class="po-small po-muted">{% trans "Fill in anything you already know about the person and copy the link. They open it, check it and press Subscribe. These links are not saved, so make a new one whenever you need it. You can turn one into a QR code with any QR tool." %}</span>
+      </div>
+      <div class="po-fieldrow">
+        <div class="po-field" x-show="showFirstName"><label for="sp-first">{% trans "First name" %}</label><input class="po-input" id="sp-first" type="text" x-model.debounce.400ms="pre.name" placeholder="Olena" autocomplete="off"></div>
+        <div class="po-field"><label for="sp-email">{% trans "Email" %}</label><input class="po-input" id="sp-email" type="email" x-model.debounce.400ms="pre.email" placeholder="olena.k@example.com" autocomplete="off"></div>
+      </div>
+      <div class="po-field">
+        <span class="po-label">{% trans "Tick these for them" %}</span>
+        <div class="po-stack po-stack--xs" role="group" aria-label="{% trans 'Boxes to pre-tick' %}">
+          {% for lst in lists %}
+          <label class="po-check" x-show="lists['{{ lst.slug|escapejs }}']"><input type="checkbox" x-model="pre.lists['{{ lst.slug|escapejs }}']"><span>{{ lst.label }}</span></label>
+          {% endfor %}
+          {% if has_bot %}<label class="po-check" x-show="showTelegram"><input type="checkbox" x-model="pre.telegram"><span>{% trans "Also send updates on Telegram" %}</span></label>{% endif %}
+        </div>
+      </div>
+      <div class="po-field">
+        <span class="po-label">{% trans "Open the form in" %}</span>
+        <div class="po-flex" role="group" aria-label="{% trans 'Language to open in' %}">
+          <button type="button" class="po-pill" x-bind:aria-pressed="pre.lang === '' ? 'true' : 'false'" x-on:click="pre.lang = ''">{% trans "Their browser language" %}</button>
+          {% for l in languages %}<button type="button" class="po-pill" lang="{{ l.code }}" x-bind:aria-pressed="pre.lang === '{{ l.code }}' ? 'true' : 'false'" x-on:click="pre.lang = '{{ l.code }}'">{{ l.name }}</button>{% endfor %}
+        </div>
+      </div>
+      <div class="po-notice po-notice--info">{% icon "shield" %}<span>{% trans "Consent is never pre-filled. On a pre-filled link the consent wording sits beside the Subscribe button, and the person gives consent by pressing it themselves." %}</span></div>
+      <div class="po-field">
+        <span class="po-label">{% trans "Your link" %}</span>
+        <div class="po-flex po-flex--nowrap po-flex--top">
+          <div class="sf-link po-mono po-grow" id="sf-prefilled-link" x-text="link">{{ join_url }}</div>
+          <button type="button" class="po-btn po-btn--sm po-btn--teal" data-copy-from="#sf-prefilled-link">{% icon "copy" 16 %}{% trans "Copy" %}</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="po-col-2 po-stack sf-previewcol" aria-label="{% trans 'Preview' %}">
+    <div class="po-flex po-flex--between">
+      <span class="po-small po-muted">{% trans "Preview. It follows the switches and the pre-filled link. Nothing is sent from here." %}</span>
+      <div class="po-seg" role="group" aria-label="{% trans 'Preview size' %}">
+        <button type="button" x-bind:aria-pressed="size === 'phone' ? 'true' : 'false'" x-on:click="size = 'phone'">{% icon "phone" 16 %}{% trans "Phone" %}</button>
+        <button type="button" x-bind:aria-pressed="size === 'desktop' ? 'true' : 'false'" x-on:click="size = 'desktop'">{% icon "desktop" 16 %}{% trans "Desktop" %}</button>
+      </div>
+    </div>
+    <div class="sf-frame" x-bind:class="size === 'phone' ? 'sf-frame--phone' : ''">
+      <iframe title="{% trans 'Signup form preview' %}" x-bind:src="previewSrc" loading="lazy"></iframe>
+    </div>
+  </section>
+</div>
+{% endblock %}

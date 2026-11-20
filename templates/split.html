@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load po i18n %}
+{% comment %}
+Two panes: a teal side panel and a white card. Used by sign-in, setup and invites.
+Blocks: side (content under the brand), side_foot, card_class, card.
+{% endcomment %}
+{% block body %}
+<div class="po-page">
+  <div class="po-split__side">
+    <div class="po-brand">
+      <span class="po-brand__mark">{% app_icon 52 %}</span>
+      <div><div class="po-brand__name">Post Office</div><div class="po-soft po-small" style="font-size:14px">{% trans "Part of Hamlet" %}</div></div>
+    </div>
+    {% block side %}{% endblock %}
+    <span class="po-soft po-small po-mt-auto">{% block side_foot %}{% endblock %}</span>
+  </div>
+  <div class="po-split__main">
+    <div class="po-split__card {% block card_class %}{% endblock %}">
+      {% block card %}{% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

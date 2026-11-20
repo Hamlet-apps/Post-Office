@@ -1,0 +1,32 @@
+{% load po i18n %}
+<section class="po-panel st-section" id="st-cons" aria-labelledby="st-cons-h">
+  <div class="po-stack po-stack--xs">
+    <h2 class="po-h2" id="st-cons-h">{% trans "Consent" %}</h2>
+    <span class="po-muted">{% trans "How Post Office records that people agreed to hear from you." %}</span>
+  </div>
+  <form method="post" action="{% url 'settings_consent' %}" class="st-rows">
+    {% csrf_token %}
+    <label class="po-switch st-switchrow">
+      <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "Ask new subscribers to confirm by email" %}</span>
+        <span class="po-small po-muted">{% trans "They get one email with a confirm button before joining a list" %}</span></span>
+      <input type="checkbox" role="switch" name="confirm_by_email"{% if org.confirm_by_email %} checked{% endif %}>
+    </label>
+    <label class="po-switch st-switchrow">
+      <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "Keep proof of consent" %}</span>
+        <span class="po-small po-muted">{% trans "Saves when, where and how each person agreed" %}</span></span>
+      <input type="checkbox" role="switch" name="keep_consent_proof"{% if org.keep_consent_proof %} checked{% endif %}>
+    </label>
+    <label class="po-switch st-switchrow st-switchrow--locked">
+      <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "Unsubscribe link in every newsletter" %}</span>
+        <span class="po-small po-muted" id="st-unsub-note">{% trans "Always on. Newsletters cannot be sent without it." %}</span></span>
+      <span class="po-tag po-tag--teal">{% icon "lock" 14 2.4 %}{% trans "Always on" %}</span>
+      <input type="checkbox" role="switch" checked disabled aria-describedby="st-unsub-note">
+    </label>
+    <label class="po-switch st-switchrow">
+      <span class="po-stack po-stack--xs po-grow"><span class="po-strong">{% trans "Count opens and clicks" %}</span>
+        <span class="po-small po-muted">{% trans "Adds a tiny image and tracked links to newsletters so reports can show who opened and clicked. Turn off to send without tracking." %}</span></span>
+      <input type="checkbox" role="switch" name="tracking_enabled"{% if org.tracking_enabled %} checked{% endif %}>
+    </label>
+    <div class="po-flex po-flex--end st-rows__foot"><button class="po-btn po-btn--teal po-btn--sm">{% icon "check" %}{% trans "Save consent settings" %}</button></div>
+  </form>
+</section>

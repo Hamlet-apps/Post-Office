@@ -1,0 +1,13 @@
+{% load po cp i18n %}
+<div id="cs-submit" class="po-stack po-stack--sm"{% if oob %} hx-swap-oob="true"{% endif %}
+     data-confirm-now="{% blocktrans count n=audience.people with people=audience.people|num %}Send this campaign to {{ people }} person now?{% plural %}Send this campaign to {{ people }} people now?{% endblocktrans %}">
+  {% if blockers %}
+  <div class="po-notice po-notice--danger" role="status">{% icon "warning" %}
+    <span>{% blocktrans count n=blockers|length %}One thing on the checklist needs fixing before this can go out.{% plural %}{{ n }} things on the checklist need fixing before this can go out.{% endblocktrans %}</span>
+  </div>
+  {% endif %}
+  <button class="po-btn po-btn--teal po-btn--block"{% if not can_send %} disabled{% endif %} x-data>
+    {% icon "send" %}<span x-text="$store.cs.label()">{% trans "Send or schedule" %}</span>
+  </button>
+  <span class="po-small po-muted">{% blocktrans count n=audience.people with people=audience.people|num %}{{ people }} person will get it.{% plural %}{{ people }} people will get it.{% endblocktrans %}</span>
+</div>

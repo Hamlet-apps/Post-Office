@@ -1,0 +1,33 @@
+{% extends "core/setup_base.html" %}
+{% load po i18n %}
+{% block step_title %}{% trans "Where should email come from?" %}{% endblock %}
+{% block step_intro %}{% trans "Add the account that sends confirmations and messages from your other apps. You can add newsletter senders, Telegram and more later in Channels." %}{% endblock %}
+{% block step %}
+<form method="post" class="po-stack" x-data="{ kind: '{{ data.kind }}' }" novalidate>
+  {% csrf_token %}
+  {% if error %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ error }}</span></div>{% endif %}
+  {% if sender %}<div class="po-notice po-notice--ok">{% icon "check" %}<span>{% blocktrans with email=sender.from_email %}{{ email }} is already connected. Fill this in again only to replace it.{% endblocktrans %}</span></div>{% endif %}
+  <div class="po-seg" role="group" aria-label="{% trans 'Kind of account' %}">
+    <label x-bind:class="kind === 'gmail' && 'is-on'"><input class="sr-only" type="radio" name="kind" value="gmail" x-model="kind">Gmail</label>
+    <label x-bind:class="kind === 'smtp' && 'is-on'"><input class="sr-only" type="radio" name="kind" value="smtp" x-model="kind">{% trans "Other mail server" %}</label>
+  </div>
+  <div class="po-fieldrow">
+    <div class="po-field"><label for="su-fn">{% trans "Name people see" %}</label><input id="su-fn" class="po-input" name="from_name" value="{{ data.from_name }}"></div>
+    <div class="po-field"><label for="su-fe">{% trans "Email address" %}</label><input id="su-fe" class="po-input" type="email" name="from_email" value="{{ data.from_email }}"></div>
+  </div>
+  <div class="po-fieldrow" x-show="kind === 'smtp'" x-cloak>
+    <div class="po-field"><label for="su-host">{% trans "Mail server" %}</label><input id="su-host" class="po-input po-input--mono" name="host" value="{{ data.host }}" placeholder="smtp.example.org"></div>
+    <div class="po-field" style="flex:0 1 120px"><label for="su-port">{% trans "Port" %}</label><input id="su-port" class="po-input po-input--mono" name="port" value="{{ data.port }}" inputmode="numeric"></div>
+    <div class="po-field"><label for="su-user">{% trans "Username" %}</label><input id="su-user" class="po-input" name="username" value="{{ data.username }}" autocomplete="off"></div>
+  </div>
+  <div class="po-field">
+    <label for="su-pw"><span x-show="kind === 'gmail'">{% trans "App password" %}</span><span x-show="kind === 'smtp'" x-cloak>{% trans "Password" %}</span></label>
+    <input id="su-pw" class="po-input po-input--mono" type="password" name="password" autocomplete="new-password">
+    <span class="po-hint" x-show="kind === 'gmail'">{% trans "Gmail needs an app password, not your normal one. Create it in your Google account under Security, 2-Step Verification, App passwords." %}</span>
+  </div>
+  <div class="po-flex po-flex--between">
+    <button class="po-btn po-btn--ghost" name="skip" value="1" formnovalidate>{% trans "Skip for now" %}</button>
+    <button class="po-btn po-btn--primary">{% trans "Test and save" %}</button>
+  </div>
+</form>
+{% endblock %}

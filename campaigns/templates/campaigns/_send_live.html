@@ -1,0 +1,9 @@
+{% comment %}
+The answer to an autosave of "Who gets it": the panel itself, plus the parts of the
+page that depend on it, swapped in by id (hx-swap-oob).
+{% endcomment %}
+{% include "campaigns/_send_who.html" with oob=False %}
+{% include "campaigns/_send_checks.html" %}
+{% include "campaigns/_send_langs.html" %}
+{% include "campaigns/_send_go.html" %}
+{% if editable %}{% include "campaigns/_send_submit.html" %}{% endif %}

@@ -1,0 +1,32 @@
+{% extends "split.html" %}
+{% load i18n %}
+{% block page_title %}{% trans "Sign in" %} · Post Office{% endblock %}
+{% block side %}
+<div class="po-stack po-stack--sm">
+  <span class="po-h1">{{ org.name|default:"Post Office" }}</span>
+  <span class="po-soft" style="font-size:16px;line-height:1.5">{% trans "Newsletters, reminders and updates, all from one place." %}</span>
+</div>
+{% endblock %}
+{% block side_foot %}{{ request.get_host }}{% endblock %}
+{% block card %}
+<h1 class="po-h1" style="font-size:34px">{% trans "Sign in" %}</h1>
+{% comment %}
+TODO(gatehouse): "Continue with Gatehouse" goes here, above an "or use a password"
+divider, once Gatehouse sign-in is built. See core/views.py sign_in.
+{% endcomment %}
+<form method="post" class="po-stack" novalidate>
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% if error %}<div class="po-notice po-notice--danger" role="alert">{{ error }}</div>{% endif %}
+  <div class="po-field">
+    <label for="si-email">{% trans "Email" %}</label>
+    <input id="si-email" class="po-input" type="email" name="email" value="{{ email }}" autocomplete="username" required autofocus>
+  </div>
+  <div class="po-field">
+    <label for="si-pass">{% trans "Password" %}</label>
+    <input id="si-pass" class="po-input" type="password" name="password" autocomplete="current-password" required>
+  </div>
+  <button type="submit" class="po-btn po-btn--teal po-btn--block" style="height:52px;font-size:16px">{% trans "Sign in" %}</button>
+</form>
+<p class="po-hint" style="text-align:center">{% trans "Forgot your password? Ask an owner of this post office to send you a new invite." %}</p>
+{% endblock %}

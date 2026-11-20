@@ -1,0 +1,76 @@
+{% load po i18n %}
+<section class="po-panel st-section" id="st-team" aria-labelledby="st-team-h">
+  <div class="po-stack po-stack--xs">
+    <h2 class="po-h2" id="st-team-h">{% trans "Team" %}</h2>
+    <span class="po-muted">{% trans "Who can sign in to Post Office and what they can do." %}</span>
+  </div>
+
+  {% if new_invite %}
+  <div class="po-notice po-notice--ok st-reveal" role="status">
+    <strong>{% if new_invite.emailed %}{% blocktrans with email=new_invite.email %}The invite is on its way to {{ email }}. You can also send them this link yourself.{% endblocktrans %}{% else %}{% blocktrans with email=new_invite.email %}{{ email }} is invited, but the invite could not be emailed. Copy this link and send it to them yourself.{% endblocktrans %}{% endif %}</strong>
+    <div class="po-flex po-flex--nowrap st-reveal__row">
+      <label for="st-invite-link" class="sr-only">{% trans "Invite link" %}</label>
+      <input id="st-invite-link" class="po-input po-input--mono po-input--white po-grow" value="{{ new_invite.link }}" readonly>
+      <button type="button" class="po-btn po-btn--white po-btn--sm" data-copy-from="#st-invite-link">{% icon "copy" %}{% trans "Copy" %}</button>
+    </div>
+    <span>{% trans "They open it, choose a name and a password, and are in." %}</span>
+  </div>
+  {% endif %}
+
+  <div class="st-rows" x-data>
+    {% for m in members %}
+    <div class="st-row">
+      <span class="st-avatar" aria-hidden="true">{{ m.initial }}</span>
+      <div class="st-row__main">
+        <span class="po-strong">{% if m.name %}{{ m.name }}{% else %}{{ m.email }}{% endif %}{% if m.is_you %} {% trans "(you)" %}{% endif %}</span>
+        <span class="po-small po-muted st-wrap">{% if m.name %}{{ m.email }}{% endif %}</span>
+      </div>
+      {% if m.pending %}
+      <span class="po-tag po-tag--peach">{% icon "clock" 14 2.4 %}{% trans "Invited, has not joined yet" %}</span>
+      <button type="button" class="po-btn po-btn--sm" data-copy="{{ m.invite_link }}" data-copied="{% trans 'Invite link copied' %}">{% icon "copy" %}{% trans "Copy invite link" %}</button>
+      {% endif %}
+      <form method="post" action="{% url 'settings_team_role' m.settings_id %}" class="st-role">
+        {% csrf_token %}
+        <label class="sr-only" for="st-role-{{ m.pk }}">{% blocktrans with name=m %}Role of {{ name }}{% endblocktrans %}</label>
+        <select id="st-role-{{ m.pk }}" class="po-select" name="role" @change="$el.form.submit()"{% if m.last_owner %} disabled aria-describedby="st-lastowner"{% endif %}>
+          {% for value, label in role_labels %}<option value="{{ value }}"{% if m.role == value %} selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+        <noscript><button class="po-btn po-btn--sm">{% trans "Save" %}</button></noscript>
+      </form>
+      {% if m.last_owner %}
+      <span class="st-iconspace" aria-hidden="true"></span>
+      {% else %}
+      <form method="post" action="{% url 'settings_team_remove' m.settings_id %}"
+            data-confirm="{% if m.is_you %}{% trans "Remove yourself? You will be signed out and will not be able to sign in again." %}{% else %}{% blocktrans with name=m %}Remove {{ name }}? They will not be able to sign in any more.{% endblocktrans %}{% endif %}">{% csrf_token %}
+        <button class="po-iconbtn" aria-label="{% blocktrans with name=m %}Remove {{ name }}{% endblocktrans %}">{% icon "trash" %}</button>
+      </form>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  <span class="po-hint" id="st-lastowner">{% icon "info" 14 %} {% trans "There must always be at least one owner. The only owner cannot be removed or given another role." %}</span>
+
+  <hr class="po-divider">
+
+  <h3 class="po-h3">{% trans "Invite someone" %}</h3>
+  <form method="post" action="{% url 'settings_team_invite' %}" class="po-stack" novalidate>
+    {% csrf_token %}
+    <div class="po-fieldrow">
+      <div class="po-field">
+        <label for="st-inv">{% trans "Email address" %}</label>
+        <input id="st-inv" class="po-input" type="email" name="email" value="{{ form.team.email }}" placeholder="name@example.org" autocomplete="off" required{% if errors.team.email %} aria-invalid="true" aria-describedby="st-inv-e"{% endif %}>
+        {% if errors.team.email %}<span class="po-error" id="st-inv-e" role="alert">{{ errors.team.email }}</span>{% endif %}
+      </div>
+      <div class="po-field">
+        <label for="st-inv-role">{% trans "Role" %}</label>
+        <select id="st-inv-role" class="po-select" name="role">
+          {% for value, label in role_labels %}<option value="{{ value }}"{% if form.team.role == value or not form.team.role and value == "editor" %} selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="po-flex po-flex--between">
+      <span class="po-hint">{% trans "Owners can change channels, commands and these settings. Editors write and send. Viewers only see reports." %}</span>
+      <button class="po-btn po-btn--teal po-btn--sm">{% icon "send" %}{% trans "Send invite" %}</button>
+    </div>
+  </form>
+</section>

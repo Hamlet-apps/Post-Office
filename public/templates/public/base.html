@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load po i18n static %}
+{% comment %}The shell for pages people (not staff) see. Blocks: page_title, card_class, card, below.{% endcomment %}
+{% block page_title %}{{ org.name }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/public.css' %}">{% endblock %}
+{% block body %}
+<main class="pub-page" lang="{{ LANGUAGE_CODE }}">
+  <div class="pub-card {% block card_class %}{% endblock %}">
+    {% block card %}{% endblock %}
+  </div>
+  {% block below %}<div class="pub-foot">{% icon "mail" 16 %}{% trans "Sent with Post Office" %}</div>{% endblock %}
+</main>
+{% endblock %}

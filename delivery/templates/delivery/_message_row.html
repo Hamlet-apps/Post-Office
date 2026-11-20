@@ -1,0 +1,44 @@
+{% load po i18n %}
+<tr class="ob-message{% if sub %} ob-sub{% endif %}"{% if sub %} x-show="open"{% endif %}>
+  <td><span class="po-muted">{{ m.when }}</span></td>
+  <td>
+    {% if m.person %}<span class="po-strong">{{ m.person.display_name }}</span>
+    {% else %}<span class="po-muted">{{ m.data.to|default:"–" }}</span>{% endif %}
+  </td>
+  <td>
+    <div class="po-stack po-stack--xs">
+      {% if sub %}<span class="ob-title">{{ m.subject_snapshot|default:m.heading }}</span>
+      {% elif m.href %}<a href="{{ m.href }}" class="po-rowlink ob-title">{{ m.heading }}</a>
+      {% else %}<span class="ob-title">{{ m.heading }}</span>{% endif %}
+      {% if m.subline and not sub %}<span class="po-small po-muted">{{ m.subline }}</span>{% endif %}
+      {% if m.state == "failed" or m.state == "skipped" %}{% if m.error %}<span class="ob-reason">{{ m.error }}</span>{% endif %}{% endif %}
+      {% if m.state == "queued" and m.error %}<span class="ob-reason ob-reason--soft">{% blocktrans with reason=m.error %}Will try again: {{ reason }}{% endblocktrans %}</span>{% endif %}
+    </div>
+  </td>
+  <td>
+    <div class="ob-from">
+      {% if m.building %}{% building_logo m.building 26 %}<span>{{ m.building.name }}</span>
+      {% else %}{% app_icon 26 %}<span>{{ m.kind_label }}</span>{% endif %}
+    </div>
+  </td>
+  <td><div class="ob-channels">{% include "delivery/_channel.html" with channel=m.channel %}</div></td>
+  <td>{% if m.language %}{% include "delivery/_lang.html" with code=m.language fallback=m.used_fallback %}{% endif %}</td>
+  <td>
+    <div class="po-flex ob-status">
+      {% if m.state == "queued" %}<span class="po-tag po-tag--peach">{% icon "clock" 14 %}{% if m.waiting_until %}{% blocktrans with when=m.waiting_until %}Waiting until {{ when }}{% endblocktrans %}{% else %}{% trans "Waiting" %}{% endif %}</span>
+      {% elif m.state == "sending" %}<span class="po-tag po-tag--teal">{% icon "send" 14 %}{% trans "Sending" %}</span>
+      {% elif m.state == "sent" %}<span class="po-tag po-tag--ok">{% icon "check" 14 %}{% trans "Delivered" %}</span>
+      {% elif m.state == "opened" %}<span class="po-tag po-tag--ok">{% icon "mail-open" 14 %}{% trans "Opened" %}</span>
+      {% elif m.state == "clicked" %}<span class="po-tag po-tag--ok">{% icon "click" 14 %}{% trans "Clicked" %}</span>
+      {% elif m.state == "failed" %}<span class="po-tag po-tag--danger">{% icon "warning" 14 %}{% trans "Failed" %}</span>
+      {% else %}<span class="po-tag">{% trans "Skipped" %}</span>{% endif %}
+      {% if m.state == "failed" %}
+        {% if user.can_edit %}
+        <button type="button" class="po-btn po-btn--sm po-btn--white po-above" hx-post="{% url 'delivery:retry' m.public_id %}"
+                hx-vals='{"sub": "{% if sub %}1{% else %}0{% endif %}"}' hx-target="closest tr" hx-swap="outerHTML" hx-disabled-elt="this">{% icon "refresh" 16 %}{% trans "Try again" %}</button>
+        {% endif %}
+        {% if m.person %}<a class="po-btn po-btn--sm po-btn--ghost po-above" href="/people/{{ m.person.public_id }}/">{% icon "person" 16 %}{% trans "Open person" %}</a>{% endif %}
+      {% endif %}
+    </div>
+  </td>
+</tr>

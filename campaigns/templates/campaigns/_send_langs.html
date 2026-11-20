@@ -1,0 +1,34 @@
+{% load po cp i18n %}
+<section id="cs-langs" class="po-panel po-col-2" aria-labelledby="cs-langs-title"{% if oob %} hx-swap-oob="true"{% endif %}>
+  <div class="po-flex po-flex--between">
+    <h2 class="po-h2" id="cs-langs-title">{% trans "Languages" %}</h2>
+    {% if editable %}{% for row in missing_languages|slice:":1" %}
+    <a href="{% url 'campaigns:design' campaign.public_id %}?lang={{ row.language.code }}" class="po-btn po-btn--sm cs-write">{% blocktrans with name=row.language.english_name|default:row.language.name %}Write {{ name }}{% endblocktrans %}</a>
+    {% endfor %}{% endif %}
+  </div>
+  <div class="po-tablewrap">
+    <table class="po-table cs-langtable">
+      <thead><tr>
+        <th scope="col">{% trans "Language" %}</th>
+        <th scope="col" class="po-right">{% trans "Readers" %}</th>
+        {% if show_email %}<th scope="col">{% trans "Email" %}</th>{% endif %}
+        {% if show_notification %}<th scope="col">{{ notification_label }}</th>{% endif %}
+        <th scope="col">{% trans "What they get" %}</th>
+      </tr></thead>
+      <tbody>
+        {% for row in language_rows %}
+        <tr>
+          <td><span class="po-strong" lang="{{ row.language.code }}">{{ row.language.name }}</span>{% if row.is_default %} <span class="po-tag po-tag--sm">{% trans "Default" %}</span>{% endif %}</td>
+          <td class="po-right po-num">{{ row.readers|num }}</td>
+          {% if show_email %}<td>{% include "campaigns/_written.html" with written=row.email %}</td>{% endif %}
+          {% if show_notification %}<td>{% include "campaigns/_written.html" with written=row.notification %}</td>{% endif %}
+          <td>{% if not show_email and not show_notification %}<span class="po-muted">{% trans "Choose a channel first" %}</span>{% elif row.fallback %}{% blocktrans with name=row.gets.english_name|default:row.gets.name %}{{ name }} (fallback){% endblocktrans %}{% elif row.complete %}{{ row.gets.english_name|default:row.gets.name }}{% else %}<span class="po-muted">{% trans "Nothing yet" %}</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if org.missing_translation == "hold" %}
+  <span class="po-small po-muted">{% trans "Your settings hold a campaign until every language is written." %}</span>
+  {% endif %}
+</section>

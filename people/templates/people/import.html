@@ -1,0 +1,55 @@
+{% extends "shell.html" %}
+{% load po i18n static %}
+{% block page_title %}{% trans "Import people" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/people.css' %}">{% endblock %}
+{% block back %}<a class="po-back" href="{% url 'people:list' %}">{% icon "chevron-left" 16 %}{% trans "People" %}</a>{% endblock %}
+{% block eyebrow %}{% endblock %}
+{% block title %}{% trans "Import people" %}{% endblock %}
+{% block subtitle %}{% trans "Add people from a spreadsheet saved as CSV. You see what will happen before anything is saved." %}{% endblock %}
+{% block content %}
+<div class="po-cols">
+  <form method="post" enctype="multipart/form-data" class="po-panel po-col-2">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="preview">
+    {% if error %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ error }}</span></div>{% endif %}
+    {% if not lists %}
+    <div class="po-notice">{% icon "info" %}<span>{% trans "Create a campaign list on the People screen first. Imported people are added to one." %}</span></div>
+    {% endif %}
+    <div class="po-field">
+      <label for="im-file">{% trans "CSV file" %}</label>
+      <input class="po-input pp-file" id="im-file" type="file" name="file" accept=".csv,text/csv,text/plain" required>
+      <span class="po-hint">{% trans "Up to 5 MB. The first row names the columns." %}</span>
+    </div>
+    <div class="po-field">
+      <label for="im-list">{% trans "Add them to" %}</label>
+      <select class="po-select" id="im-list" name="list" required>
+        <option value="">{% trans "Choose a campaign list" %}</option>
+        {% for lst in lists %}<option value="{{ lst.public_id }}"{% if lst.public_id == chosen %} selected{% endif %}>{{ lst.label }}</option>{% endfor %}
+      </select>
+      <span class="po-hint">{% trans "They are switched on for this list by email. App lists cannot be imported into." %}</span>
+    </div>
+    <label class="po-check pp-agree">
+      <input type="checkbox" name="agreed" value="1" required>
+      <span><span class="po-strong">{{ wording }}</span><br><span class="po-small po-muted">{% trans "Newsletters need consent. Your name and the time are kept with each person as proof." %}</span></span>
+    </label>
+    <div class="po-flex po-flex--end">
+      <a class="po-btn po-btn--ghost" href="{% url 'people:list' %}">{% trans "Cancel" %}</a>
+      <button class="po-btn po-btn--primary"{% if not lists %} disabled{% endif %}>{% trans "Check the file" %}</button>
+    </div>
+  </form>
+
+  <aside class="po-panel po-panel--sunken po-col-1">
+    <h2 class="po-h3">{% trans "What the file needs" %}</h2>
+    <div class="po-stack po-stack--sm po-small">
+      <span><span class="po-mono">email</span> {% trans "is required. Rows without a real address are skipped." %}</span>
+      <span><span class="po-mono">first_name</span>, <span class="po-mono">last_name</span> {% trans "are optional." %}</span>
+      <span><span class="po-mono">language</span> {% trans "is optional: a code such as en or uk, or the language's name. Anything else gets your default language." %}</span>
+      <span>{% trans "Any other column is kept as an extra detail on the person." %}</span>
+    </div>
+    <pre class="pp-sample po-mono">email,first_name,last_name,language,Neighbourhood
+olena.k@example.com,Olena,Kovalenko,uk,Maple Ridge
+james.whitfield@example.com,James,Whitfield,en,Alder Park</pre>
+    <span class="po-small po-muted">{% trans "People who were deleted, or who unsubscribed from the list, are never added back by an import." %}</span>
+  </aside>
+</div>
+{% endblock %}

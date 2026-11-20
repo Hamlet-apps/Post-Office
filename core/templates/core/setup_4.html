@@ -1,0 +1,37 @@
+{% extends "core/setup_base.html" %}
+{% load po i18n %}
+{% block step_title %}{% trans "Connect your buildings" %}{% endblock %}
+{% block step_intro %}{% trans "Other Hamlet apps, such as Town Hall and Pavilion, can send their messages through Post Office. Each one gets its own key." %}{% endblock %}
+{% block step %}
+{% if new_key %}
+<div class="po-notice po-notice--ok" style="flex-direction:column">
+  <strong>{% blocktrans with name=new_building.name %}{{ name }} is connected. Copy its key now; it is shown only once.{% endblocktrans %}</strong>
+  <div class="po-flex po-flex--nowrap" style="width:100%">
+    <input id="su-key" class="po-input po-input--mono po-input--white po-grow" value="{{ new_key }}" readonly>
+    <button type="button" class="po-btn po-btn--white po-btn--sm" data-copy-from="#su-key">{% icon "copy" %}{% trans "Copy" %}</button>
+  </div>
+  <span>{% trans "Paste it into the building's Post Office settings." %}</span>
+</div>
+{% endif %}
+{% if buildings %}
+<div class="po-list">
+  {% for b in buildings %}
+  <div class="po-row">{% building_logo b 40 %}<div class="po-grow"><div class="po-strong">{{ b.name }}</div><div class="po-small po-muted po-mono">{{ b.base_url|default:b.get_kind_display }}</div></div><span class="po-tag po-tag--ok">{% icon "check" 14 2.8 %}{% trans "Connected" %}</span></div>
+  {% endfor %}
+</div>
+{% endif %}
+<form method="post" class="po-stack">
+  {% csrf_token %}
+  {% if error %}<div class="po-notice po-notice--danger" role="alert">{{ error }}</div>{% endif %}
+  <div class="po-fieldrow">
+    <div class="po-field" style="flex:0 1 180px"><label for="su-kind">{% trans "Building" %}</label>
+      <select id="su-kind" class="po-select" name="kind">{% for value, label in kinds %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></div>
+    <div class="po-field"><label for="su-bname">{% trans "Name" %}</label><input id="su-bname" class="po-input" name="name" placeholder="Town Hall"></div>
+    <div class="po-field"><label for="su-burl">{% trans "Address" %}</label><input id="su-burl" class="po-input po-input--mono" name="base_url" placeholder="https://townhall.example.org"></div>
+  </div>
+  <div class="po-flex po-flex--between">
+    <button class="po-btn" name="connect" value="1">{% icon "plus" %}{% trans "Connect this building" %}</button>
+    <button class="po-btn po-btn--primary" name="finish" value="1" formnovalidate>{% if buildings %}{% trans "Finish" %}{% else %}{% trans "Skip and finish" %}{% endif %}</button>
+  </div>
+</form>
+{% endblock %}

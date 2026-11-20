@@ -1,0 +1,59 @@
+/* Commands screen (Telegram bot commands). Shared components live in app.css. */
+.bc-botpick{display:flex;align-items:center;gap:8px}
+.bc-botpick label{font-size:14px;color:var(--muted)}
+.bc-botpick .po-select{width:auto;min-width:180px;max-width:100%;font-weight:600}
+
+.bc-cmd{font-family:var(--font-mono);font-size:15px;font-weight:500;color:var(--teal-deep)}
+.bc-cmd--big{font-size:24px;overflow-wrap:anywhere}
+.bc-wrap{overflow-wrap:anywhere;font-size:12px}
+.bc-current{background:var(--teal-tint)}
+.po-table tbody tr.bc-current:hover{background:var(--teal-tint)}
+.bc-toggle{display:inline-flex;justify-content:flex-end}
+
+.bc-builtins{display:flex;flex-direction:column}
+.bc-builtin{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.bc-builtin:first-child{border-top:0}
+.bc-builtin .bc-cmd{flex:0 0 110px}
+.bc-builtin span:last-child{flex:1 1 240px}
+
+/* Editor */
+.bc-side{align-self:flex-start;flex-basis:400px}
+.bc-editor{padding:20px;gap:14px}
+.bc-slash{position:relative}
+.bc-slash>span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:var(--font-mono);color:var(--muted)}
+.bc-slash .po-input{padding-left:26px}
+.po-input[aria-invalid="true"]{box-shadow:inset 0 0 0 2px var(--danger)}
+.bc-header{display:flex;gap:6px;align-items:center}
+.bc-header .po-input{min-width:0;font-size:13px}
+.bc-header .po-input:first-child{flex:2 1 0}
+.bc-header .po-input:nth-child(2){flex:3 1 0}
+.bc-body{min-height:190px;font-size:13px;line-height:1.55}
+.bc-vars{gap:6px}
+.bc-var{height:40px;padding:0 12px;border:0;border-radius:10px;background:var(--peach-tint);color:var(--peach-deep);font-size:13px;font-weight:600;cursor:pointer;transition:background-color 200ms ease}
+.bc-var:hover{background:var(--peach)}
+.bc-fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;min-width:0}
+.bc-fieldset legend{padding:0;margin-bottom:6px}
+.bc-choice{display:flex;gap:12px;align-items:center;border-radius:18px;padding:14px;background:var(--ground);cursor:pointer;position:relative;transition:background-color 200ms ease}
+.bc-choice input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.bc-choice__mark{width:22px;height:22px;border-radius:999px;flex:0 0 auto;background:#fff;border:2px solid #C9C4BB}
+.bc-choice:has(input:checked){background:var(--teal-tint);box-shadow:inset 0 0 0 2px var(--teal)}
+.bc-choice:has(input:checked) .bc-choice__mark{border:7px solid var(--teal)}
+.bc-choice:has(input:focus-visible){outline:3px solid var(--teal);outline-offset:2px}
+.bc-switchrow{display:flex;justify-content:space-between;gap:16px}
+.bc-testresult{margin-top:4px}
+.bc-bubble{background:var(--surface);color:var(--ink);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:14px;line-height:1.45;overflow-wrap:anywhere;align-self:flex-start;max-width:100%}
+
+/* The dark "what gets sent" panel */
+.bc-preview{background:#14262B;color:#E8F3F4;padding:20px;box-shadow:none}
+.bc-preview__label{font-size:13px;font-weight:600;color:#B9D6DA}
+.bc-preview__note{font-size:13px;line-height:1.5;color:#B9D6DA}
+.bc-pre{margin:0;font-family:var(--font-mono);font-size:12.5px;line-height:1.6;color:#E8F3F4;white-space:pre-wrap;word-break:break-word}
+.bc-preview .po-divider{background:rgba(255,255,255,.12)}
+.bc-preview.htmx-request{opacity:.75}
+
+@media (max-width:760px){
+  .bc-botpick{width:100%}
+  .bc-botpick .po-select{flex:1 1 auto}
+  .bc-header{flex-wrap:wrap}
+  .bc-header .po-input:first-child,.bc-header .po-input:nth-child(2){flex:1 1 140px}
+}

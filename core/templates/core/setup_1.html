@@ -1,0 +1,47 @@
+{% extends "core/setup_base.html" %}
+{% load i18n %}
+{% block step_title %}{% trans "Tell us about your organisation" %}{% endblock %}
+{% block step_intro %}{% trans "The name appears on everything you send. You become the first owner." %}{% endblock %}
+{% block step %}
+<form method="post" class="po-stack" novalidate>
+  {% csrf_token %}
+  <div class="po-field">
+    <label for="su-org">{% trans "Organisation name" %}</label>
+    <input id="su-org" class="po-input" name="org_name" value="{{ data.org_name }}" required autofocus>
+    {% if errors.org_name %}<span class="po-error">{{ errors.org_name }}</span>{% endif %}
+  </div>
+  <div class="po-fieldrow">
+    <div class="po-field">
+      <label for="su-tz">{% trans "Time zone" %}</label>
+      <select id="su-tz" class="po-select" name="timezone">
+        {% for tz in timezones %}<option value="{{ tz }}"{% if tz == data.timezone %} selected{% endif %}>{{ tz }}</option>{% endfor %}
+      </select>
+      {% if errors.timezone %}<span class="po-error">{{ errors.timezone }}</span>{% endif %}
+    </div>
+    <div class="po-field">
+      <label for="su-addr">{% trans "Mailing address" %}</label>
+      <input id="su-addr" class="po-input" name="mailing_address" value="{{ data.mailing_address }}">
+      <span class="po-hint">{% trans "Shown at the foot of every newsletter. You can add it later." %}</span>
+    </div>
+  </div>
+  <hr class="po-divider">
+  <div class="po-fieldrow">
+    <div class="po-field">
+      <label for="su-name">{% trans "Your name" %}</label>
+      <input id="su-name" class="po-input" name="name" value="{{ data.name }}" autocomplete="name" required>
+      {% if errors.name %}<span class="po-error">{{ errors.name }}</span>{% endif %}
+    </div>
+    <div class="po-field">
+      <label for="su-email">{% trans "Your email" %}</label>
+      <input id="su-email" class="po-input" type="email" name="email" value="{{ data.email }}" autocomplete="username" required>
+      {% if errors.email %}<span class="po-error">{{ errors.email }}</span>{% endif %}
+    </div>
+  </div>
+  <div class="po-field">
+    <label for="su-pass">{% trans "Password" %}</label>
+    <input id="su-pass" class="po-input" type="password" name="password" autocomplete="new-password" required>
+    {% if errors.password %}<span class="po-error">{{ errors.password }}</span>{% else %}<span class="po-hint">{% trans "At least 8 characters. You sign in with your email and this password." %}</span>{% endif %}
+  </div>
+  <div class="po-flex po-flex--end"><button class="po-btn po-btn--primary">{% trans "Continue" %}</button></div>
+</form>
+{% endblock %}

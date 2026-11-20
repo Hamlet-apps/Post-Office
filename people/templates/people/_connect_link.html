@@ -1,0 +1,12 @@
+{% load po i18n %}
+{% if url %}
+<div class="pp-connect">
+  <span class="po-hint">{% blocktrans with bot=bot %}Send them this link. Opening it in Telegram and pressing Start connects them to {{ bot }}. It works once, for 30 days.{% endblocktrans %}</span>
+  <div class="po-flex po-flex--nowrap">
+    <input class="po-input po-input--mono" id="pp-connect-url" value="{{ url }}" readonly aria-label="{% trans 'Telegram connect link' %}">
+    <button type="button" class="po-btn po-btn--sm" data-copy-from="#pp-connect-url">{% icon "copy" 16 %}{% trans "Copy" %}</button>
+  </div>
+</div>
+{% else %}
+<span class="po-hint">{% trans "Add a Telegram bot in Channels first." %}</span>
+{% endif %}

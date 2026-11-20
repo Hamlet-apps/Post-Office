@@ -1,0 +1,288 @@
+{% extends "shell.html" %}
+{% load po i18n static humanize %}
+{% block page_title %}{% trans "Channels" %} · Post Office{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/channels.css' %}">{% endblock %}
+{% block title %}{% trans "Channels" %}{% endblock %}
+{% block subtitle %}{% trans "The ways Post Office can reach people. People get each message on every channel they signed up for." %}{% endblock %}
+
+{% block content %}
+{# ------------------------------------------------------------------ Email #}
+<section class="ch-section" aria-labelledby="ch-email">
+  <div class="ch-section__head">
+    <span class="po-icontile po-icontile--lg">{% icon "mail" 22 1.8 %}</span>
+    <div class="po-stack po-stack--xs po-grow">
+      <h2 class="po-h2" id="ch-email">{% trans "Email" %}</h2>
+      <span class="po-small po-muted">{% trans "Add the mailboxes Post Office sends from. Works with Gmail or any other mail server." %}</span>
+    </div>
+  </div>
+
+  <div class="po-stack po-stack--sm">
+    <div class="ch-group">
+      <span class="po-eyebrow">{% trans "For app messages" %}</span>
+      <span class="po-small po-muted">{% trans "One sender, so order updates and reminders always come from the same address." %}</span>
+    </div>
+    <div class="po-cols">
+      {% if app_sender %}
+        {% include "channels/_sender_card.html" with s=app_sender %}
+        <div class="ch-spacer"></div>
+      {% else %}
+      <div class="po-card po-card--dashed ch-card">
+        <div class="ch-addtitle">{% icon "plus" %}{% trans "Add the sender for app messages" %}</div>
+        {% url 'channels:sender_add' as add_url %}
+        {% if error_key == "email_add_app" %}
+          {% include "channels/_sender_form.html" with action=add_url uid="app-new" v=values is_new=True error=error purpose="app" %}
+        {% else %}
+          {% include "channels/_sender_form.html" with action=add_url uid="app-new" v=None is_new=True error="" purpose="app" %}
+        {% endif %}
+      </div>
+      <div class="ch-spacer"></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="po-stack po-stack--sm">
+    <div class="ch-group">
+      <span class="po-eyebrow">{% trans "For newsletters" %}</span>
+      <span class="po-small po-muted">{% trans "As many as you need. You pick one when you send a campaign." %}</span>
+    </div>
+    <div class="po-cols">
+      {% for s in newsletter_senders %}{% include "channels/_sender_card.html" with s=s %}{% endfor %}
+      <div class="po-card po-card--dashed ch-card" id="add-newsletter-sender">
+        <div class="ch-addtitle">{% icon "plus" %}{% trans "Add a newsletter sender" %}</div>
+        {% url 'channels:sender_add' as add_url %}
+        {% if error_key == "email_add_newsletter" %}
+          {% include "channels/_sender_form.html" with action=add_url uid="news-new" v=values is_new=True error=error purpose="newsletter" %}
+        {% else %}
+          {% include "channels/_sender_form.html" with action=add_url uid="news-new" v=None is_new=True error="" purpose="newsletter" %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ Telegram #}
+<section class="ch-section" aria-labelledby="ch-telegram">
+  <div class="ch-section__head">
+    <span class="po-icontile po-icontile--lg">{% icon "telegram" 22 1.8 %}</span>
+    <div class="po-stack po-stack--xs po-grow">
+      <h2 class="po-h2" id="ch-telegram">{% trans "Telegram" %}</h2>
+      <span class="po-small po-muted">{% trans "Each bot is its own channel with its own followers." %}</span>
+    </div>
+  </div>
+  <div class="po-cols">
+    {% for bot in bots %}
+    <article class="po-card ch-card" aria-label="{{ bot.name }}">
+      <div class="ch-card__head">
+        <div class="po-stack po-stack--xs po-grow">
+          <span class="po-h3">{{ bot.name }}</span>
+          <span class="ch-card__sub">@{{ bot.username }}</span>
+        </div>
+        {% if bot.is_default %}<span class="po-tag po-tag--teal">{% icon "check" 14 %}{% trans "Default" %}</span>
+        {% else %}<span class="po-tag po-tag--ok">{% icon "check" 14 %}{% trans "Working" %}</span>{% endif %}
+      </div>
+      <dl class="ch-facts">
+        <div><dt>{% trans "Connected people" %}</dt><dd class="po-num">{{ bot.people|intcomma }}</dd></div>
+        <div><dt>{% trans "Commands" %}</dt><dd>{% blocktrans with n=bot.own_commands %}{{ n }} of yours, 4 built in{% endblocktrans %}</dd></div>
+        <div><dt>{% trans "Failed today" %}</dt><dd class="po-num">{{ bot.failed_today|intcomma }}</dd></div>
+        <div><dt>{% trans "Updates arrive by" %}</dt><dd>{% if telegram_mode == "webhook" %}{% trans "Webhook" %}{% else %}{% trans "Checking every 2 seconds" %}{% endif %}</dd></div>
+      </dl>
+      <div class="ch-actions">
+        <a class="po-btn po-btn--sm" href="/commands/?bot={{ bot.public_id }}">{% icon "commands" 16 %}{% trans "Commands" %}</a>
+        {% if bot.username %}<button type="button" class="po-btn po-btn--sm" data-copy="https://t.me/{{ bot.username }}" data-copied="{% trans 'Link copied' %}">{% icon "link" 16 %}{% trans "Get the connect link" %}</button>{% endif %}
+        {% if not bot.is_default %}
+        <form method="post" action="{% url 'channels:bot_default' bot.public_id %}">{% csrf_token %}<button class="po-btn po-btn--sm">{% trans "Make default" %}</button></form>
+        {% endif %}
+      </div>
+      <details class="ch-details"{% if error_key == bot.form_key %} open{% endif %}>
+        <summary class="po-btn po-btn--sm">{% icon "edit" 16 %}{% trans "Edit" %}</summary>
+        <div class="ch-details__body">
+          <form method="post" action="{% url 'channels:bot_edit' bot.public_id %}" class="po-stack ch-form">{% csrf_token %}
+            <div class="po-field">
+              <label for="bot-name-{{ bot.public_id }}">{% trans "Name" %}</label>
+              <input class="po-input" id="bot-name-{{ bot.public_id }}" name="name" type="text" required value="{% if error_key == bot.form_key %}{{ values.name }}{% else %}{{ bot.name }}{% endif %}">
+            </div>
+            <div class="po-field">
+              <label for="bot-token-{{ bot.public_id }}">{% trans "New bot token (optional)" %}</label>
+              <input class="po-input" id="bot-token-{{ bot.public_id }}" name="token" type="password" autocomplete="off" placeholder="••••••••">
+              <span class="po-hint">{% trans "Saved tokens are never shown. Leave this empty to keep the one you have." %}</span>
+            </div>
+            {% if error_key == bot.form_key %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ error }}</span></div>{% endif %}
+            <div class="po-flex"><button class="po-btn po-btn--sm po-btn--teal">{% icon "check" 16 %}{% trans "Save" %}</button></div>
+          </form>
+          <form method="post" action="{% url 'channels:bot_delete' bot.public_id %}" data-confirm="{% blocktrans with name=bot.name %}Remove {{ name }}? Its commands and the people connected to it are removed too.{% endblocktrans %}">{% csrf_token %}
+            <button class="po-btn po-btn--sm po-btn--danger">{% icon "trash" 16 %}{% trans "Remove this bot" %}</button>
+          </form>
+        </div>
+      </details>
+    </article>
+    {% endfor %}
+    <div class="po-card po-card--dashed ch-card">
+      <div class="ch-addtitle">{% icon "plus" %}{% trans "Add a bot" %}</div>
+      <form method="post" action="{% url 'channels:bot_add' %}" class="po-stack ch-form">{% csrf_token %}
+        <div class="po-field">
+          <label for="ch-bot">{% trans "Bot token" %}</label>
+          <input class="po-input" id="ch-bot" name="token" type="password" autocomplete="off" required placeholder="{% trans 'Paste the token from BotFather' %}">
+          <span class="po-hint">{% trans "Create the bot in Telegram with BotFather, then paste its token here." %}</span>
+        </div>
+        {% if error_key == "telegram_add" %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ error }}</span></div>{% endif %}
+        <div class="po-flex"><button class="po-btn po-btn--sm po-btn--teal">{% icon "check" 16 %}{% trans "Connect bot" %}</button></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ Push #}
+<section class="ch-section" aria-labelledby="ch-push">
+  <div class="ch-section__head">
+    <span class="po-icontile po-icontile--lg">{% icon "push" 22 1.8 %}</span>
+    <div class="po-stack po-stack--xs po-grow">
+      <h2 class="po-h2" id="ch-push">{% trans "Push notifications" %}</h2>
+      <span class="po-small po-muted">{% trans "Post Office does not send these itself. It asks your app to, and only for news and announcements. Order and shift notifications stay inside each app." %}</span>
+    </div>
+  </div>
+  <div class="po-cols">
+    {% for group in push_buildings %}
+    <article class="po-card ch-card" aria-label="{{ group.building.name }}">
+      <div class="ch-card__head">
+        {% building_logo group.building 40 %}
+        <div class="po-stack po-stack--xs po-grow">
+          <span class="po-h3">{{ group.building.name }}</span>
+          <span class="ch-card__sub">{{ group.address }}</span>
+        </div>
+        <span class="po-tag po-tag--ok">{% icon "check" 14 %}{% trans "Connected" %}</span>
+      </div>
+      {% for app in group.apps %}
+      <div class="ch-audience">
+        <div class="po-flex po-flex--nowrap">
+          <span class="po-icontile">{% icon "bell" %}</span>
+          <div class="po-stack po-stack--xs po-grow">
+            <span class="po-strong">{{ app.label }}</span>
+            <span class="po-small po-muted">{% blocktrans count n=app.people with shown=app.people|intcomma %}{{ shown }} person allowed notifications{% plural %}{{ shown }} people allowed notifications{% endblocktrans %}</span>
+          </div>
+        </div>
+        <dl class="ch-facts">
+          <div><dt>{% trans "Post Office sends to" %}</dt><dd><span class="po-mono ch-break">{{ app.host }}</span></dd></div>
+          {% if app.list %}<div><dt>{% trans "List" %}</dt><dd>{{ app.list.display_name }}</dd></div>{% endif %}
+        </dl>
+        {% if reveal|get:app.form_key %}
+        <div class="po-notice po-notice--info">{% icon "key" %}
+          <div class="po-stack po-stack--xs po-grow">
+            <span>{% trans "The shared secret. The app uses it to check that a request really came from Post Office." %}</span>
+            <span class="po-mono ch-break" id="secret-{{ app.public_id }}">{{ reveal|get:app.form_key }}</span>
+            <div><button type="button" class="po-btn po-btn--sm po-btn--white" data-copy-from="#secret-{{ app.public_id }}">{% icon "copy" 16 %}{% trans "Copy" %}</button></div>
+          </div>
+        </div>
+        {% endif %}
+        <div class="ch-actions">
+          <form method="post" action="{% url 'channels:push_test' app.public_id %}">{% csrf_token %}<button class="po-btn po-btn--sm" title="{% trans 'Posts an empty, signed request to check the address and the secret' %}">{% icon "send" 16 %}{% trans "Send a test" %}</button></form>
+          <form method="post" action="{% url 'channels:push_secret' app.public_id %}">{% csrf_token %}<button class="po-btn po-btn--sm">{% icon "key" 16 %}{% trans "Show the shared secret" %}</button></form>
+        </div>
+        <details class="ch-details"{% if error_key == app.form_key %} open{% endif %}>
+          <summary class="po-btn po-btn--sm">{% icon "edit" 16 %}{% trans "Edit" %}</summary>
+          <div class="ch-details__body">
+            <form method="post" action="{% url 'channels:push_edit' app.public_id %}" class="po-stack ch-form">{% csrf_token %}
+              <div class="po-field">
+                <label for="push-label-{{ app.public_id }}">{% trans "Name of this audience" %}</label>
+                <input class="po-input" id="push-label-{{ app.public_id }}" name="label" type="text" required value="{% if error_key == app.form_key %}{{ values.label }}{% else %}{{ app.label }}{% endif %}">
+              </div>
+              <div class="po-field">
+                <label for="push-endpoint-{{ app.public_id }}">{% trans "Address notifications are sent to" %}</label>
+                <input class="po-input po-input--mono" id="push-endpoint-{{ app.public_id }}" name="endpoint" type="url" required value="{% if error_key == app.form_key %}{{ values.endpoint }}{% else %}{{ app.endpoint }}{% endif %}">
+              </div>
+              <div class="po-field">
+                <label for="push-secret-{{ app.public_id }}">{% trans "New shared secret (optional)" %}</label>
+                <input class="po-input" id="push-secret-{{ app.public_id }}" name="secret" type="password" autocomplete="off" placeholder="••••••••">
+                <span class="po-hint">{% trans "Leave this empty to keep the one you have." %}</span>
+              </div>
+              {% if error_key == app.form_key %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ error }}</span></div>{% endif %}
+              <div class="po-flex"><button class="po-btn po-btn--sm po-btn--teal">{% icon "check" 16 %}{% trans "Save" %}</button></div>
+            </form>
+            <form method="post" action="{% url 'channels:push_delete' app.public_id %}" data-confirm="{% blocktrans with label=app.label %}Disconnect {{ label }}? Campaigns can no longer send notifications to it.{% endblocktrans %}">{% csrf_token %}
+              <button class="po-btn po-btn--sm po-btn--danger">{% icon "trash" 16 %}{% trans "Disconnect" %}</button>
+            </form>
+          </div>
+        </details>
+      </div>
+      {% endfor %}
+    </article>
+    {% endfor %}
+    <div class="po-card po-card--dashed ch-card">
+      <div class="ch-addtitle">{% icon "plus" %}{% trans "Connect an app" %}</div>
+      <form method="post" action="{% url 'channels:push_connect' %}" class="po-stack ch-form">{% csrf_token %}
+        <div class="po-field">
+          <label for="ch-app">{% trans "App address" %}</label>
+          <input class="po-input" id="ch-app" name="address" type="text" inputmode="url" required placeholder="bank.maplegrove.example" value="{% if error_key == 'push_add' %}{{ values.address }}{% endif %}">
+          <span class="po-hint">{% trans "Enter where the app lives. Post Office finds its notification address on its own." %}</span>
+        </div>
+        {% if error_key == "push_add" %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ error }}</span></div>{% endif %}
+        <div class="po-flex"><button class="po-btn po-btn--sm po-btn--teal">{% icon "link" 16 %}{% trans "Connect" %}</button></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+{# ------------------------------------------------------------------ Webhooks #}
+<section class="ch-section" aria-labelledby="ch-webhooks">
+  <div class="ch-section__head">
+    <span class="po-icontile po-icontile--lg">{% icon "webhook" 22 1.8 %}</span>
+    <div class="po-stack po-stack--xs po-grow">
+      <h2 class="po-h2" id="ch-webhooks">{% trans "Webhooks" %}</h2>
+      <span class="po-small po-muted">{% trans "Send a copy of a message to any other address, for example a lobby display or a chat room." %}</span>
+    </div>
+  </div>
+  <div class="po-cols">
+    {% for hook in webhooks %}
+    <article class="po-card ch-card" aria-label="{{ hook.name }}">
+      <div class="ch-card__head">
+        <div class="po-stack po-stack--xs po-grow">
+          <span class="po-h3">{{ hook.name }}</span>
+          <span class="ch-card__sub po-mono ch-break">{{ hook.url }}</span>
+        </div>
+        <form method="post" action="{% url 'channels:webhook_toggle' hook.public_id %}">{% csrf_token %}
+          <label class="po-switch"><input type="checkbox" name="enabled" value="1"{% if hook.enabled %} checked{% endif %} onchange="this.form.submit()">
+            <span>{% if hook.enabled %}{% trans "On" %}{% else %}{% trans "Off" %}{% endif %}</span></label>
+          <noscript><button class="po-btn po-btn--sm">{% trans "Save" %}</button></noscript>
+        </form>
+      </div>
+      <dl class="ch-facts">
+        <div><dt>{% trans "Gets" %}</dt><dd>{% trans "A copy of every campaign when it is sent" %}</dd></div>
+        <div><dt>{% trans "Last time" %}</dt><dd>{{ hook.last_status|default:_("Nothing sent yet") }}</dd></div>
+      </dl>
+      {% if reveal|get:hook.form_key %}
+      <div class="po-notice po-notice--info">{% icon "key" %}
+        <div class="po-stack po-stack--xs po-grow">
+          <span>{% trans "The shared secret. The other side uses it to check that a request really came from Post Office." %}</span>
+          <span class="po-mono ch-break" id="secret-{{ hook.public_id }}">{{ reveal|get:hook.form_key }}</span>
+          <div><button type="button" class="po-btn po-btn--sm po-btn--white" data-copy-from="#secret-{{ hook.public_id }}">{% icon "copy" 16 %}{% trans "Copy" %}</button></div>
+        </div>
+      </div>
+      {% endif %}
+      <div class="ch-actions">
+        <form method="post" action="{% url 'channels:webhook_test' hook.public_id %}">{% csrf_token %}<button class="po-btn po-btn--sm">{% icon "send" 16 %}{% trans "Send a test" %}</button></form>
+        <form method="post" action="{% url 'channels:webhook_secret' hook.public_id %}">{% csrf_token %}<button class="po-btn po-btn--sm">{% icon "key" 16 %}{% trans "Show the shared secret" %}</button></form>
+        <form method="post" action="{% url 'channels:webhook_delete' hook.public_id %}" data-confirm="{% blocktrans with name=hook.name %}Remove {{ name }}?{% endblocktrans %}">{% csrf_token %}
+          <button class="po-btn po-btn--sm po-btn--danger">{% icon "trash" 16 %}{% trans "Remove" %}</button>
+        </form>
+      </div>
+    </article>
+    {% endfor %}
+    <div class="po-card po-card--dashed ch-card ch-card--wide">
+      <div class="ch-addtitle">{% icon "plus" %}{% trans "Add a webhook" %}</div>
+      <form method="post" action="{% url 'channels:webhook_add' %}" class="po-stack ch-form">{% csrf_token %}
+        <div class="po-fieldrow">
+          <div class="po-field">
+            <label for="ch-hn">{% trans "Name" %}</label>
+            <input class="po-input" id="ch-hn" name="name" type="text" required placeholder="{% trans 'Lobby display' %}" value="{% if error_key == 'webhook_add' %}{{ values.name }}{% endif %}">
+          </div>
+          <div class="po-field ch-wide">
+            <label for="ch-hu">{% trans "Address" %}</label>
+            <input class="po-input" id="ch-hu" name="url" type="url" required placeholder="https://" value="{% if error_key == 'webhook_add' %}{{ values.url }}{% endif %}">
+          </div>
+        </div>
+        {% if error_key == "webhook_add" %}<div class="po-notice po-notice--danger" role="alert">{% icon "warning" %}<span>{{ error }}</span></div>{% endif %}
+        <div class="po-flex"><button class="po-btn po-btn--sm po-btn--teal">{% icon "plus" 16 %}{% trans "Add webhook" %}</button></div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
